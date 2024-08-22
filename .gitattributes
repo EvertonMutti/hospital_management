@@ -1,0 +1,8 @@
+*.sh eol=lf
+*.py eol=lf
+*.lock eol=lf
+*.yml eol=lf
+Makefile eol=lf
+Dockerfile eol=lf
+.dockerignore eol=lf
+.metadata eol=lf

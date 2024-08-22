@@ -1,0 +1,57 @@
+name: hospital_management
+description: "A hospital manager."
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.4.4 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.6
+  dio: ^5.3.2
+  http: ^0.13.6
+  get: ^4.6.5
+  jwt_decoder: ^2.0.1
+  shared_preferences: ^2.2.1
+  brasil_fields: ^1.4.2
+  flutter_native_splash: ^2.4.1
+  flutter_launcher_icons: ^0.13.1
+  font_awesome_flutter: ^10.7.0
+  async: any
+  fl_chart: ^0.68.0
+  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.0
+
+
+assets:
+  - assets/
+
+
+flutter_native_splash:
+  color: "#2bba8b"
+  image: assets/images/splash.png
+  android: true
+  ios: true
+
+flutter_launcher_icons:
+  ios: true
+  remove_alpha_ios: true
+  android: "launcher_icon"
+  adaptive_icon_background: "#FFFFFF"
+  image_path: "assets/images/icon.png"
+
+
+flutter:
+  uses-material-design: true
+
+ 
