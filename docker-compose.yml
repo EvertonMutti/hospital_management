@@ -14,7 +14,7 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - clarke-network
+      - hospital-management-network
 
   frontend:
     build:
@@ -22,13 +22,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:80"
-    env_file:
-      - ./frontend/.env
     depends_on:
       - backend
     networks:
-      - clarke-network
+      -hospital-management-network
 
 networks:
-  clarke-network:
+  hospital-management-network:
     driver: bridge

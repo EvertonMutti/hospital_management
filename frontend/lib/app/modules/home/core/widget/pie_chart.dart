@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:hospital_management/app/modules/home/controller.dart';
 import 'package:hospital_management/app/modules/home/core/widget/indicator.dart';
 
-
 class ExpandablePieChartWidget extends GetView<HomeController> {
   const ExpandablePieChartWidget({super.key});
 
@@ -18,7 +17,7 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
           padding: EdgeInsets.all(controller.isChartExpanded.value ? 8.0 : 4.0),
           constraints: BoxConstraints(
             maxWidth: double.infinity,
-            maxHeight: controller.chartSize ,
+            maxHeight: controller.chartSize,
           ),
           decoration: BoxDecoration(
             color: Colors.blue[50],
@@ -38,7 +37,7 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
               Flexible(
                 child: SizedBox(
                   width: controller.chartSize,
-                  height: controller.chartSize ,
+                  height: controller.chartSize,
                   child: PieChart(
                     PieChartData(
                       sectionsSpace: 0,
@@ -74,6 +73,12 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
                     text: 'Leitos em Uso',
                     isSquare: true,
                   ),
+                  SizedBox(height: 4),
+                  Indicator(
+                    color: Colors.yellow,
+                    text: 'Leitos em Manutenção',
+                    isSquare: true,
+                  ),
                 ],
               ),
             ],
@@ -84,7 +89,7 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
   }
 
   List<PieChartSectionData> showingSections() {
-    return List.generate(2, (i) {
+    return List.generate(3, (i) {
       final isTouched = i == controller.selectedSection.value;
       final fontSize = isTouched ? 25.0 : 16.0;
       final radius = isTouched ? 60.0 : 50.0;
@@ -109,6 +114,19 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
             color: Colors.green,
             value: controller.leitosLivres.value.toDouble(),
             title: '${controller.leitosLivres.value}%',
+            radius: radius,
+            titleStyle: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+              shadows: shadows,
+            ),
+          );
+        case 2:
+          return PieChartSectionData(
+            color: Colors.yellow,
+            value: controller.leitosManutencao.value.toDouble(),
+            title: '${controller.leitosManutencao.value}%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,

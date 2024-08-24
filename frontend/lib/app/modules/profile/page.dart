@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hospital_management/app/core/routes/routes.dart';
 import 'package:hospital_management/app/core/utils/size.dart';
 import 'package:hospital_management/app/modules/profile/controller.dart';
 
@@ -14,15 +13,8 @@ class ProfilePage extends GetView<ProfileController> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Perfil'),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () {
-          Get.toNamed(Routes.home); 
-        },
-      ),
       ),
       body: Center(
         child: ConstrainedBox(

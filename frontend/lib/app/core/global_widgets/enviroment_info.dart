@@ -29,6 +29,7 @@ class EnvironmentInfo extends StatelessWidget {
                 color: Color.fromARGB(150, 158, 158, 158),   
                 fontWeight: FontWeight.bold, 
                 fontSize: 16.0,  
+                decoration: TextDecoration.none,
               ),
             ),
           ],

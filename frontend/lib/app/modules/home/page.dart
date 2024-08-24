@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hospital_management/app/core/routes/routes.dart';
 import 'package:hospital_management/app/core/utils/size.dart';
-import 'package:hospital_management/app/modules/home/core/widget/list_beds.dart';
 import 'package:hospital_management/app/modules/home/core/widget/pie_chart.dart';
 import 'controller.dart';
 
@@ -51,7 +50,7 @@ class HomePage extends GetView<HomeController> {
               ],
             ),
             onPressed: () {
-              controller.clearNotifications();
+              Get.toNamed(Routes.notification);
             },
           ),
           Padding(
@@ -72,32 +71,79 @@ class HomePage extends GetView<HomeController> {
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: maxPageWidth),
-          child: const Padding(
-            padding: EdgeInsets.all(16.0),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Status dos Leitos',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                const Row(
+                  children: [
+                    Icon(
+                      Icons.pie_chart,
+                      size: 24,
+                      color: Color.fromARGB(255, 79, 134, 179),
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      'Status dos Leitos',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                const ExpandablePieChartWidget(),
+                const SizedBox(height: 30),
+                InkWell(
+                  onTap: () {
+                    Get.toNamed(Routes.bedsList);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          spreadRadius: 2,
+                          blurRadius: 4,
+                          offset: const Offset(0, 2), // Shadow position
+                        ),
+                      ],
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.list,
+                              size: 24,
+                              color: Colors.blue,
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              'Lista de Leitos',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 16,
+                          color: Colors.grey,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(height: 20),
-                ExpandablePieChartWidget(),
-                SizedBox(height: 30),
-                Text(
-                  'Lista de Leitos',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 10),
-                Expanded(
-                  child: ListBedsWidget(),
-                ),
+                )
               ],
             ),
           ),

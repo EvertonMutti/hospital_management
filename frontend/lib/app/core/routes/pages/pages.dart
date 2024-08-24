@@ -2,8 +2,12 @@ import 'package:get/get.dart';
 import 'package:hospital_management/app/core/middleware/auth_middleware.dart';
 import 'package:hospital_management/app/modules/global/404/binding.dart';
 import 'package:hospital_management/app/modules/global/404/page.dart';
+import 'package:hospital_management/app/modules/global/notification/binding.dart';
+import 'package:hospital_management/app/modules/global/notification/page.dart';
 import 'package:hospital_management/app/modules/global/root/binding.dart';
 import 'package:hospital_management/app/modules/global/root/page.dart';
+import 'package:hospital_management/app/modules/home/beds_list_page/binding.dart';
+import 'package:hospital_management/app/modules/home/beds_list_page/page.dart';
 import 'package:hospital_management/app/modules/home/core/routes/pages.dart';
 import 'package:hospital_management/app/modules/profile/core/routes/pages.dart';
 import '../../../modules/global/sign_in/binding.dart';
@@ -36,11 +40,22 @@ class Pages {
       ],
     ),
     GetPage(
-        name: '/404',
+        name: Routes.notFound,
         page: () => const NotFoundPage(),
         binding: NotFoundBinding(),
         title: "Not Found",
       ),
+    GetPage(
+        name: Routes.notification,
+        page: () => const NotificationPage(),
+        binding: NotificationBinding(),
+        title: "Not Found",
+      ),
+    GetPage(
+      name: Routes.bedsList,  
+      page: () => const BedsListPage(),
+      binding: BedsListBinding(),
+    ),
     ...HomePages.routes,
     ...ProfilePages.routes
   ];

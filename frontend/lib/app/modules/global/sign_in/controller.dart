@@ -63,7 +63,7 @@ class SignInController extends GetxController {
             "Sucesso",
             "Login realizado com sucesso!",
           );
-          Get.toNamed(Routes.home);
+          Get.offAllNamed(Routes.home);
         } else {
           SnackBarApp.body("Ops!", "Email ou senha inválidos.",
               icon: FontAwesomeIcons.xmark);

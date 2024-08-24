@@ -53,7 +53,7 @@ class AuthService extends GetxService {
     }
 
     if (storageUser.isEmpty) {
-      await Get.toNamed(Routes.signIn);
+      await Get.offAllNamed(Routes.signIn);
     } 
     return this;
   }

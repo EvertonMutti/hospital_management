@@ -3,5 +3,4 @@ import 'package:hospital_management/app/modules/home/core/model/supplier_list_mo
 
 abstract class SupplierRepository {
   Future<BedList> consultSupplier(int query);
-  
 }
