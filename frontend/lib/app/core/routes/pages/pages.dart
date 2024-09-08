@@ -6,8 +6,8 @@ import 'package:hospital_management/app/modules/global/notification/binding.dart
 import 'package:hospital_management/app/modules/global/notification/page.dart';
 import 'package:hospital_management/app/modules/global/root/binding.dart';
 import 'package:hospital_management/app/modules/global/root/page.dart';
-import 'package:hospital_management/app/modules/home/beds_list_page/binding.dart';
-import 'package:hospital_management/app/modules/home/beds_list_page/page.dart';
+import 'package:hospital_management/app/modules/home/pages/beds_list/binding.dart';
+import 'package:hospital_management/app/modules/home/pages/beds_list/page.dart';
 import 'package:hospital_management/app/modules/home/core/routes/pages.dart';
 import 'package:hospital_management/app/modules/profile/core/routes/pages.dart';
 import '../../../modules/global/sign_in/binding.dart';

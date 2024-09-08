@@ -39,7 +39,7 @@ assets:
 
 flutter_native_splash:
   color: "#2bba8b"
-  image: assets/images/splash.png
+  image: assets/images/icom_hm.png
   android: true
   ios: true
 
@@ -48,7 +48,7 @@ flutter_launcher_icons:
   remove_alpha_ios: true
   android: "launcher_icon"
   adaptive_icon_background: "#FFFFFF"
-  image_path: "assets/images/icon.png"
+  image_path: "assets/images/icom_hm.png"
 
 
 flutter:

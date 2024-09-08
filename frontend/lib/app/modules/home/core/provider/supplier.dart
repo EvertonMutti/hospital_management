@@ -1,6 +1,6 @@
 import 'package:hospital_management/app/modules/global/core/network/endpoints.dart';
 import 'package:hospital_management/app/modules/home/core/model/supplier_list_model.dart';
-import 'package:hospital_management/app/modules/home/repository.dart';
+import 'package:hospital_management/app/modules/home/pages/home/repository.dart';
 import '../network/http_client_supplier.dart';
 
 class HomeProvider implements SupplierRepository {

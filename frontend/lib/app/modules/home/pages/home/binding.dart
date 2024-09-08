@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:hospital_management/app/modules/home/repository.dart';
+import 'package:hospital_management/app/modules/home/pages/home/repository.dart';
 
-import 'core/provider/supplier.dart';
+import '../../core/provider/supplier.dart';
 import 'controller.dart';
 
 class HomeBinding implements Bindings {

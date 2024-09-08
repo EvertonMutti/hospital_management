@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hospital_management/app/modules/home/controller.dart';
+import 'package:hospital_management/app/modules/home/pages/home/controller.dart';
 
 class NotificationPage extends GetView<HomeController> {
   const NotificationPage({super.key});

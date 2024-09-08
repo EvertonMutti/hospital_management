@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:hospital_management/app/core/model/notification.dart';
-import 'package:hospital_management/app/modules/home/repository.dart';
+import 'package:hospital_management/app/modules/home/pages/home/repository.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart'; 
 
@@ -20,13 +20,6 @@ class HomeController extends GetxController {
   final RxInt leitosLivres = 25.obs;
   final RxInt leitosManutencao = 25.obs;
   
-
-  final leitos = [
-    {'nome': 'Leito 101', 'status': 'Em uso'},
-    {'nome': 'Leito 102', 'status': 'Livre'},
-    {'nome': 'Leito 103', 'status': 'Em uso'},
-    {'nome': 'Leito 104', 'status': 'Livre'},
-  ].obs;
 
   //Notifications
   final RxInt notificationCount = 0.obs;

@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "project"
+version = "0.1.0"
+description = ""
+authors = ["EvertonMutti <evertoncastro19@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+sqlalchemy = "^2.0.31"
+fastapi = "^0.111.1"
+python-jose = "^3.3.0"
+passlib = "^1.7.4"
+python-dotenv = "^1.0.1"
+pydantic-settings = "^2.4.0"
+pydantic = "^2.8.2"
+
+[tool.poetry.dev-dependencies]
+pre-commit = "^3.0.0"
+pylint = "^2.17.2"
+yapf = "^0.40.2"
+ruff = "^0.1.6"
+isort = "^5.10.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

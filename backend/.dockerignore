@@ -1,0 +1,25 @@
+# Ignorar diretórios de cache do Python
+__pycache__/
+*.pyc
+
+*.so
+
+build/
+output/
+dist/
+*.egg-info
+README.md
+vercel.json
+.vscode/
+.venv
+.ruff_cache
+.idea/
+.DS_Store
+logs/
+.gitignore
+.dockerignore
+.python-version
+
+*.log
+*.tmp
+*.bak

@@ -110,7 +110,7 @@ class HomePage extends GetView<HomeController> {
                           color: Colors.grey.withOpacity(0.2),
                           spreadRadius: 2,
                           blurRadius: 4,
-                          offset: const Offset(0, 2), // Shadow position
+                          offset: const Offset(0, 2),
                         ),
                       ],
                     ),
