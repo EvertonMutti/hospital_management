@@ -3,8 +3,8 @@ import logging
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from project.hospital_management.entities.client import Client
 from project.hospital_management.schemas.client import ClientInput
+from project.shared.entities.entities import Client
 
 logger = logging.getLogger(__name__)
 

@@ -40,12 +40,6 @@ class InvalidCredentialsException(HTTPException):
         super().__init__(status_code=HTTP_400_BAD_REQUEST, detail=detail)
 
 
-class SupplierNotFoundException(HTTPException):
-
-    def __init__(self, detail: str = "Supplier not found"):
-        super().__init__(status_code=HTTP_404_NOT_FOUND, detail=detail)
-
-
 class ServiceUnavailableException(HTTPException):
 
     def __init__(
@@ -56,9 +50,15 @@ class ServiceUnavailableException(HTTPException):
                          detail=detail)
 
 
-class UniqueConstraintViolationException(HTTPException):
+#class UniqueConstraintViolationException(HTTPException):
+#
+#    def __init__(
+#            self,
+#            detail: str = "A supplier with this tax number already exists."):
+#        super().__init__(status_code=HTTP_400_BAD_REQUEST, detail=detail)
 
-    def __init__(
-            self,
-            detail: str = "A supplier with this tax number already exists."):
-        super().__init__(status_code=HTTP_400_BAD_REQUEST, detail=detail)
+
+class BedNotFoundException(HTTPException):
+
+    def __init__(self, detail: str = "Bed not found"):
+        super().__init__(status_code=HTTP_404_NOT_FOUND, detail=detail)

@@ -7,10 +7,10 @@ from starlette.status import (HTTP_201_CREATED, HTTP_400_BAD_REQUEST,
 from project.hospital_management.schemas.client import (ClientInput,
                                                         ClientResponse, Login,
                                                         TokenResponse)
-from project.hospital_management.service.client import ClientService
 from project.shared.dependencies import get_client_service
 from project.shared.schemas.exceptions import (ExceptionResponse,
                                                UserAlreadyExistsResponse)
+from project.shared.service.client import ClientService
 
 router = APIRouter()
 logger = logging.getLogger(__name__)

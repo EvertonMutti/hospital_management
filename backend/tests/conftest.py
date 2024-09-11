@@ -1,10 +1,10 @@
 from project.shared.dependencies import get_client_datasource
 from tests.utils.override_database import settings
 from fastapi.testclient import TestClient
-from project.hospital_management.entities.client import Client
+from project.shared.entities.entities import Client
 from project.hospital_management.schemas.client import ClientInput
-from project.hospital_management.security.token_provider import create_acess_token
-from project.hospital_management.service.client import ClientService
+from project.shared.security.token_provider import create_acess_token
+from project.shared.service.client import ClientService
 import pytest  
 from project.hospital_management.main import app
 from project.hospital_management.settings.database import get_session, reset_database

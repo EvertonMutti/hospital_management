@@ -2,17 +2,16 @@ import logging
 
 from sqlalchemy.orm import Session
 
-from project.hospital_management.datasource.client import ClientDataSource
 from project.hospital_management.schemas.client import (ClientInput,
                                                         ClientResponse, Login,
                                                         TokenResponse)
-from project.hospital_management.security.hash_provider import (
-    get_password_hash, verify_password)
-from project.hospital_management.security.token_provider import \
-    create_acess_token
+from project.shared.datasource.client import ClientDataSource
 from project.shared.exceptions.exceptions import (InvalidCredentialsException,
                                                   ServiceUnavailableException,
                                                   UserAlreadyExistsException)
+from project.shared.security.hash_provider import (get_password_hash,
+                                                   verify_password)
+from project.shared.security.token_provider import create_acess_token
 
 logger = logging.getLogger(__name__)
 
@@ -78,4 +77,4 @@ class ClientService():
             raise
 
         except Exception:
-            raise InvalidCredentialsException()
+            raise ServiceUnavailableException()
