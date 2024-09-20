@@ -1,11 +1,18 @@
-from datetime import datetime
+import uuid
 
-from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, String
+from sqlalchemy import (Column, DateTime, Enum, ForeignKey, Integer, String,
+                        Table)
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from project.hospital_management.settings.database import Base
-from project.shared.enum.enums import BedStatus
+from project.shared.enum.enums import BedStatus, PositionEnum, ScopesStatus
+
+client_hospital = Table(
+    'client_hospital', Base.metadata,
+    Column('client_id', Integer, ForeignKey('client.id'), primary_key=True),
+    Column('hospital_id', Integer, ForeignKey('hospital.id'),
+           primary_key=True))
 
 
 class Client(Base):
@@ -15,15 +22,15 @@ class Client(Base):
     name = Column(String(100))
     email = Column(String(100))
     password = Column(String(100))
+    tax_number = Column(String(14))
+    position = Column(Enum(PositionEnum), default=PositionEnum.NURSE)
+    permission = Column(Enum(ScopesStatus), default=ScopesStatus.USER)
 
-    hospital_id = Column(Integer,
-                         ForeignKey('hospital.id'),
-                         unique=True,
-                         nullable=False)
-    hospital = relationship('Hospital', back_populates='client', uselist=False)
+    hospitals = relationship('Hospital',
+                             secondary=client_hospital,
+                             back_populates='clients')
 
 
-#hospitalization
 class Admission(Base):
     __tablename__ = 'admission'
 
@@ -33,15 +40,8 @@ class Admission(Base):
     admission_date = Column(DateTime, default=func.now())
     discharge_date = Column(DateTime, nullable=True)
 
-    # Relacionamento com paciente
     patient = relationship('Patient', back_populates='admissions')
-
-    # Relacionamento com leito
     bed = relationship('Bed', back_populates='admissions')
-
-    def discharge(self):
-        self.discharge_date = datetime.now()
-        self.bed.status = BedStatus.FREE  # Leito fica livre
 
 
 class Bed(Base):
@@ -49,38 +49,38 @@ class Bed(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     bed_number = Column(String, nullable=False)
-    sector_id = Column(Integer, ForeignKey('sector.id'), nullable=False)
+    sector_id = Column(Integer, ForeignKey('sector.id'))
     status = Column(Enum(BedStatus), default=BedStatus.FREE)
 
-    # Relacionamento com setor
     sector = relationship('Sector', back_populates='beds')
-
-    # Um leito pode ter várias admissões
     admissions = relationship('Admission', back_populates='bed')
 
 
 class Hospital(Base):
     __tablename__ = 'hospital'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String, nullable=False)
-    address = Column(String, nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
+    name = Column(String(100))
+    tax_number = Column(String(14))
+    unique_code = Column(String(6),
+                         unique=True,
+                         index=True,
+                         default=lambda: str(uuid.uuid4().hex[:6]))
+    address = Column(String)
 
     sectors = relationship('Sector', back_populates='hospital')
+    clients = relationship('Client',
+                           secondary=client_hospital,
+                           back_populates='hospitals')
 
-    # Client relationship (1:1)
-    client = relationship('Client', back_populates='hospital', uselist=False)
 
-
-# Entidade Paciente
 class Patient(Base):
     __tablename__ = 'patient'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
-    document = Column(String, nullable=False, unique=True)  # Exemplo: CPF
+    tax_number = Column(String(14), unique=True)
 
-    # Um paciente pode ter várias admissões
     admissions = relationship('Admission', back_populates='patient')
 
 
@@ -88,8 +88,11 @@ class Sector(Base):
     __tablename__ = 'sector'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String, nullable=False)
-    hospital_id = Column(Integer, ForeignKey('hospital.id'), nullable=False)
+    name = Column(String)
+    hospital_id = Column(Integer, ForeignKey('hospital.id'))
 
     beds = relationship('Bed', back_populates='sector')
     hospital = relationship('Hospital', back_populates='sectors')
+
+    #UTI
+    #CTI

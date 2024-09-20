@@ -7,7 +7,7 @@ class EnvironmentInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: 40.0,
+      bottom: 34.0,
       right: 16.0,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
@@ -19,7 +19,7 @@ class EnvironmentInfo extends StatelessWidget {
               style: TextStyle(
                 color: Color.fromARGB(150, 158, 158, 158), 
                 fontWeight: FontWeight.bold,  
-                fontSize: 60.0, 
+                fontSize: 48.0, 
                 decoration: TextDecoration.none,
               ),
             ),
@@ -28,7 +28,7 @@ class EnvironmentInfo extends StatelessWidget {
               style: TextStyle(
                 color: Color.fromARGB(150, 158, 158, 158),   
                 fontWeight: FontWeight.bold, 
-                fontSize: 16.0,  
+                fontSize: 10.0,  
                 decoration: TextDecoration.none,
               ),
             ),

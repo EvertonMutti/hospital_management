@@ -2,15 +2,16 @@ import logging
 
 from fastapi import APIRouter, Depends
 from starlette.status import (HTTP_201_CREATED, HTTP_400_BAD_REQUEST,
-                              HTTP_503_SERVICE_UNAVAILABLE)
+                              HTTP_404_NOT_FOUND, HTTP_503_SERVICE_UNAVAILABLE)
 
-from project.hospital_management.schemas.client import (ClientInput,
-                                                        ClientResponse, Login,
-                                                        TokenResponse)
-from project.shared.dependencies import get_client_service
-from project.shared.schemas.exceptions import (ExceptionResponse,
-                                               UserAlreadyExistsResponse)
-from project.shared.service.client import ClientService
+from project.application.service.client import ClientService
+from project.hospital_management.controllers.dependencies.dependencies import \
+    get_client_service
+from project.shared.schemas.client import (ClientInput, ClientResponse, Login,
+                                           TokenResponse)
+from project.shared.schemas.exceptions import (
+    NotFoundExceptionResponse, ServiceUnavailableExceptionResponse,
+    UserAlreadyExistsResponse, UserNotFoundResponse)
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -21,10 +22,13 @@ logger = logging.getLogger(__name__)
              response_model=ClientResponse,
              responses={
                  HTTP_503_SERVICE_UNAVAILABLE: {
-                     'model': ExceptionResponse,
+                     'model': ServiceUnavailableExceptionResponse,
                  },
                  HTTP_400_BAD_REQUEST: {
                      'model': UserAlreadyExistsResponse
+                 },
+                 HTTP_404_NOT_FOUND: {
+                     'model': NotFoundExceptionResponse
                  }
              })
 async def signup(user: ClientInput,
@@ -39,10 +43,10 @@ async def signup(user: ClientInput,
              response_model=TokenResponse,
              responses={
                  HTTP_400_BAD_REQUEST: {
-                     'model': ExceptionResponse
+                     'model': UserNotFoundResponse
                  },
                  HTTP_503_SERVICE_UNAVAILABLE: {
-                     'model': ExceptionResponse
+                     'model': ServiceUnavailableExceptionResponse
                  }
              })
 async def login(login: Login,

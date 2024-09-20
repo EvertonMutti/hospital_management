@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hospital_management/app/modules/home/pages/home/controller.dart';
+import 'package:hospital_management/app/core/global_widgets/progress_indicator.dart';
+import 'package:hospital_management/app/modules/home/notification/controller.dart';
 
-class NotificationPage extends GetView<HomeController> {
+class NotificationPage extends GetView<NotificationController> {
   const NotificationPage({super.key});
 
   @override
@@ -14,6 +15,12 @@ class NotificationPage extends GetView<HomeController> {
         centerTitle: true,
       ),
       body: Obx(() {
+        if (controller.getLoading) {
+          return const Center(
+            child: ProgressIndicatorApp(),
+          );
+        }
+
         if (controller.notifications.isEmpty) {
           return Center(
             child: Column(
@@ -53,6 +60,7 @@ class NotificationPage extends GetView<HomeController> {
             ),
           );
         }
+
         return ListView.builder(
           itemCount: controller.notifications.length,
           itemBuilder: (context, index) {
@@ -100,8 +108,7 @@ class NotificationPage extends GetView<HomeController> {
             );
           },
         );
-      }
-      ),
+      }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           controller.clearNotifications();

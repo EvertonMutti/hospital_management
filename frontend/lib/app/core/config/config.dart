@@ -1,8 +1,7 @@
 
 class Enviroment {
-    static final Enviroment instance = Enviroment._();
-    
     Enviroment._();
+    static final Enviroment instance = Enviroment._();
     
     static const String env = String.fromEnvironment('ENV');
     static const String version = String.fromEnvironment('VERSION');
