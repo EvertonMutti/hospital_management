@@ -9,7 +9,7 @@ class BedBase(BaseModel):
     status: BedStatus = BedStatus.FREE
 
 
-class BedCreate(BedBase):
+class BedCreate(BaseModel):
     bed_number: str
     sector_id: int
 
@@ -20,6 +20,3 @@ class BedUpdate(BedBase):
 
 class Bed(BedBase):
     id: int
-
-    class Config:
-        orm_mode = True

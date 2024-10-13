@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hospital_management/app/modules/home/core/widget/status_dialog.dart';
-import 'package:hospital_management/app/modules/home/pages/beds_list/controller.dart';
+import 'package:hospital_management/app/modules/home/beds_list/controller.dart';
 
 class BedsListPage extends GetView<BedsController> {
   const BedsListPage({super.key});
@@ -18,10 +18,22 @@ class BedsListPage extends GetView<BedsController> {
         child: Container(
           decoration: BoxDecoration(
             color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(40.0), 
+            borderRadius: BorderRadius.circular(40.0),
           ),
           padding: const EdgeInsets.all(16.0),
           child: Obx(() {
+            if (controller.getLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (controller.beds.isEmpty) {
+              return const Center(
+                child: Text(
+                  'Sem leitos cadastrados neste hospital',
+                  style: TextStyle(fontSize: 18),
+                ),
+              );
+            }
             return NotificationListener<ScrollEndNotification>(
               onNotification: (notification) {
                 final metrics = notification.metrics;
@@ -41,7 +53,8 @@ class BedsListPage extends GetView<BedsController> {
                       contentPadding: const EdgeInsets.all(16.0),
                       title: Text(
                         bed.name!,
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
                         'Status: ${controller.getStatusLabel(bed.status!)}',

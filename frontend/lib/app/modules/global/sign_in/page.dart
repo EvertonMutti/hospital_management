@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hospital_management/app/core/global_widgets/progress_indicator.dart';
 import 'package:hospital_management/app/core/utils/colors.dart';
 import 'package:hospital_management/app/core/utils/size.dart';
 import 'package:hospital_management/app/modules/global/core/widget/mh_logo.dart';
@@ -73,7 +74,7 @@ class SignInPage extends GetView<SignInController> {
                                     ),
                                   ),
                                   child: controller.getLoading
-                                      ? const CircularProgressIndicator()
+                                      ? const ProgressIndicatorApp()
                                       : const Text(
                                           'Login',
                                           style: TextStyle(

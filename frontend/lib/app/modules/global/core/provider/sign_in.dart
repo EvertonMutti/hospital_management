@@ -20,6 +20,5 @@ class SignInProvider implements SignInRepository {
     return LoginModel.fromJson({
       "sub": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJqb2FvZGFzaWx2YUBleGFtcGxlLmNvbSIsIm5hbWUiOiJKb1x1MDBlM28iLCJleHAiOjE3MjQxMjE1MTN9.Pbf92DQTfAysLci1KSTPxnk-C2TEY2rbAkHU5q-tHxk"
     });
-
   }
 }

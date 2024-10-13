@@ -1,13 +1,13 @@
 import 'package:get/get.dart';
-import 'package:hospital_management/app/core/model/notification.dart';
-import 'package:hospital_management/app/modules/home/pages/home/repository.dart';
+import 'package:hospital_management/app/modules/global/core/model/notification.dart';
+import 'package:hospital_management/app/modules/home/repository.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart'; 
 
-class HomeController extends GetxController {
-  SupplierRepository repository;
+class NotificationController extends GetxController {
+  HomeRepository repository;
 
-  HomeController({required this.repository});
+  NotificationController({required this.repository});
 
   @override
   Future<void> onReady() async {
@@ -15,11 +15,9 @@ class HomeController extends GetxController {
     await fetchDataNotification();
   }
 
-  //Beds
-  final RxInt leitosEmUso = 50.obs;
-  final RxInt leitosLivres = 25.obs;
-  final RxInt leitosManutencao = 25.obs;
-  
+  final RxBool _loading = false.obs;
+  bool get getLoading => _loading.value;
+  set setLoading(bool status) => _loading.value = status;
 
   //Notifications
   final RxInt notificationCount = 0.obs;
@@ -41,9 +39,9 @@ class HomeController extends GetxController {
   }
 
   Future<void> fetchDataNotification() async {
-    await Future.delayed(Duration(seconds: 1)); // Simulação de atraso
+    setLoading = true;
+    await Future.delayed(const Duration(seconds: 1)); 
 
-    // Dados de exemplo, substitua com a chamada real à API ou lógica de busca
     var fetchedNotifications = [
       Notification(
         id:1,
@@ -79,6 +77,7 @@ class HomeController extends GetxController {
 
     notifications.assignAll(fetchedNotifications);
     notificationCount.value = notifications.length;
+    setLoading = false;
   }
 
   String formatDate(DateTime date) {
@@ -95,29 +94,4 @@ class HomeController extends GetxController {
       return '${DateFormat('MMM d, yyyy', 'pt_BR').format(date)} | ${DateFormat('HH:mm').format(date)}';
     }
   }
-  //Notifications
-
-  // Pie Chart
-  final RxBool isChartExpanded = false.obs;
-
-  void toggleChartExpand() {
-    isChartExpanded.value = !isChartExpanded.value;
-  }
-
-  void handlePieTouch(int tappedIndex) {
-    if (selectedSection.value == tappedIndex) {
-      selectedSection.value = -1;
-    } else {
-      selectedSection.value = tappedIndex;
-    }
-  }
-
-  final RxInt selectedSection = (-1).obs;
-
-  double get chartSize => isChartExpanded.value ? 220 : 200;
-
-  double get pieSectionRadius => isChartExpanded.value ? 60 : 40;
-
-  double get centerSpaceRadius => isChartExpanded.value ? 50 : 30;
-  // Pie Chart
 }

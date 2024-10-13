@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:get/get.dart';
-import 'package:hospital_management/app/modules/home/pages/home/controller.dart';
+import 'package:hospital_management/app/modules/home/home/controller.dart';
 import 'package:hospital_management/app/modules/home/core/widget/indicator.dart';
 
 class ExpandablePieChartWidget extends GetView<HomeController> {

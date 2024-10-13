@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hospital_management/app/modules/home/core/model/bed.dart';
-import 'package:hospital_management/app/modules/home/pages/beds_list/controller.dart';
+import 'package:hospital_management/app/modules/home/beds_list/controller.dart';
 import 'status_option.dart';
 
 void showStatusDialog(BuildContext context, BedModel bed, BedsController controller) {

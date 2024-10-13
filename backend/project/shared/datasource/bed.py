@@ -1,12 +1,13 @@
 import logging
+from collections import defaultdict
 from typing import Optional
 
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from project.hospital_management.schemas.bed import BedCreate, BedUpdate
 from project.shared.entities.entities import Bed, Sector
 from project.shared.enum.enums import BedStatus  # type: ignore
+from project.shared.schemas.bed import BedCreate, BedUpdate
 
 logger = logging.getLogger(__name__)
 
@@ -34,10 +35,23 @@ class BedDataSource:
 
     def get_beds_grouped_by_sector(self):
         try:
-            query = (self.db.query(Sector.name, func.count(Bed.id)).join(
-                Bed, Bed.sector_id == Sector.id).group_by(Sector.name).all())
+            query = (self.db.query(Sector.name, Bed).join(
+                Bed, Bed.sector_id == Sector.id).order_by(Sector.name).all())
+            grouped_beds = defaultdict(list)
+            for sector_name, bed in query:
+                grouped_beds[sector_name].append({
+                    "bed_id": bed.id,
+                    "bed_number": bed.bed_number,
+                    "status": bed.status.name,  # Converte o Enum para string
+                })
 
-            return query
+            result = [{
+                "sector_name": sector_name,
+                "beds": beds
+            } for sector_name, beds in grouped_beds.items()]
+
+            logger.info(f"Beds grouped by sector: {result}")
+            return result
         except Exception as e:
             logger.error(f"Error fetching beds grouped by sector: {e}")
             raise

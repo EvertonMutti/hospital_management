@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hospital_management/app/modules/home/core/model/bed.dart';
-import 'package:hospital_management/app/modules/home/pages/beds_list/controller.dart';
+import 'package:hospital_management/app/modules/home/beds_list/controller.dart';
 
 Widget buildStatusOption(
     BuildContext context, BedModel bed, BedStatus status, String label, BedsController controller) {

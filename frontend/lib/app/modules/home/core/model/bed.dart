@@ -5,7 +5,6 @@ class BedModel {
 
   BedModel({this.id, this.name, this.status});
 
-  // Construtor para criar o modelo a partir de um JSON
   BedModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['nome'];
@@ -15,12 +14,11 @@ class BedModel {
     );
   }
 
-  // Método para converter o modelo em JSON
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['nome'] = name;
-    data['status'] = status?.toString().split('.').last; // Converte enum para string
+    data['status'] = status?.toString().split('.').last; 
     return data;
   }
 

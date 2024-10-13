@@ -6,13 +6,14 @@ from jose import jwt
 
 from project.hospital_management.settings.settings import get_settings
 from project.shared.exceptions.exceptions import TokenExpiredException
+from project.shared.schemas.client import VerifyClientResponse
 
 security = HTTPBearer(scheme_name='Token')
 settings = get_settings()
 
 
 async def verify_token(credentials: HTTPAuthorizationCredentials = Depends(
-    security)) -> dict:
+    security)) -> VerifyClientResponse:
     token = credentials.credentials
 
     if token is None:
@@ -31,7 +32,7 @@ async def verify_token(credentials: HTTPAuthorizationCredentials = Depends(
         if exp_datetime < datetime.now(timezone.utc):
             raise TokenExpiredException()
 
-        return exp_token
+        return VerifyClientResponse(**exp_token)
 
     except TokenExpiredException:
         raise TokenExpiredException()

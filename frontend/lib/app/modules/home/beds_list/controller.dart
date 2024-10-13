@@ -3,13 +3,13 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hospital_management/app/modules/home/core/model/bed.dart';
-import 'package:hospital_management/app/modules/home/pages/home/repository.dart';
+import 'package:hospital_management/app/modules/home/repository.dart';
 
 
 
 class BedsController extends GetxController {
 
-  SupplierRepository repository;
+  HomeRepository repository;
 
   BedsController({required this.repository});
 
@@ -22,6 +22,10 @@ class BedsController extends GetxController {
     ),
   );
 
+  final RxBool _loading = false.obs;
+  bool get getLoading => _loading.value;
+  set setLoading(bool status) => _loading.value = status;
+
   final RxList<BedModel> beds = <BedModel>[].obs;
 
   int _page = 0;
@@ -30,15 +34,20 @@ class BedsController extends GetxController {
   @override
   void onReady() {
     super.onReady();
+    setLoading = true;
+    
     _loadBeds();
+    setLoading = false;
   }
 
-  void _loadBeds() {
+  Future<void> _loadBeds() async {
+    
     final start = _page * _pageSize;
     final end = (start + _pageSize > _allBeds.length) ? _allBeds.length : start + _pageSize;
 
     beds.addAll(_allBeds.sublist(start, end));
     _page++;
+    
   }
 
   void loadMoreBeds() {

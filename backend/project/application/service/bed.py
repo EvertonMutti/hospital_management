@@ -2,10 +2,10 @@ import logging
 
 from sqlalchemy.orm import Session
 
-from project.hospital_management.schemas.bed import BedCreate, BedUpdate
 from project.shared.datasource.bed import BedDataSource
 from project.shared.exceptions.exceptions import (BedNotFoundException,
                                                   ServiceUnavailableException)
+from project.shared.schemas.bed import BedCreate, BedUpdate
 
 logger = logging.getLogger(__name__)
 

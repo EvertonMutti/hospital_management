@@ -30,13 +30,19 @@ class InvalidApiKeyException(HTTPException):
 
 class UserAlreadyExistsException(HTTPException):
 
-    def __init__(self, detail: str = "A user with this email already exists"):
+    def __init__(self, detail: str = "Já existe um usuário com este e-mail."):
+        super().__init__(status_code=HTTP_400_BAD_REQUEST, detail=detail)
+
+
+class HospitalAlreadyExistsException(HTTPException):
+
+    def __init__(self, detail: str = "Já existe um Hospital com este cnpj."):
         super().__init__(status_code=HTTP_400_BAD_REQUEST, detail=detail)
 
 
 class InvalidCredentialsException(HTTPException):
 
-    def __init__(self, detail: str = "Invalid email or password"):
+    def __init__(self, detail: str = "E-mail ou senha inválidos"):
         super().__init__(status_code=HTTP_400_BAD_REQUEST, detail=detail)
 
 
@@ -61,4 +67,22 @@ class ServiceUnavailableException(HTTPException):
 class BedNotFoundException(HTTPException):
 
     def __init__(self, detail: str = "Bed not found"):
+        super().__init__(status_code=HTTP_404_NOT_FOUND, detail=detail)
+
+
+class UserNotFoundException(HTTPException):
+
+    def __init__(self, detail: str = "Usuário não encontrado"):
+        super().__init__(status_code=HTTP_404_NOT_FOUND, detail=detail)
+
+
+class HospitalNotFoundException(HTTPException):
+
+    def __init__(self, detail: str = "Hospital não encontrado"):
+        super().__init__(status_code=HTTP_404_NOT_FOUND, detail=detail)
+
+
+class SectorNotFoundException(HTTPException):
+
+    def __init__(self, detail: str = "Sector not found"):
         super().__init__(status_code=HTTP_404_NOT_FOUND, detail=detail)
