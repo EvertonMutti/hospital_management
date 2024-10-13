@@ -14,37 +14,60 @@ class SignInController extends GetxController {
 
   final SignInRepository signInRepository;
 
+  // Controladores de texto para os campos de entrada
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  var emailError = ''.obs;
-  var passwordError = ''.obs;
+  final fullNameController = TextEditingController();
+  final signUpEmailController = TextEditingController();
+  final phoneController = TextEditingController();
+  final cpfController = TextEditingController();
+  final uniqueCodeController = TextEditingController();
+  final signUpPasswordController = TextEditingController();
 
-  final RxBool loading = false.obs;
+  // Observáveis para gerenciamento de estado
+  final emailError = ''.obs;
+  final passwordError = ''.obs;
+  final loading = false.obs;
+  final isSignUpFormVisible = false.obs;
+
   bool get getLoading => loading.value;
+
+  get register => null;
+
+  @override
+  void onClose() {
+    // Liberar recursos quando o controller for fechado
+    emailController.dispose();
+    passwordController.dispose();
+    fullNameController.dispose();
+    signUpEmailController.dispose();
+    phoneController.dispose();
+    cpfController.dispose();
+    uniqueCodeController.dispose();
+    signUpPasswordController.dispose();
+    super.onClose();
+  }
 
   double getLogoOffset(BuildContext context) {
     final keyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
     return keyboardVisible ? 20.0 : 60.0;
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
   Future<bool> formValidator() async {
     bool isValid = true;
-    if (emailController.text.isEmpty ||
-        !GetUtils.isEmail(emailController.text)) {
-      emailError('Por favor, insira um email válido');
-      loading.value = false;
+    emailError.value = '';
+    passwordError.value = '';
+
+    if (emailController.text.isEmpty || !GetUtils.isEmail(emailController.text)) {
+      emailError.value = 'Por favor, insira um email válido';
       isValid = false;
     }
     if (passwordController.text.isEmpty) {
-      passwordError('Por favor, insira sua senha');
-      loading.value = false;
+      passwordError.value = 'Por favor, insira sua senha';
       isValid = false;
     }
+
+    loading.value = false;
     return isValid;
   }
 
@@ -52,30 +75,28 @@ class SignInController extends GetxController {
     loading.value = true;
     if (await formValidator()) {
       try {
-        var response = await signInRepository.getUser({
+        final response = await signInRepository.getUser({
           "email": emailController.text,
           "password": passwordController.text,
         });
 
         if (response.status!) {
           AuthService.to.loggedIn(response.token!);
-          SnackBarApp.body(
-            "Sucesso",
-            "Login realizado com sucesso!",
-          );
+          SnackBarApp.body("Sucesso", "Login realizado com sucesso!");
           Get.offAllNamed(Routes.home);
         } else {
-          SnackBarApp.body("Ops!", "Email ou senha inválidos.",
-              icon: FontAwesomeIcons.xmark);
+          SnackBarApp.body("Ops!", "Email ou senha inválidos.", icon: FontAwesomeIcons.xmark);
         }
       } catch (e) {
-        SnackBarApp.body("Ops!", "Não foi possível realizar o login.",
-            icon: FontAwesomeIcons.xmark);
-        throw Exception(e.runtimeType);
+        SnackBarApp.body("Ops!", "Não foi possível realizar o login.", icon: FontAwesomeIcons.xmark);
       } finally {
         loading.value = false;
       }
     }
+  }
+
+  void toggleSignUpForm() {
+    isSignUpFormVisible.value = !isSignUpFormVisible.value;
   }
 
   Future<void> logout() async {
