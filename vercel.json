@@ -11,6 +11,5 @@
         "src": "/(.*)",
         "dest": "backend/project/hospital_management/main.py"
       }
-    ],
-  "installCommand": "pip install -r backend/requirements.txt"
+    ]
   }
