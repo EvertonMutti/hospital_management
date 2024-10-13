@@ -48,6 +48,7 @@ class SignInPage extends GetView<SignInController> {
                               )),
                           const SizedBox(height: 20),
                           Obx(() => TextField(
+                                ///// 
                                 controller: controller.passwordController,
                                 obscureText: true,
                                 decoration: InputDecoration(
