@@ -1,4 +1,3 @@
-from typing import List
 
 from pydantic import BaseModel, Field
 
@@ -25,12 +24,10 @@ class HospitalResponse(HospitalBase):
                              description="Código único do hospital",
                              example="asda651")
 
+    class Config:
+        from_attributes = True
+
 
 class ClientHospitalLink(BaseModel):
     client_id: int = Field(..., description="ID do cliente", example=1)
     hospital_id: int = Field(..., description="ID do hospital", example=1)
-
-
-class HospitalListResponse(BaseModel):
-    hospitals: List[HospitalResponse] = Field(...,
-                                              description="Lista de hospitais")

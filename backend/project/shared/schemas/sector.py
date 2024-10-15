@@ -14,8 +14,6 @@ class SectorCreate(BaseModel):
     name: str = Field(...,
                       description="Nome do setor.",
                       example="Centro Cirúrgico")
-    hospital_id: int = Field(
-        ..., description="ID do hospital ao qual o setor pertence.", example=1)
 
 
 class SectorUpdate(SectorCreate):

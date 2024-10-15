@@ -777,6 +777,17 @@ files = [
 ]
 
 [[package]]
+name = "pycpfcnpj"
+version = "1.8"
+description = "Python module for brazilian register numbers for persons (CPF) and companies (CNPJ)."
+optional = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "pycpfcnpj-1.8-py3-none-any.whl", hash = "sha256:771d2ff00511f70453f2df8a20f529bad8deb8e35315a15ba0350d3b5360ef91"},
+    {file = "pycpfcnpj-1.8.tar.gz", hash = "sha256:c9e95d2790d582aa7a7deb4b87da252364c670bd1d78f69f3d8f8f82479ed969"},
+]
+
+[[package]]
 name = "pydantic"
 version = "2.9.2"
 description = "Data validation using Python type hints"
@@ -1727,4 +1738,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "a6807aee6a1d42388a9ee964d7221165520c68ec5775bb3f5380fb7da05568b7"
+content-hash = "72b9d8416b5a4c2e95b49c58747171f24aef76676ee1c61006ff6691a77998a6"

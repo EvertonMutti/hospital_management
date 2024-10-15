@@ -1,53 +1,83 @@
 import logging
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Path
 from starlette.status import (HTTP_200_OK, HTTP_201_CREATED,
                               HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND,
                               HTTP_503_SERVICE_UNAVAILABLE)
 
 from project.application.service.bed import BedService
+from project.hospital_management.controllers.dependencies.checks import \
+    check_cnpj
 from project.hospital_management.controllers.dependencies.dependencies import \
     get_bed_service
-from project.shared.schemas.bed import Bed, BedCreate, BedUpdate
+from project.shared.schemas.bed import (Bed, BedCreate, BedStatusModel,
+                                        BedUpdate, SectorResponse)
 from project.shared.schemas.exceptions import (
     NotFoundExceptionResponse, ServiceUnavailableExceptionResponse)
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
+TAX_NUMBER_DESCRIPTION = 'Número de identificação único'
 
 
-@router.get('',
+@router.get('/{tax_number}',
             status_code=HTTP_200_OK,
+            dependencies=[Depends(check_cnpj)],
+            response_model=list[SectorResponse],
             responses={
                 HTTP_503_SERVICE_UNAVAILABLE: {
                     'model': ServiceUnavailableExceptionResponse,
                 }
             })
 async def get_beds_grouped_by_sector(
+        tax_number: str = Path(...,
+                               title="CNPJ",
+                               description=TAX_NUMBER_DESCRIPTION,
+                               min_length=14,
+                               max_length=14),
         bed_service: BedService = Depends(get_bed_service)):
 
     logger.info("Request to get beds grouped by sector")
-    beds_grouped = bed_service.get_beds_grouped_by_sector()
+    beds_grouped = bed_service.get_beds_grouped_by_sector(tax_number)
     logger.info(f"Beds grouped by sector: {beds_grouped}")
     return beds_grouped
 
 
-@router.post('', status_code=HTTP_201_CREATED, response_model=Bed)
+@router.post('/{tax_number}',
+             status_code=HTTP_201_CREATED,
+             dependencies=[Depends(check_cnpj)],
+             response_model=Bed,
+             responses={
+                 HTTP_503_SERVICE_UNAVAILABLE: {
+                     'model': ServiceUnavailableExceptionResponse,
+                 }
+             })
 async def create_bed(bed_create: BedCreate,
+                     tax_number: str = Path(...,
+                                            title="CNPJ",
+                                            description=TAX_NUMBER_DESCRIPTION,
+                                            min_length=14,
+                                            max_length=14),
                      bed_service: BedService = Depends(get_bed_service)):
     logger.info("Request to create a bed")
     return bed_service.create_bed(bed_create)
 
 
-@router.get('/status/count',
+@router.get('/status/count/{tax_number}',
             status_code=HTTP_200_OK,
-            response_model=dict,
+            dependencies=[Depends(check_cnpj)],
+            response_model=BedStatusModel,
             responses={
                 HTTP_503_SERVICE_UNAVAILABLE: {
                     'model': ServiceUnavailableExceptionResponse,
                 }
             })
 async def count_beds_by_status(
+        tax_number: str = Path(...,
+                               title="CNPJ",
+                               description=TAX_NUMBER_DESCRIPTION,
+                               min_length=14,
+                               max_length=14),
         bed_service: BedService = Depends(get_bed_service)):
     logger.info("Request to count beds by status")
     counts = bed_service.count_beds_by_status()
@@ -55,39 +85,70 @@ async def count_beds_by_status(
     return counts
 
 
-@router.get(
-    '/{bed_id}',
-    status_code=HTTP_200_OK,
-    response_model=Bed,
-    responses={HTTP_404_NOT_FOUND: {
-        'model': NotFoundExceptionResponse,
-    }})
+@router.get('/{tax_number}/{bed_id}',
+            status_code=HTTP_200_OK,
+            dependencies=[Depends(check_cnpj)],
+            response_model=Bed,
+            responses={
+                HTTP_404_NOT_FOUND: {
+                    'model': NotFoundExceptionResponse,
+                },
+                HTTP_503_SERVICE_UNAVAILABLE: {
+                    'model': ServiceUnavailableExceptionResponse,
+                }
+            })
 async def get_bed(bed_id: int,
+                  tax_number: str = Path(...,
+                                         title="CNPJ",
+                                         description=TAX_NUMBER_DESCRIPTION,
+                                         min_length=14,
+                                         max_length=14),
                   bed_service: BedService = Depends(get_bed_service)):
     logger.info(f"Request to get bed with id: {bed_id}")
     return bed_service.get_bed(bed_id)
 
 
-@router.put('/{bed_id}',
+@router.put('/{tax_number}/{bed_id}',
             status_code=HTTP_200_OK,
+            dependencies=[Depends(check_cnpj)],
             response_model=Bed,
-            responses={HTTP_404_NOT_FOUND: {
-                "description": "Bed not found"
-            }})
+            responses={
+                HTTP_404_NOT_FOUND: {
+                    'model': NotFoundExceptionResponse,
+                },
+                HTTP_503_SERVICE_UNAVAILABLE: {
+                    'model': ServiceUnavailableExceptionResponse,
+                }
+            })
 async def update_bed(bed_id: int,
                      bed_update: BedUpdate,
+                     tax_number: str = Path(...,
+                                            title="CNPJ",
+                                            description=TAX_NUMBER_DESCRIPTION,
+                                            min_length=14,
+                                            max_length=14),
                      bed_service: BedService = Depends(get_bed_service)):
     logger.info(f"Request to update bed with id: {bed_id}")
     return bed_service.update_bed(bed_id, bed_update)
 
 
-@router.delete(
-    '/{bed_id}',
-    status_code=HTTP_204_NO_CONTENT,
-    responses={HTTP_404_NOT_FOUND: {
-        "description": "Bed not found"
-    }})
+@router.delete('/{tax_number}/{bed_id}',
+               status_code=HTTP_204_NO_CONTENT,
+               dependencies=[Depends(check_cnpj)],
+               responses={
+                   HTTP_404_NOT_FOUND: {
+                       'model': NotFoundExceptionResponse,
+                   },
+                   HTTP_503_SERVICE_UNAVAILABLE: {
+                       'model': ServiceUnavailableExceptionResponse,
+                   }
+               })
 async def delete_bed(bed_id: int,
+                     tax_number: str = Path(...,
+                                            title="CNPJ",
+                                            description=TAX_NUMBER_DESCRIPTION,
+                                            min_length=14,
+                                            max_length=14),
                      bed_service: BedService = Depends(get_bed_service)):
     logger.info(f"Request to delete bed with id: {bed_id}")
     bed_service.delete_bed(bed_id)
