@@ -14,7 +14,7 @@ class BedService:
 
     def __init__(self, session: Session, bed_data_source: BedDataSource):
         self.db = session
-        self.bed_data_source = bed_data_source(session)
+        self.bed_data_source: BedDataSource = bed_data_source(session)
 
     def count_beds_by_status(self):
         try:
@@ -25,9 +25,10 @@ class BedService:
             logger.error(f"Error fetching bed counts by status: {e}")
             raise ServiceUnavailableException()
 
-    def get_beds_grouped_by_sector(self):
+    def get_beds_grouped_by_sector(self, tax_number: str):
         try:
-            beds_grouped = self.bed_data_source.get_beds_grouped_by_sector()
+            beds_grouped = self.bed_data_source.get_beds_grouped_by_sector(
+                tax_number)
             logger.info(f"Beds grouped by sector: {beds_grouped}")
             return beds_grouped
         except Exception as e:

@@ -11,6 +11,13 @@ class ClientInput(BaseModel):
     email: str = Field(...,
                        description="O endereço de e-mail do cliente.",
                        example="joaodasilva@example.com")
+    phone: str = Field(...,
+                       description="O número de telefone.",
+                       example="71984659415")
+    tax_number: str = Field(
+        ...,
+        description="O número de identificação único do cliente.",
+        examples=["53071916000", '12745866000100'])
     hospital_unique_code: str = Field(...,
                                       description="Código único do hospital",
                                       example="abcd1234")

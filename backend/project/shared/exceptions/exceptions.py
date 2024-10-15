@@ -86,3 +86,9 @@ class SectorNotFoundException(HTTPException):
 
     def __init__(self, detail: str = "Sector not found"):
         super().__init__(status_code=HTTP_404_NOT_FOUND, detail=detail)
+
+
+class BadRequestException(HTTPException):
+
+    def __init__(self, detail: str):
+        super().__init__(status_code=HTTP_400_BAD_REQUEST, detail=detail)

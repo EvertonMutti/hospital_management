@@ -25,7 +25,8 @@ def get_hospital() -> Hospital:
 def client():
     with next(get_session()) as session:
         user = {"name": "admin", "email": "admin@admin.com",
-                "password": "mypassword", "hospital_unique_code": "123654"}
+                "password": "mypassword", "hospital_unique_code": "123654",
+                'phone': '71984659415', 'tax_number': '53071916000'}
         hospital = {"name": "hospital",
                     "tax_number": "48292152000131", "address": "address"}
         hospital_service = HospitalService(session, get_hospital_datasource())

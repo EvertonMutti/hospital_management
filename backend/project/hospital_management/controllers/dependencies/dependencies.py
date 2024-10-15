@@ -53,11 +53,13 @@ def get_bed_service(db: Session = Depends(get_session),
 @lru_cache
 def get_sector_service(db: Session = Depends(get_session),
                        sector_data_source: SectorDataSource = Depends(
-                           get_sector_datasource)) -> SectorService:
-    return SectorService(db, sector_data_source)
+                           get_sector_datasource),
+                       hospital_data_source: HospitalDataSource = Depends(
+                           get_hospital_datasource)) -> SectorService:
+    return SectorService(db, sector_data_source, hospital_data_source)
 
 
 def get_hospital_service(db: Session = Depends(get_session),
-                         sector_data_source: HospitalDataSource = Depends(
+                         hospital_data_source: HospitalDataSource = Depends(
                              get_hospital_datasource)) -> HospitalService:
-    return HospitalService(db, sector_data_source)
+    return HospitalService(db, hospital_data_source)

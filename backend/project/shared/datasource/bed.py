@@ -3,9 +3,9 @@ from collections import defaultdict
 from typing import Optional
 
 from sqlalchemy import func
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, aliased
 
-from project.shared.entities.entities import Bed, Sector
+from project.shared.entities.entities import Bed, Hospital, Sector
 from project.shared.enum.enums import BedStatus  # type: ignore
 from project.shared.schemas.bed import BedCreate, BedUpdate
 
@@ -26,25 +26,30 @@ class BedDataSource:
 
             for status, count in query:
                 if status in counts:
-                    counts[status] = count
+                    counts[status.value] = count
 
             return counts
         except Exception as e:
             logger.error(f"Error counting beds by status: {e}")
             raise
 
-    def get_beds_grouped_by_sector(self):
+    def get_beds_grouped_by_sector(self, tax_number: str):
         try:
-            query = (self.db.query(Sector.name, Bed).join(
-                Bed, Bed.sector_id == Sector.id).order_by(Sector.name).all())
+            BedAlias = aliased(Bed)
+            SectorAlias = aliased(Sector)
+            query = (self.db.query(SectorAlias.name, BedAlias).join(
+                BedAlias, BedAlias.sector_id == SectorAlias.id).join(
+                    Hospital, SectorAlias.hospital_id == Hospital.id).filter(
+                        Hospital.tax_number == tax_number).order_by(
+                            SectorAlias.name).all())
             grouped_beds = defaultdict(list)
             for sector_name, bed in query:
                 grouped_beds[sector_name].append({
-                    "bed_id": bed.id,
+                    "id": bed.id,
                     "bed_number": bed.bed_number,
-                    "status": bed.status.name,  # Converte o Enum para string
+                    "status": bed.status.name,
+                    "sector_id": bed.sector_id
                 })
-
             result = [{
                 "sector_name": sector_name,
                 "beds": beds

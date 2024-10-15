@@ -66,5 +66,11 @@ class HospitalService:
             raise ServiceUnavailableException()
 
     def list_hospitals(self, user_id: int) -> List[HospitalResponse]:
-        hospitals = self.hospital_data_source.get_hospitals(user_id)
-        return [HospitalResponse.from_orm(hospital) for hospital in hospitals]
+        try:
+            hospitals = self.hospital_data_source.get_hospitals(user_id)
+            return [
+                HospitalResponse.model_validate(hospital)
+                for hospital in hospitals
+            ]
+        except Exception:
+            raise ServiceUnavailableException()
