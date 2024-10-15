@@ -19,10 +19,11 @@ class Client(Base):
     __tablename__ = 'client'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(100))
-    email = Column(String(100))
-    password = Column(String(100))
-    tax_number = Column(String(14))
+    name = Column(String(100), nullable=False)
+    email = Column(String(100), nullable=False, unique=True)
+    password = Column(String(100), nullable=False)
+    phone = Column(String(20))
+    tax_number = Column(String(14), nullable=False, unique=True)
     position = Column(Enum(PositionEnum), default=PositionEnum.NURSE)
     permission = Column(Enum(ScopesStatus), default=ScopesStatus.USER)
 
@@ -49,7 +50,7 @@ class Bed(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     bed_number = Column(String, nullable=False)
-    sector_id = Column(Integer, ForeignKey('sector.id'))
+    sector_id = Column(Integer, ForeignKey('sector.id'), nullable=False)
     status = Column(Enum(BedStatus), default=BedStatus.FREE)
 
     sector = relationship('Sector', back_populates='beds')
@@ -61,7 +62,7 @@ class Hospital(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     name = Column(String(100))
-    tax_number = Column(String(14))
+    tax_number = Column(String(14), unique=True)
     unique_code = Column(String(6),
                          unique=True,
                          index=True,
@@ -88,7 +89,7 @@ class Sector(Base):
     __tablename__ = 'sector'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String)
+    name = Column(String, nullable=False)
     hospital_id = Column(Integer, ForeignKey('hospital.id'))
 
     beds = relationship('Bed', back_populates='sector')

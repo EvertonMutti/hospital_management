@@ -2,11 +2,12 @@ import logging
 from typing import List
 
 from fastapi import APIRouter, Depends, Path
-from starlette.status import (HTTP_200_OK, HTTP_201_CREATED,
+from starlette.status import (HTTP_200_OK, HTTP_201_CREATED, HTTP_401_UNAUTHORIZED,
                               HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND,
                               HTTP_503_SERVICE_UNAVAILABLE)
 
 from project.application.service.sector import SectorService
+from project.hospital_management.controllers.dependencies.api_check import verify_api_key
 from project.hospital_management.controllers.dependencies.checks import \
     check_cnpj
 from project.hospital_management.controllers.dependencies.dependencies import \
@@ -15,7 +16,7 @@ from project.hospital_management.controllers.dependencies.verify_token import \
     verify_token
 from project.shared.schemas.client import VerifyClientResponse
 from project.shared.schemas.exceptions import (
-    NotFoundExceptionResponse, ServiceUnavailableExceptionResponse)
+    UnauthorizedExceptionResponse, NotFoundExceptionResponse, ServiceUnavailableExceptionResponse)
 from project.shared.schemas.sector import (SectorCreate, SectorResponse,
                                            SectorUpdate)
 
@@ -28,8 +29,11 @@ TAX_NUMBER_DESCRIPTION = 'Número de identificação único'
     '/{tax_number}',
     status_code=HTTP_200_OK,
     response_model=List[SectorResponse],
-    dependencies=[Depends(check_cnpj)],
+    dependencies=[Depends(check_cnpj), Depends(verify_api_key)],
     responses={
+        HTTP_401_UNAUTHORIZED: {
+                    'model': UnauthorizedExceptionResponse,
+                },
         HTTP_503_SERVICE_UNAVAILABLE: {
             'model': ServiceUnavailableExceptionResponse
         }
@@ -49,10 +53,13 @@ async def get_all_sectors(
 
 
 @router.post('/{tax_number}',
-             dependencies=[Depends(check_cnpj)],
+             dependencies=[Depends(check_cnpj), Depends(verify_api_key)],
              status_code=HTTP_201_CREATED,
              response_model=SectorResponse,
              responses={
+                 HTTP_401_UNAUTHORIZED: {
+                    'model': UnauthorizedExceptionResponse,
+                },
                  HTTP_503_SERVICE_UNAVAILABLE: {
                      'model': ServiceUnavailableExceptionResponse,
                  }
@@ -71,10 +78,13 @@ async def create_sector(
 
 
 @router.get('/{tax_number}/{sector_id}',
-            dependencies=[Depends(check_cnpj)],
+            dependencies=[Depends(check_cnpj), Depends(verify_api_key)],
             status_code=HTTP_200_OK,
             response_model=SectorResponse,
             responses={
+                HTTP_401_UNAUTHORIZED: {
+                    'model': UnauthorizedExceptionResponse,
+                },
                 HTTP_404_NOT_FOUND: {
                     'model': NotFoundExceptionResponse,
                 },
@@ -95,10 +105,13 @@ async def get_sector(
 
 
 @router.put('/{tax_number}/{sector_id}',
-            dependencies=[Depends(check_cnpj)],
+            dependencies=[Depends(check_cnpj), Depends(verify_api_key)],
             status_code=HTTP_200_OK,
             response_model=SectorResponse,
             responses={
+                HTTP_401_UNAUTHORIZED: {
+                    'model': UnauthorizedExceptionResponse,
+                },
                 HTTP_404_NOT_FOUND: {
                     'model': NotFoundExceptionResponse,
                 },
@@ -120,9 +133,12 @@ async def update_sector(
 
 
 @router.delete('/{tax_number}/{sector_id}',
-               dependencies=[Depends(check_cnpj)],
+               dependencies=[Depends(check_cnpj), Depends(verify_api_key)],
                status_code=HTTP_204_NO_CONTENT,
                responses={
+                   HTTP_401_UNAUTHORIZED: {
+                    'model': UnauthorizedExceptionResponse,
+                },
                    HTTP_404_NOT_FOUND: {
                        'model': NotFoundExceptionResponse,
                    },
