@@ -1,17 +1,18 @@
 import logging
 
 from fastapi import APIRouter, Depends, HTTPException
-from starlette.status import (HTTP_201_CREATED, HTTP_404_NOT_FOUND,
+from starlette.status import (HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_401_UNAUTHORIZED,
                               HTTP_503_SERVICE_UNAVAILABLE)
 
 from project.application.service.hospital import HospitalService
+from project.hospital_management.controllers.dependencies.api_check import verify_api_key
 from project.hospital_management.controllers.dependencies.dependencies import \
     get_hospital_service
 from project.hospital_management.controllers.dependencies.verify_token import \
     verify_token
 from project.shared.schemas.client import VerifyClientResponse
 from project.shared.schemas.exceptions import (
-    NotFoundExceptionResponse, ServiceUnavailableExceptionResponse)
+    UnauthorizedExceptionResponse, NotFoundExceptionResponse, ServiceUnavailableExceptionResponse)
 from project.shared.schemas.hospital import HospitalCreate, HospitalResponse
 
 router = APIRouter()
@@ -20,8 +21,12 @@ logger = logging.getLogger(__name__)
 
 @router.post('/',
              status_code=HTTP_201_CREATED,
+             dependencies=[Depends(verify_api_key)],
              response_model=HospitalResponse,
              responses={
+                 HTTP_401_UNAUTHORIZED: {
+                    'model': UnauthorizedExceptionResponse,
+                },
                  HTTP_503_SERVICE_UNAVAILABLE: {
                      'model': ServiceUnavailableExceptionResponse,
                  }
@@ -37,8 +42,12 @@ async def create_hospital(
 
 
 @router.get('/',
+            dependencies=[Depends(verify_api_key)],
             response_model=list[HospitalResponse],
             responses={
+                HTTP_401_UNAUTHORIZED: {
+                    'model': UnauthorizedExceptionResponse,
+                },
                 HTTP_503_SERVICE_UNAVAILABLE: {
                     'model': ServiceUnavailableExceptionResponse,
                 }
@@ -53,8 +62,12 @@ async def list_hospitals(
 
 
 @router.get('/{unique_code}',
+            dependencies=[Depends(verify_api_key)],
             response_model=HospitalResponse,
             responses={
+                HTTP_401_UNAUTHORIZED: {
+                    'model': UnauthorizedExceptionResponse,
+                },
                 HTTP_404_NOT_FOUND: {
                     'model': NotFoundExceptionResponse,
                 },

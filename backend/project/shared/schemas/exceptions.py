@@ -5,6 +5,14 @@ class HMBaseModel(BaseModel):
     detail: str = Field(...,
                         description="Descrição detalhada do erro ocorrido.",
                         example='exemplo.')
+    
+class BadRequestExceptionResponse(HMBaseModel):
+    detail: str = Field(description='Requisição inválida.',
+                        example='Requisição inválida.')
+    
+class UnauthorizedExceptionResponse(HMBaseModel):
+    detail: str = Field(description="Não autorizado. As credenciais fornecidas são inválidas ou estão ausentes.",
+                        example="Não autorizado. Token de autenticação inválido ou ausente.")
 
 
 class ServiceUnavailableExceptionResponse(HMBaseModel):

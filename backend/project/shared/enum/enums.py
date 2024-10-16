@@ -27,7 +27,7 @@ class ScopesStatus(Enum):
 
 class PositionEnum(Enum):
     NURSE = "NURSE"
-    CUSTODIAN = "CUSTODIAN"
+    CLEANER = "CLEANER"
 
     @classmethod
     def get_status_options(cls):

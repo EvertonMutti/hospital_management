@@ -2,20 +2,26 @@ from datetime import datetime
 
 from fastapi import APIRouter, Depends, Path
 from sqlalchemy.orm import Session, aliased
-from starlette.status import HTTP_404_NOT_FOUND, HTTP_503_SERVICE_UNAVAILABLE
+from starlette.status import HTTP_404_NOT_FOUND, HTTP_503_SERVICE_UNAVAILABLE, HTTP_401_UNAUTHORIZED
 
+from project.hospital_management.controllers.dependencies.api_check import verify_api_key
+from project.hospital_management.controllers.dependencies.checks import check_cnpj
 from project.hospital_management.settings.database import get_session
 from project.shared.entities.entities import Admission, Bed, Hospital, Sector
 from project.shared.schemas.bed import AverageFreeTimeResponse
 from project.shared.schemas.exceptions import (
-    NotFoundExceptionResponse, ServiceUnavailableExceptionResponse)
+    NotFoundExceptionResponse, ServiceUnavailableExceptionResponse, UnauthorizedExceptionResponse)
 
 router = APIRouter()
 
 
 @router.get("/{tax_number}/average-free-time",
+            dependencies=[Depends(check_cnpj), Depends(verify_api_key)],
             response_model=AverageFreeTimeResponse,
             responses={
+                HTTP_401_UNAUTHORIZED: {
+                    'model': UnauthorizedExceptionResponse,
+                },
                 HTTP_404_NOT_FOUND: {
                     'model': NotFoundExceptionResponse,
                 },

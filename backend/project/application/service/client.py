@@ -101,3 +101,25 @@ class ClientService():
             raise
         except Exception:
             raise ServiceUnavailableException()
+    
+    def update_client(self, client_id: int, client_data: ClientInput) -> ClientResponse:
+        try:
+            client = self.get_client_by_id(client_id)
+
+            client.name = client_data.name
+            client.email = client_data.email
+            client.password = get_password_hash(client_data.password)
+            client.tax_number = client_data.tax_number
+            client.phone = client_data.phone
+            
+            self.db.commit()
+            self.db.refresh(client)
+            
+            logger.info(f"Client with ID {client_id} updated successfully.")
+            return ClientResponse(**client.__dict__)
+        
+        except UserNotFoundException:
+            raise
+        except Exception as error:
+            logger.error(f"Failed to update client: {error}")
+            raise ServiceUnavailableException()

@@ -18,7 +18,9 @@ class ClientDataSource():
     def create_client(self, client: ClientInput) -> Client:
         db_Client = Client(name=client.name,
                            email=client.email,
-                           password=client.password)
+                           password=client.password,
+                           phone=client.phone,
+                           tax_number=client.tax_number)
 
         self.db.add(db_Client)
         self.db.commit()
@@ -37,8 +39,4 @@ class ClientDataSource():
         return self.db.execute(query).first()
 
     def get_client_by_id(self, id: str) -> Optional[Client]:
-        query = select(Client.__table__).where((Client.id == id))
-        client = self.db.execute(query).first()
-        if not client:
-            logger.warning(f"No client found with id: {id}")
-        return client
+        return self.db.query(Client).filter(Client.id == id).first()
