@@ -8,6 +8,7 @@ from project.application.service.client import ClientService
 from project.application.service.hospital import HospitalService
 from project.application.service.sector import SectorService
 from project.hospital_management.settings.database import get_session
+from project.shared.datasource.admission import AdmissionDataSource
 from project.shared.datasource.bed import BedDataSource
 from project.shared.datasource.client import ClientDataSource
 from project.shared.datasource.hospital import HospitalDataSource
@@ -35,6 +36,11 @@ def get_sector_datasource() -> SectorDataSource:
 
 
 @lru_cache
+def get_admission_datasource() -> AdmissionDataSource:
+    return AdmissionDataSource
+
+
+@lru_cache
 def get_client_service(db: Session = Depends(get_session),
                        client_data_source: ClientDataSource = Depends(
                            get_client_datasource),
@@ -46,8 +52,10 @@ def get_client_service(db: Session = Depends(get_session),
 @lru_cache
 def get_bed_service(db: Session = Depends(get_session),
                     bed_data_source: BedDataSource = Depends(
-                        get_bed_datasource)) -> ClientService:
-    return BedService(db, bed_data_source)
+                        get_bed_datasource),
+                    admission_data_source: BedDataSource = Depends(
+                        get_admission_datasource)) -> ClientService:
+    return BedService(db, bed_data_source, admission_data_source)
 
 
 @lru_cache

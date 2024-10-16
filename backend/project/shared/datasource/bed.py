@@ -75,8 +75,14 @@ class BedDataSource:
             self.db.rollback()
             raise
 
-    def get_bed_by_id(self, bed_id: int) -> Optional[Bed]:
-        return self.db.query(Bed).filter(Bed.id == bed_id).first()
+    def get_bed_by_id_and_tax_number(self, bed_id: int,
+                                     tax_number: str) -> Optional[Bed]:
+        BedAlias = aliased(Bed)
+        SectorAlias = aliased(Sector)
+        return (self.db.query(BedAlias).filter(BedAlias.id == bed_id).join(
+            Hospital, SectorAlias.hospital_id == Hospital.id).join(
+                SectorAlias, BedAlias.sector_id == SectorAlias.id).filter(
+                    Hospital.tax_number == tax_number).first())
 
     def update_bed(self, bed: Bed, bed_update: BedUpdate):
         for field, value in bed_update.model_dump().items():

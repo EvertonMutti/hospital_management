@@ -1,8 +1,8 @@
 # datasource/sector.py
 import logging
 
-from sqlalchemy.orm import Session
 from sqlalchemy.orm import Session, aliased
+
 from project.shared.entities.entities import Hospital, Sector
 from project.shared.schemas.sector import SectorCreate, SectorUpdate
 
@@ -16,10 +16,9 @@ class SectorDataSource:
 
     def get_all_sectors(self, tax_number: str):
         SectorAlias = aliased(Sector)
-        return (self.db.query(SectorAlias)
-                .join(Hospital, Hospital.id == SectorAlias.hospital_id)
-                .filter(Hospital.tax_number == tax_number)
-                .all())
+        return (self.db.query(SectorAlias).join(
+            Hospital, Hospital.id == SectorAlias.hospital_id).filter(
+                Hospital.tax_number == tax_number).all())
 
     def create_sector(self, sector_create: SectorCreate, hospital: Hospital):
         try:

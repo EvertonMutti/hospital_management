@@ -5,14 +5,18 @@ class HMBaseModel(BaseModel):
     detail: str = Field(...,
                         description="Descrição detalhada do erro ocorrido.",
                         example='exemplo.')
-    
+
+
 class BadRequestExceptionResponse(HMBaseModel):
     detail: str = Field(description='Requisição inválida.',
                         example='Requisição inválida.')
-    
+
+
 class UnauthorizedExceptionResponse(HMBaseModel):
-    detail: str = Field(description="Não autorizado. As credenciais fornecidas são inválidas ou estão ausentes.",
-                        example="Não autorizado. Token de autenticação inválido ou ausente.")
+    detail: str = Field(
+        description=
+        "Não autorizado. As credenciais fornecidas são inválidas ou estão ausentes.",
+        example="Não autorizado. Token de autenticação inválido ou ausente.")
 
 
 class ServiceUnavailableExceptionResponse(HMBaseModel):
@@ -33,3 +37,10 @@ class UserAlreadyExistsResponse(HMBaseModel):
 class UserNotFoundResponse(HMBaseModel):
     detail: str = Field(description='Usuário não encontrado.',
                         example='Usuário não encontrado.')
+
+
+class ConflictExceptionResponse(BaseModel):
+    detail: str = Field(
+        description='Detalhe do conflito ocorrido.',
+        example='O recurso já existe ou há um conflito com outro recurso.'
+    )

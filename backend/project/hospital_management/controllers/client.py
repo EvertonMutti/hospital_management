@@ -1,19 +1,24 @@
 import logging
 
 from fastapi import APIRouter, Depends
-from starlette.status import (HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED,
-                              HTTP_404_NOT_FOUND, HTTP_503_SERVICE_UNAVAILABLE)
+from starlette.status import (HTTP_201_CREATED, HTTP_400_BAD_REQUEST,
+                              HTTP_401_UNAUTHORIZED, HTTP_404_NOT_FOUND,
+                              HTTP_503_SERVICE_UNAVAILABLE)
 
 from project.application.service.client import ClientService
-from project.hospital_management.controllers.dependencies.api_check import verify_api_key
+from project.hospital_management.controllers.dependencies.api_check import \
+    verify_api_key
 from project.hospital_management.controllers.dependencies.dependencies import \
     get_client_service
-from project.hospital_management.controllers.dependencies.verify_token import verify_token
+from project.hospital_management.controllers.dependencies.verify_token import \
+    verify_token
 from project.shared.schemas.client import (ClientInput, ClientResponse, Login,
-                                           TokenResponse, UpdateClient, VerifyClientResponse)
+                                           TokenResponse, UpdateClient,
+                                           VerifyClientResponse)
 from project.shared.schemas.exceptions import (
-    UnauthorizedExceptionResponse, NotFoundExceptionResponse, ServiceUnavailableExceptionResponse,
-    UserAlreadyExistsResponse, UserNotFoundResponse)
+    NotFoundExceptionResponse, ServiceUnavailableExceptionResponse,
+    UnauthorizedExceptionResponse, UserAlreadyExistsResponse,
+    UserNotFoundResponse)
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -72,12 +77,13 @@ async def login(login: Login,
                     'model': ServiceUnavailableExceptionResponse,
                 }
             })
-async def update_client(client_data: UpdateClient, 
-                        user: VerifyClientResponse = Depends(verify_token),
-                        client_service: ClientService = Depends(get_client_service)):
-    
+async def update_client(
+    client_data: UpdateClient,
+    user: VerifyClientResponse = Depends(verify_token),
+    client_service: ClientService = Depends(get_client_service)):
+
     logger.info(f"Update requested for client ID: {user.id}")
     updated_client = client_service.update_client(user.id, client_data)
     logger.info(f"Client updated successfully: {updated_client}")
-    
+
     return updated_client

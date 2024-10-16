@@ -1,18 +1,20 @@
 import logging
 
 from fastapi import APIRouter, Depends, HTTPException
-from starlette.status import (HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_401_UNAUTHORIZED,
-                              HTTP_503_SERVICE_UNAVAILABLE)
+from starlette.status import (HTTP_201_CREATED, HTTP_401_UNAUTHORIZED,
+                              HTTP_404_NOT_FOUND, HTTP_503_SERVICE_UNAVAILABLE)
 
 from project.application.service.hospital import HospitalService
-from project.hospital_management.controllers.dependencies.api_check import verify_api_key
+from project.hospital_management.controllers.dependencies.api_check import \
+    verify_api_key
 from project.hospital_management.controllers.dependencies.dependencies import \
     get_hospital_service
 from project.hospital_management.controllers.dependencies.verify_token import \
     verify_token
 from project.shared.schemas.client import VerifyClientResponse
 from project.shared.schemas.exceptions import (
-    UnauthorizedExceptionResponse, NotFoundExceptionResponse, ServiceUnavailableExceptionResponse)
+    NotFoundExceptionResponse, ServiceUnavailableExceptionResponse,
+    UnauthorizedExceptionResponse)
 from project.shared.schemas.hospital import HospitalCreate, HospitalResponse
 
 router = APIRouter()
@@ -25,8 +27,8 @@ logger = logging.getLogger(__name__)
              response_model=HospitalResponse,
              responses={
                  HTTP_401_UNAUTHORIZED: {
-                    'model': UnauthorizedExceptionResponse,
-                },
+                     'model': UnauthorizedExceptionResponse,
+                 },
                  HTTP_503_SERVICE_UNAVAILABLE: {
                      'model': ServiceUnavailableExceptionResponse,
                  }
