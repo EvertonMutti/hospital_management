@@ -8,7 +8,8 @@ from project.shared.datasource.admission import \
 from project.shared.datasource.bed import BedDataSource
 from project.shared.entities.entities import Admission
 from project.shared.enum.enums import BedStatus
-from project.shared.exceptions.exceptions import (BedNotFoundException, ConflictException,
+from project.shared.exceptions.exceptions import (BedNotFoundException,
+                                                  ConflictException,
                                                   ServiceUnavailableException)
 from project.shared.schemas.bed import BedCreate, BedUpdate
 

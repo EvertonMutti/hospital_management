@@ -45,12 +45,8 @@ class ClientResponse(BaseModel):
 
 
 class Login(BaseModel):
-    email: str = Field(...,
-                       description="O endereço de e-mail do usuário.",
-                       example="joaodasilva@example.com")
-    password: str = Field(...,
-                          description="A senha da conta do usuário.",
-                          example="s3cr3tP@ssw0rd")
+    email: str
+    password: str
 
 
 class TokenResponse(BaseModel):

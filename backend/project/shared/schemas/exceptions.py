@@ -42,5 +42,4 @@ class UserNotFoundResponse(HMBaseModel):
 class ConflictExceptionResponse(BaseModel):
     detail: str = Field(
         description='Detalhe do conflito ocorrido.',
-        example='O recurso já existe ou há um conflito com outro recurso.'
-    )
+        example='O recurso já existe ou há um conflito com outro recurso.')

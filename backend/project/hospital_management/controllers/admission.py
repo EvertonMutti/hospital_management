@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Path
-from starlette.status import (HTTP_204_NO_CONTENT, HTTP_201_CREATED,
-                              HTTP_401_UNAUTHORIZED, HTTP_404_NOT_FOUND, HTTP_409_CONFLICT,
-                              HTTP_503_SERVICE_UNAVAILABLE)
+from starlette.status import (HTTP_201_CREATED, HTTP_204_NO_CONTENT,
+                              HTTP_401_UNAUTHORIZED, HTTP_404_NOT_FOUND,
+                              HTTP_409_CONFLICT, HTTP_503_SERVICE_UNAVAILABLE)
 
 from project.application.service.bed import BedService
 from project.hospital_management.controllers.dependencies.api_check import \
@@ -11,8 +11,8 @@ from project.hospital_management.controllers.dependencies.checks import \
 from project.hospital_management.controllers.dependencies.dependencies import \
     get_bed_service
 from project.shared.schemas.exceptions import (
-    ConflictExceptionResponse, NotFoundExceptionResponse, ServiceUnavailableExceptionResponse,
-    UnauthorizedExceptionResponse)
+    ConflictExceptionResponse, NotFoundExceptionResponse,
+    ServiceUnavailableExceptionResponse, UnauthorizedExceptionResponse)
 
 router = APIRouter()
 TAX_NUMBER_DESCRIPTION = 'Número de identificação único'

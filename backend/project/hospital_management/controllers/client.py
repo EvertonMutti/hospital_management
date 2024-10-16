@@ -1,6 +1,7 @@
 import logging
+from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Body, Depends
 from starlette.status import (HTTP_201_CREATED, HTTP_400_BAD_REQUEST,
                               HTTP_401_UNAUTHORIZED, HTTP_404_NOT_FOUND,
                               HTTP_503_SERVICE_UNAVAILABLE)
@@ -56,7 +57,37 @@ async def signup(user: ClientInput,
                      'model': ServiceUnavailableExceptionResponse
                  }
              })
-async def login(login: Login,
+async def login(login: Annotated[
+    Login,
+    Body(openapi_examples={
+        "admin": {
+            "summary": "Exemplo de admin",
+            "description":
+            "Este é um exemplo de login para um **administrador**, que tem acesso total ao sistema.",
+            "value": {
+                "email": "carlos.admin@example.com",
+                "password": "admin123"
+            }
+        },
+        "nurse": {
+            "summary": "Exemplo de enfermeira",
+            "description":
+            "Este é um exemplo de login para uma **enfermeira**, que pode acessar informações de pacientes e realizar tarefas administrativas.",
+            "value": {
+                "email": "juliana.nurse@example.com",
+                "password": "nurse123"
+            }
+        },
+        "cleanner": {
+            "summary": "Exemplo de faxineiro",
+            "description":
+            "Este é um exemplo de login para um **faxineiro**, que tem acesso limitado para realizar suas atividades de limpeza.",
+            "value": {
+                "email": "fernando.cleaner@example.com",
+                "password": "cleaner123"
+            }
+        }
+    }, )],
                 client_service: ClientService = Depends(get_client_service)):
     logger.info(f"Login requested for username: {login.email}")
     token = client_service.login(login)

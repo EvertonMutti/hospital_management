@@ -73,6 +73,7 @@ class Hospital(Base):
     clients = relationship('Client',
                            secondary=client_hospital,
                            back_populates='hospitals')
+    patients = relationship('Patient', back_populates='hospital')
 
 
 class Patient(Base):
@@ -81,8 +82,10 @@ class Patient(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     tax_number = Column(String(14), unique=True)
+    hospital_id = Column(Integer, ForeignKey('hospital.id'), nullable=False)
 
     admissions = relationship('Admission', back_populates='patient')
+    hospital = relationship('Hospital', back_populates='patients')
 
 
 class Sector(Base):

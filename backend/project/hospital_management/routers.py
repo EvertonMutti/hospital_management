@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from project.hospital_management.controllers import (admission,
                                                      average_free_time, bed,
                                                      client, docs, hospital,
-                                                     sector)
+                                                     patient, sector)
 
 router = APIRouter()
 
@@ -17,3 +17,4 @@ router.include_router(bed.router, prefix="/bed", tags=['Bed'])
 router.include_router(admission.router, prefix="", tags=['Admission'])
 router.include_router(sector.router, prefix="/sector", tags=['Sector'])
 router.include_router(hospital.router, prefix="/hospitals", tags=['Hospital'])
+router.include_router(patient.router, prefix="/patients", tags=['Patients'])
