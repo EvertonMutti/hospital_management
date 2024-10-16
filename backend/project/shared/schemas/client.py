@@ -1,6 +1,7 @@
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pycpfcnpj import cpf
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 
 class ClientInput(BaseModel):
@@ -8,19 +9,27 @@ class ClientInput(BaseModel):
     password: str = Field(...,
                           description="A senha do cliente.",
                           example="s3cr3tP@ssw0rd")
-    email: str = Field(...,
-                       description="O endereço de e-mail do cliente.",
-                       example="joaodasilva@example.com")
+    email: EmailStr = Field(...,
+                            description="O endereço de e-mail do cliente.",
+                            example="joaodasilva@example.com")
     phone: str = Field(...,
                        description="O número de telefone.",
                        example="71984659415")
     tax_number: str = Field(
         ...,
         description="O número de identificação único do cliente.",
-        examples=["53071916000", '12745866000100'])
+        examples=["72166670695", '54286704360'])
     hospital_unique_code: str = Field(...,
                                       description="Código único do hospital",
                                       example="abcd1234")
+
+    @field_validator('tax_number')
+    def validate_tax_number(cls, value):
+        if not cpf.validate(value):
+            raise ValueError(
+                'O número de identificação deve ter 11 dígitos (CPF) ou 14 dígitos (CNPJ).'
+            )
+        return value
 
 
 class ClientResponse(BaseModel):

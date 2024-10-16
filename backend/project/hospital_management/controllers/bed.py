@@ -2,21 +2,24 @@ import logging
 
 from fastapi import APIRouter, Depends, Path
 from starlette.status import (HTTP_200_OK, HTTP_201_CREATED,
-                              HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND, HTTP_401_UNAUTHORIZED,
-                              HTTP_503_SERVICE_UNAVAILABLE)
+                              HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED,
+                              HTTP_404_NOT_FOUND, HTTP_503_SERVICE_UNAVAILABLE)
 
 from project.application.service.bed import BedService
-from project.hospital_management.controllers.dependencies.api_check import verify_api_key
+from project.hospital_management.controllers.dependencies.api_check import \
+    verify_api_key
 from project.hospital_management.controllers.dependencies.checks import \
     check_cnpj
 from project.hospital_management.controllers.dependencies.dependencies import \
     get_bed_service
-from project.hospital_management.controllers.dependencies.verify_token import verify_token
+from project.hospital_management.controllers.dependencies.verify_token import \
+    verify_token
 from project.shared.schemas.bed import (Bed, BedCreate, BedStatusModel,
                                         BedUpdate, SectorResponse)
 from project.shared.schemas.client import VerifyClientResponse
 from project.shared.schemas.exceptions import (
-    UnauthorizedExceptionResponse, NotFoundExceptionResponse, ServiceUnavailableExceptionResponse)
+    NotFoundExceptionResponse, ServiceUnavailableExceptionResponse,
+    UnauthorizedExceptionResponse)
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -25,7 +28,8 @@ TAX_NUMBER_DESCRIPTION = 'Número de identificação único'
 
 @router.get('/{tax_number}',
             status_code=HTTP_200_OK,
-            dependencies=[Depends(check_cnpj), Depends(verify_api_key)],
+            dependencies=[Depends(check_cnpj),
+                          Depends(verify_api_key)],
             response_model=list[SectorResponse],
             responses={
                 HTTP_401_UNAUTHORIZED: {
@@ -51,12 +55,13 @@ async def get_beds_grouped_by_sector(
 
 @router.post('/{tax_number}',
              status_code=HTTP_201_CREATED,
-             dependencies=[Depends(check_cnpj), Depends(verify_api_key)],
+             dependencies=[Depends(check_cnpj),
+                           Depends(verify_api_key)],
              response_model=Bed,
              responses={
                  HTTP_401_UNAUTHORIZED: {
-                    'model': UnauthorizedExceptionResponse,
-                },
+                     'model': UnauthorizedExceptionResponse,
+                 },
                  HTTP_503_SERVICE_UNAVAILABLE: {
                      'model': ServiceUnavailableExceptionResponse,
                  }
@@ -74,7 +79,8 @@ async def create_bed(bed_create: BedCreate,
 
 @router.get('/status/count/{tax_number}',
             status_code=HTTP_200_OK,
-            dependencies=[Depends(check_cnpj), Depends(verify_api_key)],
+            dependencies=[Depends(check_cnpj),
+                          Depends(verify_api_key)],
             response_model=BedStatusModel,
             responses={
                 HTTP_401_UNAUTHORIZED: {
@@ -99,7 +105,8 @@ async def count_beds_by_status(
 
 @router.get('/{tax_number}/{bed_id}',
             status_code=HTTP_200_OK,
-            dependencies=[Depends(check_cnpj), Depends(verify_api_key)],
+            dependencies=[Depends(check_cnpj),
+                          Depends(verify_api_key)],
             response_model=Bed,
             responses={
                 HTTP_401_UNAUTHORIZED: {
@@ -120,12 +127,13 @@ async def get_bed(bed_id: int,
                                          max_length=14),
                   bed_service: BedService = Depends(get_bed_service)):
     logger.info(f"Request to get bed with id: {bed_id}")
-    return bed_service.get_bed(bed_id)
+    return bed_service.get_bed_by_id_and_tax_number(bed_id)
 
 
 @router.put('/{tax_number}/{bed_id}',
             status_code=HTTP_200_OK,
-            dependencies=[Depends(check_cnpj), Depends(verify_api_key)],
+            dependencies=[Depends(check_cnpj),
+                          Depends(verify_api_key)],
             response_model=Bed,
             responses={
                 HTTP_401_UNAUTHORIZED: {
@@ -138,25 +146,29 @@ async def get_bed(bed_id: int,
                     'model': ServiceUnavailableExceptionResponse,
                 }
             })
-async def update_bed(bed_id: int,
-                     bed_update: BedUpdate,
-                     tax_number: str = Path(...,
-                                            title="CNPJ",
-                                            description=TAX_NUMBER_DESCRIPTION,
-                                            min_length=14,
-                                            max_length=14),
-                     bed_service: BedService = Depends(get_bed_service), user: VerifyClientResponse = Depends(verify_token),):
+async def update_bed(
+        bed_id: int,
+        bed_update: BedUpdate,
+        tax_number: str = Path(...,
+                               title="CNPJ",
+                               description=TAX_NUMBER_DESCRIPTION,
+                               min_length=14,
+                               max_length=14),
+        bed_service: BedService = Depends(get_bed_service),
+        user: VerifyClientResponse = Depends(verify_token),
+):
     logger.info(f"Request to update bed with id: {bed_id}")
     return bed_service.update_bed(bed_id, bed_update)
 
 
 @router.delete('/{tax_number}/{bed_id}',
                status_code=HTTP_204_NO_CONTENT,
-               dependencies=[Depends(check_cnpj), Depends(verify_api_key)],
+               dependencies=[Depends(check_cnpj),
+                             Depends(verify_api_key)],
                responses={
                    HTTP_401_UNAUTHORIZED: {
-                    'model': UnauthorizedExceptionResponse,
-                },
+                       'model': UnauthorizedExceptionResponse,
+                   },
                    HTTP_404_NOT_FOUND: {
                        'model': NotFoundExceptionResponse,
                    },

@@ -1,9 +1,14 @@
 import logging
+from datetime import datetime
 
 from sqlalchemy.orm import Session
 
+from project.shared.datasource.admission import \
+    AdmissionDataSource  # type: ignore
 from project.shared.datasource.bed import BedDataSource
-from project.shared.exceptions.exceptions import (BedNotFoundException,
+from project.shared.entities.entities import Admission
+from project.shared.enum.enums import BedStatus
+from project.shared.exceptions.exceptions import (BedNotFoundException, ConflictException,
                                                   ServiceUnavailableException)
 from project.shared.schemas.bed import BedCreate, BedUpdate
 
@@ -12,9 +17,12 @@ logger = logging.getLogger(__name__)
 
 class BedService:
 
-    def __init__(self, session: Session, bed_data_source: BedDataSource):
+    def __init__(self, session: Session, bed_data_source: BedDataSource,
+                 admission_data_source: AdmissionDataSource):
         self.db = session
         self.bed_data_source: BedDataSource = bed_data_source(session)
+        self.admission_data_source: AdmissionDataSource = admission_data_source(
+            session)
 
     def count_beds_by_status(self):
         try:
@@ -44,9 +52,10 @@ class BedService:
             logger.error(f"Error creating bed: {e}")
             raise ServiceUnavailableException()
 
-    def get_bed(self, bed_id: int):
+    def get_bed_by_id_and_tax_number(self, bed_id: int, tax_number: str):
         try:
-            bed = self.bed_data_source.get_bed_by_id(bed_id)
+            bed = self.bed_data_source.get_bed_by_id_and_tax_number(
+                bed_id, tax_number)
             if not bed:
                 raise BedNotFoundException(f"Bed with id {bed_id} not found")
             logger.info(f"Fetched bed: {bed}")
@@ -57,9 +66,9 @@ class BedService:
             logger.error(f"Error fetching bed: {e}")
             raise ServiceUnavailableException()
 
-    def update_bed(self, bed_id: int, bed_update: BedUpdate):
+    def update_bed(self, bed_id: int, tax_number: str, bed_update: BedUpdate):
         try:
-            bed = self.get_bed(bed_id)
+            bed = self.get_bed_by_id_and_tax_number(bed_id, tax_number)
             bed_updated = self.bed_data_source.update_bed(bed, bed_update)
             logger.info(f"Updated bed: {bed}")
             return bed_updated
@@ -69,13 +78,59 @@ class BedService:
             logger.error(f"Error updating bed: {e}")
             raise
 
-    def delete_bed(self, bed_id: int):
+    def delete_bed(self, bed_id: int, tax_number: str):
         try:
-            bed = self.get_bed(bed_id)
+            bed = self.get_bed_by_id_and_tax_number(bed_id, tax_number)
             self.bed_data_source.delete_bed(bed)
             logger.info(f"Deleted bed with id: {bed_id}")
         except BedNotFoundException:
             raise
         except Exception as e:
             logger.error(f"Error deleting bed: {e}")
+            raise
+
+    def admit_patient(self, bed_id: int, tax_number: str, patient_id: int):
+        try:
+            bed = self.get_bed_by_id_and_tax_number(bed_id, tax_number)
+            if bed.status == BedStatus.OCCUPIED:
+                raise ConflictException(f"Bed {bed_id} is already occupied")
+
+            admission = Admission(patient_id=patient_id, bed_id=bed_id)
+            self.db.add(admission)
+
+            bed.status = BedStatus.OCCUPIED
+            self.db.add(bed)
+            self.db.commit()
+
+            logger.info(f"Patient {patient_id} admitted to bed {bed_id}")
+            return admission
+        except ConflictException:
+            raise
+        except Exception as e:
+            logger.error(f"Error admitting patient: {e}")
+            raise
+
+    def discharge_patient(self, bed_id: int, tax_number: str) -> Admission:
+        try:
+            admission = self.admission_data_source.get_open_admission_by_bed_id(
+                bed_id, tax_number)
+            if not admission or admission.discharge_date:
+                raise BedNotFoundException(
+                    "Admission not found or already discharged")
+
+            admission.discharge_date = datetime.now()
+
+            bed = self.get_bed_by_id_and_tax_number(admission.bed_id,
+                                                    tax_number)
+            bed.status = BedStatus.FREE
+
+            self.db.add(admission)
+            self.db.add(bed)
+            self.db.commit()
+            logger.info(
+                f"Patient {admission.patient_id} discharged from bed {admission.bed_id}"
+            )
+            return admission
+        except Exception as e:
+            logger.error(f"Error discharging patient: {e}")
             raise
