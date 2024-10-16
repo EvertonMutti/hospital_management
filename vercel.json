@@ -1,0 +1,15 @@
+{
+    "devCommand": "uvicorn main:app --host 0.0.0.0 --port 3000",
+    "builds": [
+      {
+        "src": "backend/project/hospital_management/main.py",
+        "use": "@vercel/python"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "backend/project/hospital_management/main.py"
+      }
+    ]
+  }
