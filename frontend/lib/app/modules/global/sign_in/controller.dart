@@ -21,11 +21,17 @@ class SignInController extends GetxController {
   var passwordError = ''.obs;
 
   final phoneController = TextEditingController();
+  var phoneError = ''.obs;
   final taxNumberController = TextEditingController();
+  var taxNumberError = ''.obs;
   final uniqueCodeController = TextEditingController();
+  var uniqueCodeError = ''.obs;
   final signUpPasswordController = TextEditingController();
+  var signUpEmailError = ''.obs;
   final fullNameController = TextEditingController();
+  var fullNameError = ''.obs;
   final signUpEmailController = TextEditingController();
+  var signUpPasswordError = ''.obs;
 
   final isSignUpFormVisible = false.obs;
 
