@@ -1,0 +1,30 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Python: FastAPI",
+        "type": "python",
+        "request": "launch",
+        "module": "uvicorn",
+        "args": [
+        "project.hospital_management.main:app",
+        "--host", "0.0.0.0",
+        "--port", "8000",
+        "--reload"
+      ],
+        "env": {
+          "ENV_FILE": ".env"
+        },
+      },
+      {
+        "name": "Python: Insert Records",
+        "type": "python",
+        "request": "launch",
+        "program": "${workspaceFolder}/records/main.py",
+        "console": "integratedTerminal",
+        "env": {
+          "ENV_FILE": ".env"
+        }
+      }
+    ]
+  }

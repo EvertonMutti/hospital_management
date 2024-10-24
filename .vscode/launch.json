@@ -1,0 +1,51 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "frontend (mobile - Pixel emulator)",
+            "cwd": "frontend",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "deviceId": "emulator-5554", // ID padrão do emulador Pixel
+            "args": [
+                "--dart-define-from-file=.app_config/dev.json"
+            ]
+        },
+        {
+            "name": "frontend (web - Chrome)",
+            "cwd": "frontend",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "chrome", // Executa no navegador Chrome
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define-from-file=.app_config/dev.json"
+            ]
+        },
+        {
+            "name": "frontend (profile mode - Pixel emulator)",
+            "cwd": "frontend",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "deviceId": "emulator-5554", // ID padrão do emulador Pixel
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define-from-file=.app_config/dev.json"
+            ]
+        },
+        {
+            "name": "frontend (release mode - Pixel emulator)",
+            "cwd": "frontend",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "deviceId": "emulator-5554", // ID padrão do emulador Pixel
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define-from-file=.app_config/dev.json"
+            ]
+        }
+    ]
+}
