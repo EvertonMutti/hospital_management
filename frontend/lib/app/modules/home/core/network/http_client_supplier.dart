@@ -13,6 +13,7 @@ class HttpClientHome {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Accept': "*/*",
+        'api-key': Enviroment.apiKey,
       },
     ),
   );

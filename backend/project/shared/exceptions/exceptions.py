@@ -96,5 +96,5 @@ class BadRequestException(HTTPException):
 
 class ConflictException(HTTPException):
 
-    def __init__(self, detail: str = "Conflict occurred"):
+    def __init__(self, detail: str = "Conflito Ocorreu"):
         super().__init__(status_code=HTTP_409_CONFLICT, detail=detail)

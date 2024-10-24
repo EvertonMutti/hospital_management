@@ -87,7 +87,11 @@ class ClientService():
             token = create_acess_token({
                 'id': client.id,
                 'email': client.email,
-                'name': client.name,
+                'username': client.name,
+                'phone': client.phone,
+                'tax_number': client.tax_number,
+                'position': client.position.value,
+                'permission': client.permission.value,
             })
             logger.info(f"Login successful for email: {login.email}")
             return TokenResponse(sub=token)
@@ -99,7 +103,7 @@ class ClientService():
                 f"Login failed due to invalid credentials for email: {login.email}"
             )
             raise
-        except Exception:
+        except Exception as error:
             raise ServiceUnavailableException()
 
     def update_client(self, client_id: int,
@@ -112,6 +116,8 @@ class ClientService():
             client.password = get_password_hash(client_data.password)
             client.tax_number = client_data.tax_number
             client.phone = client_data.phone
+            
+            self.db.add(client)
 
             self.db.commit()
             self.db.refresh(client)

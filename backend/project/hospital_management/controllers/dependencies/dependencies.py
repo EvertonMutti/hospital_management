@@ -57,12 +57,15 @@ def get_client_service(db: Session = Depends(get_session),
 
 
 @lru_cache
-def get_bed_service(db: Session = Depends(get_session),
-                    bed_data_source: BedDataSource = Depends(
-                        get_bed_datasource),
-                    admission_data_source: BedDataSource = Depends(
-                        get_admission_datasource)) -> ClientService:
-    return BedService(db, bed_data_source, admission_data_source)
+def get_bed_service(
+        db: Session = Depends(get_session),
+        bed_data_source: BedDataSource = Depends(get_bed_datasource),
+        admission_data_source: AdmissionDataSource = Depends(
+            get_admission_datasource),
+        sector_data_source: SectorDataSource = Depends(get_sector_datasource)
+) -> ClientService:
+    return BedService(db, bed_data_source, admission_data_source,
+                      sector_data_source)
 
 
 @lru_cache
@@ -70,8 +73,9 @@ def get_sector_service(db: Session = Depends(get_session),
                        sector_data_source: SectorDataSource = Depends(
                            get_sector_datasource),
                        hospital_data_source: HospitalDataSource = Depends(
-                           get_hospital_datasource)) -> SectorService:
-    return SectorService(db, sector_data_source, hospital_data_source)
+                           get_hospital_datasource),
+                       bed_datasource: BedDataSource = Depends(get_bed_datasource)) -> SectorService:
+    return SectorService(db, sector_data_source, hospital_data_source, bed_datasource)
 
 
 @lru_cache

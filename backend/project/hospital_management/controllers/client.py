@@ -15,9 +15,10 @@ from project.hospital_management.controllers.dependencies.verify_token import \
     verify_token
 from project.shared.schemas.client import (ClientInput, ClientResponse, Login,
                                            TokenResponse, UpdateClient,
-                                           VerifyClientResponse)
+                                           VerifyClientResponse,
+                                           login_openapi_examples)
 from project.shared.schemas.exceptions import (
-    NotFoundExceptionResponse, ServiceUnavailableExceptionResponse,
+    BadRequestExceptionResponse, NotFoundExceptionResponse, ServiceUnavailableExceptionResponse,
     UnauthorizedExceptionResponse, UserAlreadyExistsResponse,
     UserNotFoundResponse)
 
@@ -51,44 +52,19 @@ async def signup(user: ClientInput,
              response_model=TokenResponse,
              responses={
                  HTTP_400_BAD_REQUEST: {
+                     'model': BadRequestExceptionResponse
+                 },
+                 HTTP_404_NOT_FOUND: {
                      'model': UserNotFoundResponse
                  },
                  HTTP_503_SERVICE_UNAVAILABLE: {
                      'model': ServiceUnavailableExceptionResponse
                  }
              })
-async def login(login: Annotated[
-    Login,
-    Body(openapi_examples={
-        "admin": {
-            "summary": "Exemplo de admin",
-            "description":
-            "Este é um exemplo de login para um **administrador**, que tem acesso total ao sistema.",
-            "value": {
-                "email": "carlos.admin@example.com",
-                "password": "admin123"
-            }
-        },
-        "nurse": {
-            "summary": "Exemplo de enfermeira",
-            "description":
-            "Este é um exemplo de login para uma **enfermeira**, que pode acessar informações de pacientes e realizar tarefas administrativas.",
-            "value": {
-                "email": "juliana.nurse@example.com",
-                "password": "nurse123"
-            }
-        },
-        "cleanner": {
-            "summary": "Exemplo de faxineiro",
-            "description":
-            "Este é um exemplo de login para um **faxineiro**, que tem acesso limitado para realizar suas atividades de limpeza.",
-            "value": {
-                "email": "fernando.cleaner@example.com",
-                "password": "cleaner123"
-            }
-        }
-    }, )],
-                client_service: ClientService = Depends(get_client_service)):
+async def login(
+    login: Annotated[Login,
+                     Body(openapi_examples=login_openapi_examples, )],
+    client_service: ClientService = Depends(get_client_service)):
     logger.info(f"Login requested for username: {login.email}")
     token = client_service.login(login)
     return token

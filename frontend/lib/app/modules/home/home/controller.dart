@@ -1,31 +1,80 @@
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hospital_management/app/modules/global/core/model/notification.dart';
+import 'package:hospital_management/app/core/global_widgets/snackbar.dart';
+import 'package:hospital_management/app/modules/global/core/model/notification.dart' as app_notification;
+import 'package:hospital_management/app/modules/home/core/model/bed.dart';
 import 'package:hospital_management/app/modules/home/repository.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart'; 
 
-class HomeController extends GetxController {
+class HomeController extends GetxController with WidgetsBindingObserver {
   HomeRepository repository;
 
   HomeController({required this.repository});
 
+  Rx<CountBed> countBed = CountBed().obs;
+  set setCountBed(CountBed value) => countBed.value = value;
+
+  final RxBool loading = false.obs;
+  bool get getLoading => loading.value;
+  set setLoading(bool status) => loading.value = status;
+
+  int get totalBeds =>
+      (countBed.value.free ?? 0) +
+      (countBed.value.occupied ?? 0) +
+      (countBed.value.maintenance ?? 0) +
+      (countBed.value.cleaning ?? 0) +
+      (countBed.value.cleaningRequired ?? 0);
+
   @override
-  Future<void> onReady() async {
-    super.onReady();
-    await fetchDataNotification();
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      setLoading = true;
+      _fetchData(); 
+      setLoading = false;
+    }
   }
 
-  //Beds
-  final RxInt leitosEmUso = 50.obs;
-  final RxInt leitosLivres = 25.obs;
-  final RxInt leitosManutencao = 25.obs;
-  
+  @override
+  Future<void> onInit() async {
+    setLoading = true;
+    super.onInit();
+  }
+
+  @override
+  Future<void> onReady() async {
+    setLoading = true;
+    super.onReady();
+    await fetchDataNotification();
+    await _fetchData();
+    setLoading = false;
+  }
+
+  Future<void> _fetchData() async {
+    try {
+      final response = await repository.getCountBeds();
+
+      if (response.status!) {
+        setCountBed = response;
+      }
+    } catch (e) {
+      SnackBarApp.body('Ops', 'Não foi possível carregar os leitos');
+    }
+  }
+
+  double calculatePercentage(double value) {
+    if (totalBeds == 0) return 0;
+    return (value / totalBeds) * 100;
+  }
+
 
   //Notifications
   final RxInt notificationCount = 0.obs;
-  var notifications = <Notification>[].obs;
+  var notifications = <app_notification.Notification>[].obs;
 
-  void addNotification(Notification notification) {
+  void addNotification(app_notification.Notification notification) {
     notifications.add(notification);
     notificationCount.value = notifications.length;
   }
@@ -44,35 +93,35 @@ class HomeController extends GetxController {
     await Future.delayed(const Duration(seconds: 1)); 
 
     var fetchedNotifications = [
-      Notification(
+      app_notification.Notification(
         id:1,
         title: 'Atualização de Status',
         body: 'O leito 101 agora está livre.',
-        date: DateTime.now().subtract(Duration(days: 0)), // Hoje
+        date: DateTime.now().subtract(const Duration(days: 0)), // Hoje
       ),
-      Notification(
+      app_notification.Notification(
         id:2,
         title: 'Novo Paciente',
         body: 'Um novo paciente foi admitido no leito 102.',
-        date: DateTime.now().subtract(Duration(days: 1)), // Ontem
+        date: DateTime.now().subtract(const Duration(days: 1)), // Ontem
       ),
-      Notification(
+      app_notification.Notification(
         id:3,
         title: 'Manutenção Programada',
         body: 'Manutenção programada para o leito 103.',
-        date: DateTime.now().subtract(Duration(days: 3)), // 3 dias atrás
+        date: DateTime.now().subtract(const Duration(days: 3)), // 3 dias atrás
       ),
-      Notification(
+      app_notification.Notification(
         id:4,
         title: 'Alta Médica',
         body: 'O paciente do leito 104 teve alta.',
-        date: DateTime.now().subtract(Duration(days: 7)), // 7 dias atrás
+        date: DateTime.now().subtract(const Duration(days: 7)), // 7 dias atrás
       ),
-      Notification(
+      app_notification.Notification(
         id:5,
         title: 'Aviso de Segurança',
         body: 'Verificação de rotina de segurança no hospital.',
-        date: DateTime.now().subtract(Duration(days: 10)), // 10 dias atrás
+        date: DateTime.now().subtract(const Duration(days: 10)), // 10 dias atrás
       ),
     ];
 
@@ -110,10 +159,7 @@ class HomeController extends GetxController {
 
   final RxInt selectedSection = (-1).obs;
 
-  double get chartSize => isChartExpanded.value ? 220 : 200;
+  double get chartSize => isChartExpanded.value ? 220 : 200; // container
 
-  double get pieSectionRadius => isChartExpanded.value ? 60 : 40;
-
-  double get centerSpaceRadius => isChartExpanded.value ? 50 : 30;
-  // Pie Chart
+  double get centerSpaceRadius => isChartExpanded.value ? 50 : 30; // circulo do meio
 }

@@ -35,8 +35,7 @@ class ClientDataSource():
         self.db.commit()
 
     def get_client_by_email(self, email: str) -> Optional[Client]:
-        query = select(Client.__table__).where((Client.email == email))
-        return self.db.execute(query).first()
+        return self.db.query(Client).filter(Client.email == email).first()
 
     def get_client_by_id(self, id: str) -> Optional[Client]:
         return self.db.query(Client).filter(Client.id == id).first()

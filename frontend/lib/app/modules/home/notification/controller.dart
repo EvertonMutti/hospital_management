@@ -47,31 +47,31 @@ class NotificationController extends GetxController {
         id:1,
         title: 'Atualização de Status',
         body: 'O leito 101 agora está livre.',
-        date: DateTime.now().subtract(Duration(days: 0)), // Hoje
+        date: DateTime.now().subtract(const Duration(days: 0)),
       ),
       Notification(
         id:2,
         title: 'Novo Paciente',
         body: 'Um novo paciente foi admitido no leito 102.',
-        date: DateTime.now().subtract(Duration(days: 1)), // Ontem
+        date: DateTime.now().subtract(const Duration(days: 1)),
       ),
       Notification(
         id:3,
         title: 'Manutenção Programada',
         body: 'Manutenção programada para o leito 103.',
-        date: DateTime.now().subtract(Duration(days: 3)), // 3 dias atrás
+        date: DateTime.now().subtract(const Duration(days: 3)),
       ),
       Notification(
         id:4,
         title: 'Alta Médica',
         body: 'O paciente do leito 104 teve alta.',
-        date: DateTime.now().subtract(Duration(days: 7)), // 7 dias atrás
+        date: DateTime.now().subtract(const Duration(days: 7)), 
       ),
       Notification(
         id:5,
         title: 'Aviso de Segurança',
         body: 'Verificação de rotina de segurança no hospital.',
-        date: DateTime.now().subtract(Duration(days: 10)), // 10 dias atrás
+        date: DateTime.now().subtract(const Duration(days: 10)), 
       ),
     ];
 

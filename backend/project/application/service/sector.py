@@ -3,10 +3,11 @@ from typing import List
 
 from sqlalchemy.orm import Session
 
+from project.shared.datasource.bed import BedDataSource
 from project.shared.datasource.hospital import HospitalDataSource
 from project.shared.datasource.sector import SectorDataSource
 from project.shared.entities.entities import Sector
-from project.shared.exceptions.exceptions import (SectorNotFoundException,
+from project.shared.exceptions.exceptions import (ConflictException, SectorNotFoundException,
                                                   ServiceUnavailableException)
 from project.shared.schemas.sector import SectorCreate, SectorUpdate
 
@@ -16,18 +17,17 @@ logger = logging.getLogger(__name__)
 class SectorService:
 
     def __init__(self, session: Session, sector_data_source: SectorDataSource,
-                 hospital: HospitalDataSource):
+                 hospital: HospitalDataSource, bed_data_source: BedDataSource):
         self.db = session
         self.sector_data_source: SectorDataSource = sector_data_source(session)
         self.hospital: HospitalDataSource = hospital(session)
+        self.bed_data_source: BedDataSource = bed_data_source(session)
 
     def get_all_sectors(self, tax_number: str) -> List[Sector]:
         try:
             sectors = self.sector_data_source.get_all_sectors(tax_number)
             logger.info(f"Fetched all sectors: {sectors}")
             return sectors
-        except SectorNotFoundException:
-            raise
         except Exception as e:
             logger.error(f"Error fetching all sectors: {e}")
             raise ServiceUnavailableException()
@@ -75,6 +75,8 @@ class SectorService:
         try:
             sector = self.get_sector_by_id_and_tax_number(
                 sector_id, tax_number)
+            if (self.bed_data_source.get_beds_by_sector(tax_number, sector_id)):
+                raise ConflictException("Não é possível excluir o setor com leitos atribuídos ao mesmo.")
             self.sector_data_source.delete_sector(sector)
             logger.info(f"Deleted sector with id: {sector_id}")
         except SectorNotFoundException:

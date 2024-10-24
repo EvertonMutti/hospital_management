@@ -28,8 +28,10 @@ class SignInController extends GetxController {
   }
 
   @override
-  void onClose() {
-    super.onClose();
+  void onInit() {
+    super.onInit();
+    emailController.text = 'carlos.admin@example.com';
+    passwordController.text = 'admin123';
   }
 
   Future<bool> formValidator() async {
@@ -63,9 +65,11 @@ class SignInController extends GetxController {
             "Sucesso",
             "Login realizado com sucesso!",
           );
-          Get.offAllNamed(Routes.home);
+          if (await getHospital()){
+            Get.offAllNamed(Routes.home);
+          }
         } else {
-          SnackBarApp.body("Ops!", "Email ou senha inválidos.",
+          SnackBarApp.body("Ops!", response.detail!,
               icon: FontAwesomeIcons.xmark);
         }
       } catch (e) {
@@ -76,6 +80,21 @@ class SignInController extends GetxController {
         loading.value = false;
       }
     }
+  }
+
+  Future<bool> getHospital() async {
+    var hospitalResponse = await signInRepository.getHospital();
+    if (hospitalResponse.status!) {
+      if (hospitalResponse.data!.isNotEmpty &&
+          hospitalResponse.data!.length == 1) {
+        AuthService.to.setHospital(hospitalResponse.data![0]);
+        return true;
+      }
+    } else {
+      SnackBarApp.body("Ops!", hospitalResponse.detail!,
+          icon: FontAwesomeIcons.xmark);
+    }
+    return false;
   }
 
   Future<void> logout() async {

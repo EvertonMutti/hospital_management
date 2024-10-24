@@ -4,5 +4,6 @@ class Endpoints {
 
   static String login = "/client/login";
   static String listBeds = "/bed";
-
+  static String countBeds = "/bed/status/count";
+  static String listHospitals = "/hospitals";
 }

@@ -6,10 +6,12 @@ from sqlalchemy.orm import Session
 from project.shared.datasource.admission import \
     AdmissionDataSource  # type: ignore
 from project.shared.datasource.bed import BedDataSource
+from project.shared.datasource.sector import SectorDataSource
 from project.shared.entities.entities import Admission
 from project.shared.enum.enums import BedStatus
 from project.shared.exceptions.exceptions import (BedNotFoundException,
                                                   ConflictException,
+                                                  SectorNotFoundException,
                                                   ServiceUnavailableException)
 from project.shared.schemas.bed import BedCreate, BedUpdate
 
@@ -19,15 +21,17 @@ logger = logging.getLogger(__name__)
 class BedService:
 
     def __init__(self, session: Session, bed_data_source: BedDataSource,
-                 admission_data_source: AdmissionDataSource):
+                 admission_data_source: AdmissionDataSource,
+                 sector_data_source: SectorDataSource):
         self.db = session
         self.bed_data_source: BedDataSource = bed_data_source(session)
         self.admission_data_source: AdmissionDataSource = admission_data_source(
             session)
+        self.sector_data_source: SectorDataSource = sector_data_source(session)
 
-    def count_beds_by_status(self):
+    def count_beds_by_status(self, tax_number: str):
         try:
-            counts = self.bed_data_source.count_beds_by_status()
+            counts = self.bed_data_source.count_beds_by_status(tax_number)
             logger.info(f"Bed counts by status: {counts}")
             return counts
         except Exception as e:
@@ -44,11 +48,17 @@ class BedService:
             logger.error(f"Error fetching beds grouped by sector: {e}")
             raise ServiceUnavailableException()
 
-    def create_bed(self, bed_create: BedCreate):
+    def create_bed(self, bed_create: BedCreate, tax_number: str):
         try:
+            if not self.sector_data_source.get_sector_by_id_and_tax_number(
+                    bed_create.sector_id, tax_number):
+                raise SectorNotFoundException(
+                    f"Sector with id {bed_create.sector_id} not found")
             bed = self.bed_data_source.create_bed(bed_create)
             logger.info(f"Created bed: {bed}")
             return bed
+        except SectorNotFoundException:
+            raise
         except Exception as e:
             logger.error(f"Error creating bed: {e}")
             raise ServiceUnavailableException()
@@ -123,7 +133,7 @@ class BedService:
 
             bed = self.get_bed_by_id_and_tax_number(admission.bed_id,
                                                     tax_number)
-            bed.status = BedStatus.FREE
+            bed.status = BedStatus.CLEANING
 
             self.db.add(admission)
             self.db.add(bed)

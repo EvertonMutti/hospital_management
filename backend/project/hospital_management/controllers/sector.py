@@ -4,7 +4,7 @@ from typing import List
 from fastapi import APIRouter, Depends, Path
 from starlette.status import (HTTP_200_OK, HTTP_201_CREATED,
                               HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED,
-                              HTTP_404_NOT_FOUND, HTTP_503_SERVICE_UNAVAILABLE)
+                              HTTP_404_NOT_FOUND, HTTP_409_CONFLICT, HTTP_503_SERVICE_UNAVAILABLE)
 
 from project.application.service.sector import SectorService
 from project.hospital_management.controllers.dependencies.api_check import \
@@ -17,7 +17,7 @@ from project.hospital_management.controllers.dependencies.verify_token import \
     verify_token
 from project.shared.schemas.client import VerifyClientResponse
 from project.shared.schemas.exceptions import (
-    NotFoundExceptionResponse, ServiceUnavailableExceptionResponse,
+    ConflictExceptionResponse, NotFoundExceptionResponse, ServiceUnavailableExceptionResponse,
     UnauthorizedExceptionResponse)
 from project.shared.schemas.sector import (SectorCreate, SectorResponse,
                                            SectorUpdate)
@@ -32,7 +32,8 @@ TAX_NUMBER_DESCRIPTION = 'Número de identificação único'
     status_code=HTTP_200_OK,
     response_model=List[SectorResponse],
     dependencies=[Depends(check_cnpj),
-                  Depends(verify_api_key)],
+                  Depends(verify_api_key),
+                  Depends(verify_token)],
     responses={
         HTTP_401_UNAUTHORIZED: {
             'model': UnauthorizedExceptionResponse,
@@ -57,7 +58,8 @@ async def get_all_sectors(
 
 @router.post('/{tax_number}',
              dependencies=[Depends(check_cnpj),
-                           Depends(verify_api_key)],
+                           Depends(verify_api_key),
+                           Depends(verify_token)],
              status_code=HTTP_201_CREATED,
              response_model=SectorResponse,
              responses={
@@ -75,7 +77,6 @@ async def create_sector(
                            description=TAX_NUMBER_DESCRIPTION,
                            min_length=14,
                            max_length=14),
-    user: VerifyClientResponse = Depends(verify_token),
     sector_service: SectorService = Depends(get_sector_service)):
     logger.info("Request to create a sector")
     return sector_service.create_sector(sector_create, tax_number)
@@ -83,7 +84,8 @@ async def create_sector(
 
 @router.get('/{tax_number}/{sector_id}',
             dependencies=[Depends(check_cnpj),
-                          Depends(verify_api_key)],
+                          Depends(verify_api_key),
+                          Depends(verify_token)],
             status_code=HTTP_200_OK,
             response_model=SectorResponse,
             responses={
@@ -112,7 +114,8 @@ async def get_sector(
 
 @router.put('/{tax_number}/{sector_id}',
             dependencies=[Depends(check_cnpj),
-                          Depends(verify_api_key)],
+                          Depends(verify_api_key),
+                          Depends(verify_token)],
             status_code=HTTP_200_OK,
             response_model=SectorResponse,
             responses={
@@ -141,7 +144,8 @@ async def update_sector(
 
 @router.delete('/{tax_number}/{sector_id}',
                dependencies=[Depends(check_cnpj),
-                             Depends(verify_api_key)],
+                             Depends(verify_api_key),
+                             Depends(verify_token)],
                status_code=HTTP_204_NO_CONTENT,
                responses={
                    HTTP_401_UNAUTHORIZED: {
@@ -149,6 +153,9 @@ async def update_sector(
                    },
                    HTTP_404_NOT_FOUND: {
                        'model': NotFoundExceptionResponse,
+                   },
+                   HTTP_409_CONFLICT: {
+                       'model': ConflictExceptionResponse,
                    },
                    HTTP_503_SERVICE_UNAVAILABLE: {
                        'model': ServiceUnavailableExceptionResponse,

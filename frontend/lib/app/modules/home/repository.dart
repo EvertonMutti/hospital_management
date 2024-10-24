@@ -1,6 +1,8 @@
 
-import 'package:hospital_management/app/modules/home/core/model/supplier_list_model.dart';
+import 'package:hospital_management/app/modules/home/core/model/bed.dart';
 
 abstract class HomeRepository {
-  Future<BedList> consultBeds(int query);
+  Future<ListSectorModel> consultBedsBySector();
+  Future<bool> updateBed(BedModel bed);
+  Future<CountBed> getCountBeds();
 }
