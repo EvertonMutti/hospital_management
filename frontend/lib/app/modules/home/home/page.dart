@@ -17,42 +17,48 @@ class HomePage extends GetView<HomeController> {
         leading: const SizedBox(),
         actions: [
           IconButton(
-            icon: Stack(
-              children: [
-                const Icon(Icons.notifications),
-                Obx(() {
-                  if (controller.notificationCount.value > 0) {
-                    return Positioned(
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(1),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        constraints: const BoxConstraints(
-                          minWidth: 12,
-                          minHeight: 12,
-                        ),
-                        child: Text(
-                          '${controller.notificationCount.value}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 8,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    );
-                  }
-                  return const SizedBox.shrink();
-                }),
-              ],
-            ),
+            icon: const Icon(Icons.assessment, color: Color.fromARGB(255, 99, 94, 94)),
             onPressed: () {
-              Get.toNamed(Routes.notification);
+              Get.toNamed(Routes.report);
             },
           ),
+          // IconButton(
+          //   icon: Stack(
+          //     children: [
+          //       const Icon(Icons.notifications),
+          //       Obx(() {
+          //         if (controller.notificationCount.value > 0) {
+          //           return Positioned(
+          //             right: 0,
+          //             child: Container(
+          //               padding: const EdgeInsets.all(1),
+          //               decoration: BoxDecoration(
+          //                 color: Colors.red,
+          //                 borderRadius: BorderRadius.circular(6),
+          //               ),
+          //               constraints: const BoxConstraints(
+          //                 minWidth: 12,
+          //                 minHeight: 12,
+          //               ),
+          //               child: Text(
+          //                 '${controller.notificationCount.value}',
+          //                 style: const TextStyle(
+          //                   color: Colors.white,
+          //                   fontSize: 8,
+          //                 ),
+          //                 textAlign: TextAlign.center,
+          //               ),
+          //             ),
+          //           );
+          //         }
+          //         return const SizedBox.shrink();
+          //       }),
+          //     ],
+          //   ),
+          //   onPressed: () {
+          //     Get.toNamed(Routes.notification);
+          //   },
+          // ),
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: InkWell(

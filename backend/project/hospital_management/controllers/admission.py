@@ -11,6 +11,7 @@ from project.hospital_management.controllers.dependencies.checks import \
     check_cnpj
 from project.hospital_management.controllers.dependencies.dependencies import \
     get_bed_service, get_client_service
+from project.hospital_management.controllers.dependencies.verify_permissions import verify_nurse_or_admin
 from project.hospital_management.controllers.dependencies.verify_token import \
     verify_token
 from project.shared.enum.enums import PositionEnum, ScopesStatus
@@ -27,7 +28,8 @@ TAX_NUMBER_DESCRIPTION = 'Número de identificação único'
 @router.post('/admission/{tax_number}/{bed_id}/{patient_id}',
              status_code=HTTP_201_CREATED,
              dependencies=[Depends(check_cnpj),
-                           Depends(verify_api_key)],
+                           Depends(verify_api_key),
+                           Depends(verify_nurse_or_admin)],
              responses={
                  HTTP_401_UNAUTHORIZED: {
                      'model': UnauthorizedExceptionResponse,
@@ -47,21 +49,15 @@ async def admit_patient_to_bed(
                            description=TAX_NUMBER_DESCRIPTION,
                            min_length=14,
                            max_length=14),
-    user: VerifyClientResponse = Depends(verify_token),
-    bed_service: BedService = Depends(get_bed_service),
-    client_service: ClientService = Depends(get_client_service)):
-    
-    client = client_service.get_client_by_id(user.id)
-    if client.position == PositionEnum.NURSE or client.permission == ScopesStatus.ADMIN:
-        return bed_service.admit_patient(bed_id, tax_number, patient_id)
-    raise UnauthorizedException(
-        detail='Somente enfermeiros adimitir pacientes') 
+    bed_service: BedService = Depends(get_bed_service),):
+    return bed_service.admit_patient(bed_id, tax_number, patient_id)
 
 
 @router.put('/discharge/{tax_number}/{bed_id}',
             status_code=HTTP_204_NO_CONTENT,
             dependencies=[Depends(check_cnpj),
-                          Depends(verify_api_key)],
+                          Depends(verify_api_key),
+                          Depends(verify_nurse_or_admin)],
             responses={
                 HTTP_401_UNAUTHORIZED: {
                     'model': UnauthorizedExceptionResponse,
@@ -80,13 +76,7 @@ async def discharge_patient(
                            description=TAX_NUMBER_DESCRIPTION,
                            min_length=14,
                            max_length=14),
-    user: VerifyClientResponse = Depends(verify_token),
-    bed_service: BedService = Depends(get_bed_service),
-    client_service: ClientService = Depends(get_client_service)):
+    bed_service: BedService = Depends(get_bed_service)):
+    return bed_service.discharge_patient(bed_id, tax_number)
     
-    client = client_service.get_client_by_id(user.id)
-    if client.position == PositionEnum.NURSE or client.permission == ScopesStatus.ADMIN:
-        bed_service.discharge_patient(bed_id, tax_number)
-    raise UnauthorizedException(
-        detail='Somente enfermeiros podem dar alta aos pacientes')
     

@@ -8,4 +8,5 @@ abstract class Routes {
   static const notification = '/notification';
   static const bedsList = '/beds-list';
   static const patientSelection = '/patient-selection';
+  static const report = '/report';
 }
