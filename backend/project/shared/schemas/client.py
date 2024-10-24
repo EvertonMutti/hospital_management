@@ -22,6 +22,9 @@ class ClientInput(BaseModel):
     hospital_unique_code: str = Field(...,
                                       description="Código único do hospital",
                                       example="abcd1234")
+    position: str = Field(...,
+                          description="Posição do cliente no hospital",
+                          examples=["NURSE", "CLEANER"])
 
     @field_validator('tax_number')
     def validate_tax_number(cls, value):
