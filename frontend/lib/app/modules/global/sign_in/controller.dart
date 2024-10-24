@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:hospital_management/app/core/routes/routes.dart';
+import 'package:hospital_management/app/modules/global/core/model/signup_model.dart';
 
 import '../../../core/global_widgets/snackbar.dart';
 import '../../../core/services/auth.dart';
@@ -18,6 +19,15 @@ class SignInController extends GetxController {
   final passwordController = TextEditingController();
   var emailError = ''.obs;
   var passwordError = ''.obs;
+
+  final phoneController = TextEditingController();
+  final taxNumberController = TextEditingController();
+  final uniqueCodeController = TextEditingController();
+  final signUpPasswordController = TextEditingController();
+  final fullNameController = TextEditingController();
+  final signUpEmailController = TextEditingController();
+
+  final isSignUpFormVisible = false.obs;
 
   final RxBool loading = false.obs;
   bool get getLoading => loading.value;
@@ -65,7 +75,7 @@ class SignInController extends GetxController {
             "Sucesso",
             "Login realizado com sucesso!",
           );
-          if (await getHospital()){
+          if (await getHospital()) {
             Get.offAllNamed(Routes.home);
           }
         } else {
@@ -80,6 +90,62 @@ class SignInController extends GetxController {
         loading.value = false;
       }
     }
+  }
+
+  Future<bool> signUpFormValidator() async {
+    bool isValid = true;
+    emailError.value = '';
+    passwordError.value = '';
+
+    if (signUpEmailController.text.isEmpty ||
+        !GetUtils.isEmail(signUpEmailController.text)) {
+      emailError.value = 'Por favor, insira um email válido';
+      isValid = false;
+    }
+    if (signUpPasswordController.text.isEmpty) {
+      passwordError.value = 'Por favor, insira uma senha';
+      isValid = false;
+    }
+
+    loading.value = false;
+    return isValid;
+  }
+
+  void register() async {
+    loading.value = true;
+    if (await signUpFormValidator()) {
+      try {
+        // Cria o modelo com os dados preenchidos
+        final signupModel = SignupModel(
+          name: fullNameController.text,
+          email: signUpEmailController.text,
+          phone: phoneController.text,
+          taxNumber: taxNumberController.text,
+          hospitalUniqueCode: uniqueCodeController.text,
+          password: signUpPasswordController.text,
+        );
+
+        // Chama o repositório com o modelo criado
+        final response = await signInRepository.registerUser(signupModel);
+
+        if (response.status) {
+          SnackBarApp.body("Sucesso", "Cadastro realizado com sucesso!");
+          toggleSignUpForm(); // Alterna para a tela de login
+        } else {
+          SnackBarApp.body("Ops!", "Falha ao realizar o cadastro.",
+              icon: FontAwesomeIcons.xmark);
+        }
+      } catch (e) {
+        SnackBarApp.body("Ops!", "Não foi possível realizar o cadastro.",
+            icon: FontAwesomeIcons.xmark);
+      } finally {
+        loading.value = false;
+      }
+    }
+  }
+
+  void toggleSignUpForm() {
+    isSignUpFormVisible.value = !isSignUpFormVisible.value;
   }
 
   Future<bool> getHospital() async {

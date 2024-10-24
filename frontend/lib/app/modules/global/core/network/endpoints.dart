@@ -3,6 +3,7 @@ class Endpoints {
   Endpoints._();
 
   static String login = "/client/login";
+  static String signup = "/client/signup";
   static String listBeds = "/bed";
   static String countBeds = "/bed/status/count";
   static String listHospitals = "/hospitals";
