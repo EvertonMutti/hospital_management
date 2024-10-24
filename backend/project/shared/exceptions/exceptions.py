@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from starlette.status import (HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED,
-                              HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND, HTTP_409_CONFLICT,
-                              HTTP_503_SERVICE_UNAVAILABLE)
+                              HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND,
+                              HTTP_409_CONFLICT, HTTP_503_SERVICE_UNAVAILABLE)
 
 
 class UnauthorizedException(HTTPException):
@@ -96,5 +96,5 @@ class BadRequestException(HTTPException):
 
 class ConflictException(HTTPException):
 
-    def __init__(self, detail: str = "Conflict occurred"):
+    def __init__(self, detail: str = "Conflito Ocorreu"):
         super().__init__(status_code=HTTP_409_CONFLICT, detail=detail)

@@ -7,4 +7,5 @@ abstract class Routes {
   static const notFound = '/404';
   static const notification = '/notification';
   static const bedsList = '/beds-list';
+  static const patientSelection = '/patient-selection';
 }

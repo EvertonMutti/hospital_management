@@ -22,7 +22,6 @@ class AdmissionDataSource:
     def get_open_admission_by_bed_id(self, bed_id: int,
                                      tax_number: str) -> Optional[Admission]:
         return (self.db.query(Admission).join(Bed).join(Sector).join(
-                Hospital).filter(Bed.id == bed_id).filter(
+            Hospital).filter(Bed.id == bed_id).filter(
                 Admission.discharge_date.is_(None)).filter(
-                Hospital.tax_number == tax_number)
-                .first())
+                    Hospital.tax_number == tax_number).first())

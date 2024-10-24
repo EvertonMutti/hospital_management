@@ -21,9 +21,10 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-@router.post('/',
+@router.post('',
              status_code=HTTP_201_CREATED,
-             dependencies=[Depends(verify_api_key)],
+             dependencies=[Depends(verify_api_key),
+                           Depends(verify_token)],
              response_model=HospitalResponse,
              responses={
                  HTTP_401_UNAUTHORIZED: {
@@ -43,7 +44,7 @@ async def create_hospital(
     return hospital_response
 
 
-@router.get('/',
+@router.get('',
             dependencies=[Depends(verify_api_key)],
             response_model=list[HospitalResponse],
             responses={
@@ -64,7 +65,8 @@ async def list_hospitals(
 
 
 @router.get('/{unique_code}',
-            dependencies=[Depends(verify_api_key)],
+            dependencies=[Depends(verify_api_key),
+                          Depends(verify_token)],
             response_model=HospitalResponse,
             responses={
                 HTTP_401_UNAUTHORIZED: {

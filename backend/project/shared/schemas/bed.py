@@ -6,7 +6,7 @@ from project.shared.enum.enums import BedStatus
 class BedBase(BaseModel):
     bed_number: str = Field(...,
                             description="O número da cama.",
-                            example="101")
+                            example="C001")
     sector_id: int = Field(...,
                            description="O identificador do setor.",
                            example=1)
@@ -18,7 +18,7 @@ class BedBase(BaseModel):
 class BedCreate(BaseModel):
     bed_number: str = Field(...,
                             description="O número da cama a ser criada.",
-                            example="110")
+                            example="C001")
     sector_id: int = Field(
         ...,
         description="O identificador do setor da cama criada.",
@@ -51,3 +51,4 @@ class BedStatusModel(BaseModel):
     OCCUPIED: int = Field(0, description="Número de leitos ocupados")
     MAINTENANCE: int = Field(0, description="Número de leitos em manutenção")
     CLEANING: int = Field(0, description="Número de leitos em limpeza")
+    CLEANING_REQUIRED: int = Field(0, description="Número de leitos que necessitam de limpeza")

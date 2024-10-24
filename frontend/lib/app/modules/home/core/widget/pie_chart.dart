@@ -31,7 +31,9 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
               ),
             ],
           ),
-          child: Row(
+          child: controller.getLoading
+              ? const Center(child: CircularProgressIndicator()) 
+              : Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Flexible(
@@ -80,6 +82,16 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
                     text: 'Leitos em Manutenção',
                     isSquare: true,
                   ),
+                  Indicator(
+                    color: Colors.blue,
+                    text: 'Leitos em Limpeza',
+                    isSquare: true,
+                  ),
+                  Indicator(
+                    color: Color.fromARGB(255, 26, 110, 150),
+                    text: 'Leitos necessitando de limpeza',
+                    isSquare: true,
+                  ),
                 ],
               ),
             ],
@@ -90,49 +102,75 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
   }
 
   List<PieChartSectionData> showingSections() {
-    return List.generate(3, (i) {
+    return List.generate(5, (i) {
       final isTouched = i == controller.selectedSection.value;
-      final fontSize = isTouched ? 25.0 : 16.0;
-      final radius = isTouched ? 60.0 : 50.0;
+      final fontSize = isTouched ? 20.0 : 12.0;
+      final radius = isTouched ? 50.0 : 40.0;
       const shadows = [Shadow(color: Colors.black, blurRadius: 2)];
 
       switch (i) {
         case 0:
           return PieChartSectionData(
             color: Colors.red,
-            value: controller.leitosEmUso.value.toDouble(),
-            title: '${controller.leitosEmUso.value}%',
+            value: controller.calculatePercentage(controller.countBed.value.occupied!.toDouble()),
+            title: '${controller.calculatePercentage(controller.countBed.value.occupied!.toDouble()).toStringAsFixed(1)}%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: Colors.white,
               shadows: shadows,
             ),
           );
         case 1:
           return PieChartSectionData(
             color: Colors.green,
-            value: controller.leitosLivres.value.toDouble(),
-            title: '${controller.leitosLivres.value}%',
+            value: controller.calculatePercentage(controller.countBed.value.free!.toDouble()),
+            title: '${controller.calculatePercentage(controller.countBed.value.free!.toDouble()).toStringAsFixed(1)}%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color:Colors.white,
               shadows: shadows,
             ),
           );
         case 2:
           return PieChartSectionData(
             color: Colors.yellow,
-            value: controller.leitosManutencao.value.toDouble(),
-            title: '${controller.leitosManutencao.value}%',
+            value: controller.calculatePercentage(controller.countBed.value.maintenance!.toDouble()),
+            title: '${controller.calculatePercentage(controller.countBed.value.maintenance!.toDouble()).toStringAsFixed(1)}%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: Colors.white,
+              shadows: shadows,
+            ),
+          );
+        case 3:
+          return PieChartSectionData(
+            color: const Color.fromARGB(255, 26, 110, 150),
+            value: controller.calculatePercentage(controller.countBed.value.cleaningRequired!.toDouble()),
+            title: '${controller.calculatePercentage(controller.countBed.value.cleaningRequired!.toDouble()).toStringAsFixed(1)}%',
+            radius: radius,
+            titleStyle: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              shadows: shadows,
+            ),
+          );
+        case 4:
+          return PieChartSectionData(
+            color: Colors.blue,
+            value: controller.calculatePercentage(controller.countBed.value.cleaning!.toDouble()),
+            title: '${controller.calculatePercentage(controller.countBed.value.cleaning!.toDouble()).toStringAsFixed(1)}%',
+            radius: radius,
+            titleStyle: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              color:Colors.white,
               shadows: shadows,
             ),
           );

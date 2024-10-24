@@ -1,8 +1,8 @@
 from enum import Enum
 
 
-class BaseEnum(Enum):
-    ...
+class SectorsEnum(Enum):
+    WITHOUT_SECTOR = "SEM SETOR"
 
 
 class BedStatus(Enum):
@@ -10,6 +10,8 @@ class BedStatus(Enum):
     OCCUPIED = "OCCUPIED"  # Ocupado
     MAINTENANCE = "MAINTENANCE"  # Manutenção
     CLEANING = "CLEANING"  # Em limpeza
+    CLEANING_REQUIRED = "CLEANING_REQUIRED"  # Limpeza necessária
+    DELETED = "DELETED"  # Deletado
 
     @classmethod
     def get_status_options(cls):
@@ -34,7 +36,6 @@ class PositionEnum(Enum):
         return [status.value for status in cls]
 
 
-class SectorEnum(Enum):
-    A = "A"
-    B = "B"
-    C = "C"
+class SectorStatus(Enum):
+    WORKING = "WORKING"
+    DELETED = "DELETED"

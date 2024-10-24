@@ -45,12 +45,8 @@ class ClientResponse(BaseModel):
 
 
 class Login(BaseModel):
-    email: str = Field(...,
-                       description="O endereço de e-mail do usuário.",
-                       example="joaodasilva@example.com")
-    password: str = Field(...,
-                          description="A senha da conta do usuário.",
-                          example="s3cr3tP@ssw0rd")
+    email: str
+    password: str
 
 
 class TokenResponse(BaseModel):
@@ -63,7 +59,7 @@ class VerifyClientResponse(BaseModel):
     id: Optional[int] = Field(default=None,
                               description="O identificador único do cliente.",
                               example="1")
-    name: str = Field(...,
+    username: str = Field(...,
                       description="O nome do cliente.",
                       example="João da Silva")
     email: str = Field(...,
@@ -86,3 +82,34 @@ class UpdateClient(BaseModel):
         ...,
         description="O número de identificação único do cliente.",
         examples=["53071916000", '12745866000100'])
+
+
+login_openapi_examples = {
+    "admin": {
+        "summary": "Exemplo de admin",
+        "description":
+        "Este é um exemplo de login para um **administrador**, que tem acesso total ao sistema.",
+        "value": {
+            "email": "carlos.admin@example.com",
+            "password": "admin123"
+        }
+    },
+    "nurse": {
+        "summary": "Exemplo de enfermeira",
+        "description":
+        "Este é um exemplo de login para uma **enfermeira**, que pode acessar informações de pacientes e realizar tarefas administrativas.",
+        "value": {
+            "email": "juliana.nurse@example.com",
+            "password": "nurse123"
+        }
+    },
+    "cleanner": {
+        "summary": "Exemplo de faxineiro",
+        "description":
+        "Este é um exemplo de login para um **faxineiro**, que tem acesso limitado para realizar suas atividades de limpeza.",
+        "value": {
+            "email": "fernando.cleaner@example.com",
+            "password": "cleaner123"
+        }
+    }
+}

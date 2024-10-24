@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from project.hospital_management.settings.database import Base
-from project.shared.enum.enums import BedStatus, PositionEnum, ScopesStatus
+from project.shared.enum.enums import BedStatus, PositionEnum, ScopesStatus, SectorStatus
 
 client_hospital = Table(
     'client_hospital', Base.metadata,
@@ -73,6 +73,7 @@ class Hospital(Base):
     clients = relationship('Client',
                            secondary=client_hospital,
                            back_populates='hospitals')
+    patients = relationship('Patient', back_populates='hospital')
 
 
 class Patient(Base):
@@ -81,8 +82,10 @@ class Patient(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     tax_number = Column(String(14), unique=True)
+    hospital_id = Column(Integer, ForeignKey('hospital.id'), nullable=False)
 
     admissions = relationship('Admission', back_populates='patient')
+    hospital = relationship('Hospital', back_populates='patients')
 
 
 class Sector(Base):
@@ -91,6 +94,7 @@ class Sector(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     hospital_id = Column(Integer, ForeignKey('hospital.id'))
+    status = Column(Enum(SectorStatus), default=SectorStatus.WORKING)
 
     beds = relationship('Bed', back_populates='sector')
     hospital = relationship('Hospital', back_populates='sectors')

@@ -1,18 +1,24 @@
 from fastapi import APIRouter, Depends, Path
-from starlette.status import (HTTP_204_NO_CONTENT, HTTP_201_CREATED,
-                              HTTP_401_UNAUTHORIZED, HTTP_404_NOT_FOUND, HTTP_409_CONFLICT,
-                              HTTP_503_SERVICE_UNAVAILABLE)
+from starlette.status import (HTTP_201_CREATED, HTTP_204_NO_CONTENT,
+                              HTTP_401_UNAUTHORIZED, HTTP_404_NOT_FOUND,
+                              HTTP_409_CONFLICT, HTTP_503_SERVICE_UNAVAILABLE)
 
 from project.application.service.bed import BedService
+from project.application.service.client import ClientService
 from project.hospital_management.controllers.dependencies.api_check import \
     verify_api_key
 from project.hospital_management.controllers.dependencies.checks import \
     check_cnpj
 from project.hospital_management.controllers.dependencies.dependencies import \
-    get_bed_service
+    get_bed_service, get_client_service
+from project.hospital_management.controllers.dependencies.verify_token import \
+    verify_token
+from project.shared.enum.enums import PositionEnum, ScopesStatus
+from project.shared.exceptions.exceptions import UnauthorizedException
+from project.shared.schemas.client import VerifyClientResponse
 from project.shared.schemas.exceptions import (
-    ConflictExceptionResponse, NotFoundExceptionResponse, ServiceUnavailableExceptionResponse,
-    UnauthorizedExceptionResponse)
+    ConflictExceptionResponse, NotFoundExceptionResponse,
+    ServiceUnavailableExceptionResponse, UnauthorizedExceptionResponse)
 
 router = APIRouter()
 TAX_NUMBER_DESCRIPTION = 'Número de identificação único'
@@ -41,8 +47,15 @@ async def admit_patient_to_bed(
                            description=TAX_NUMBER_DESCRIPTION,
                            min_length=14,
                            max_length=14),
-    bed_service: BedService = Depends(get_bed_service)):
-    return bed_service.admit_patient(bed_id, tax_number, patient_id)
+    user: VerifyClientResponse = Depends(verify_token),
+    bed_service: BedService = Depends(get_bed_service),
+    client_service: ClientService = Depends(get_client_service)):
+    
+    client = client_service.get_client_by_id(user.id)
+    if client.position == PositionEnum.NURSE or client.permission == ScopesStatus.ADMIN:
+        return bed_service.admit_patient(bed_id, tax_number, patient_id)
+    raise UnauthorizedException(
+        detail='Somente enfermeiros adimitir pacientes') 
 
 
 @router.put('/discharge/{tax_number}/{bed_id}',
@@ -67,5 +80,13 @@ async def discharge_patient(
                            description=TAX_NUMBER_DESCRIPTION,
                            min_length=14,
                            max_length=14),
-    bed_service: BedService = Depends(get_bed_service)):
-    bed_service.discharge_patient(bed_id, tax_number)
+    user: VerifyClientResponse = Depends(verify_token),
+    bed_service: BedService = Depends(get_bed_service),
+    client_service: ClientService = Depends(get_client_service)):
+    
+    client = client_service.get_client_by_id(user.id)
+    if client.position == PositionEnum.NURSE or client.permission == ScopesStatus.ADMIN:
+        bed_service.discharge_patient(bed_id, tax_number)
+    raise UnauthorizedException(
+        detail='Somente enfermeiros podem dar alta aos pacientes')
+    

@@ -1,12 +1,13 @@
 class LoginModel {
   bool? status;
   String? token;
+  String? detail;
 
-  LoginModel({ this.status, this.token});
+  LoginModel({ this.status, this.token, this.detail });
 
   LoginModel.fromJson(Map<String, dynamic> json) {
-    status = true;
     token = json['sub'];
+    status = true;
   }
 
   Map<String, dynamic> toJson() {
