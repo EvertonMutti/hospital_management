@@ -1,4 +1,4 @@
-class SignupModel{
+class SignupModel {
   String? name;
   String? password;
   String? email;
@@ -9,7 +9,15 @@ class SignupModel{
   String? detail;
   bool? status;
 
-  SignupModel({this.name, this.password, this.email, this.phone, this.taxNumber, this.hospitalUniqueCode, this.position});
+  // Construtor corrigido
+  SignupModel({
+    this.name,
+    this.password,
+    this.email,
+    this.phone,
+    this.taxNumber,
+    this.hospitalUniqueCode,
+  });
 
   SignupModel.fromJson(Map<String, dynamic> json) {
     name = json['name'];
@@ -34,5 +42,3 @@ class SignupModel{
     return data;
   }
 }
-
-
