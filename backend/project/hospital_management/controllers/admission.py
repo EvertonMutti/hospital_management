@@ -13,6 +13,8 @@ from project.hospital_management.controllers.dependencies.dependencies import \
     get_bed_service, get_client_service
 from project.hospital_management.controllers.dependencies.verify_token import \
     verify_token
+from project.shared.enum.enums import PositionEnum, ScopesStatus
+from project.shared.exceptions.exceptions import UnauthorizedException
 from project.shared.schemas.client import VerifyClientResponse
 from project.shared.schemas.exceptions import (
     ConflictExceptionResponse, NotFoundExceptionResponse,
@@ -46,8 +48,14 @@ async def admit_patient_to_bed(
                            min_length=14,
                            max_length=14),
     user: VerifyClientResponse = Depends(verify_token),
-    bed_service: BedService = Depends(get_bed_service)):
-    return bed_service.admit_patient(bed_id, tax_number, patient_id)
+    bed_service: BedService = Depends(get_bed_service),
+    client_service: ClientService = Depends(get_client_service)):
+    
+    client = client_service.get_client_by_id(user.id)
+    if client.position == PositionEnum.NURSE or client.permission == ScopesStatus.ADMIN:
+        return bed_service.admit_patient(bed_id, tax_number, patient_id)
+    raise UnauthorizedException(
+        detail='Somente enfermeiros adimitir pacientes') 
 
 
 @router.put('/discharge/{tax_number}/{bed_id}',
@@ -77,7 +85,8 @@ async def discharge_patient(
     client_service: ClientService = Depends(get_client_service)):
     
     client = client_service.get_client_by_id(user.id)
-    if client.position != 'NURSE' and client.permission != 'ADMIN':
-        raise UnauthorizedExceptionResponse(
-            detail='Only nurses can discharge patients')
-    bed_service.discharge_patient(bed_id, tax_number)
+    if client.position == PositionEnum.NURSE or client.permission == ScopesStatus.ADMIN:
+        bed_service.discharge_patient(bed_id, tax_number)
+    raise UnauthorizedException(
+        detail='Somente enfermeiros podem dar alta aos pacientes')
+    

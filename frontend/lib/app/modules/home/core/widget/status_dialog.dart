@@ -34,6 +34,7 @@ void showStatusDialog(
                     BedStatus.CLEANING_REQUIRED,
                     'Necessita de Limpeza',
                     controller,
+                    AuthService.to.getUser.position == PositionEnum.CLEANER ||
                     AuthService.to.getUser.position == PositionEnum.NURSE ||
                         AuthService.to.getUser.admin!),
                 buildStatusOption(
@@ -78,9 +79,9 @@ void showStatusDialog(
                     context,
                     bed,
                     BedStatus.CLEANING_REQUIRED,
-                    'Necessita de Limpeza',
+                    'Liberar Leito',
                     controller,
-                    AuthService.to.getUser.position == PositionEnum.CLEANER ||
+                    AuthService.to.getUser.position == PositionEnum.NURSE ||
                         AuthService.to.getUser.admin!),
               ],
 

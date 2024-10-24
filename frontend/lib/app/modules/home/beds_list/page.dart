@@ -29,7 +29,7 @@ class BedsListPage extends GetView<BedsController> {
             if (controller.getLoading) {
               return const Center(child: ProgressIndicatorApp());
             }
-            if (controller.sector.isEmpty && controller.getLoading == false) {
+            else if (controller.sector.isEmpty && controller.getLoading == false) {
               return const Center(
                 child: Text(
                   'Sem leitos cadastrados neste hospital',

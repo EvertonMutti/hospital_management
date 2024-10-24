@@ -133,7 +133,7 @@ class BedService:
 
             bed = self.get_bed_by_id_and_tax_number(admission.bed_id,
                                                     tax_number)
-            bed.status = BedStatus.CLEANING
+            bed.status = BedStatus.CLEANING_REQUIRED
 
             self.db.add(admission)
             self.db.add(bed)

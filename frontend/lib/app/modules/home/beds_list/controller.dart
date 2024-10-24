@@ -5,7 +5,7 @@ import 'package:hospital_management/app/core/global_widgets/snackbar.dart';
 import 'package:hospital_management/app/modules/home/core/model/bed.dart';
 import 'package:hospital_management/app/modules/home/repository.dart';
 
-class BedsController extends GetxController {
+class BedsController extends GetxController with WidgetsBindingObserver{
   HomeRepository repository;
 
   BedsController({required this.repository});
@@ -30,6 +30,15 @@ class BedsController extends GetxController {
     setLoading = false;
   }
 
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      setLoading = true;
+      _loadBedsBySector(); 
+      setLoading = false;
+    }
+  }
+
   Future<void> _loadBedsBySector() async {
     try {
       final response = await repository.consultBedsBySector();
@@ -43,6 +52,7 @@ class BedsController extends GetxController {
   }
 
   Future<void> updateBedStatus(BedModel bed, BedStatus newStatus) async {
+    setLoading = true;
     try {
       bed.status = newStatus;
       
@@ -55,6 +65,22 @@ class BedsController extends GetxController {
     } catch (e) {
       SnackBarApp.body('Erro', 'Não foi possível atualizar o status do leito');
     }
+    setLoading = false;
+  }
+
+  Future<void> dischargePatient(int bedId) async {
+    setLoading = true;
+    try {
+      if (await repository.dischargePatient(bedId)) {
+        SnackBarApp.body('Sucesso', 'Leito liberado e solicitando limpeza!');
+        await _loadBedsBySector();
+      } else {
+        SnackBarApp.body('Erro', 'Não foi possível trocar o status para "necessita limpeza"');
+      }
+    } catch (e) {
+      SnackBarApp.body('Erro', 'Ocorreu um erro ao trocar de status');
+    }
+    setLoading = false;
   }
 
   String getStatusLabel(BedStatus status) {

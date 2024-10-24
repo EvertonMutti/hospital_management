@@ -16,5 +16,4 @@ class PatientDataSource:
     def get_unadmitted_patients(self, tax_number: str):
         return (self.db.query(Patient).join(Admission).join(Bed).join(
             Sector).join(Hospital).filter(
-                Hospital.tax_number == tax_number).filter(
-                    Admission.discharge_date.isnot(None)).all())
+                Hospital.tax_number == tax_number).filter(~Patient.admissions.any(Admission.discharge_date.is_(None)))).all()

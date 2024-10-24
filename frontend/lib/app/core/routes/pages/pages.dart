@@ -6,8 +6,6 @@ import 'package:hospital_management/app/modules/home/notification/binding.dart';
 import 'package:hospital_management/app/modules/home/notification/page.dart';
 import 'package:hospital_management/app/modules/global/root/binding.dart';
 import 'package:hospital_management/app/modules/global/root/page.dart';
-import 'package:hospital_management/app/modules/home/beds_list/binding.dart';
-import 'package:hospital_management/app/modules/home/beds_list/page.dart';
 import 'package:hospital_management/app/modules/home/core/routes/pages.dart';
 import 'package:hospital_management/app/modules/profile/core/routes/pages.dart';
 import '../../../modules/global/sign_in/binding.dart';
@@ -49,13 +47,8 @@ class Pages {
         name: Routes.notification,
         page: () => const NotificationPage(),
         binding: NotificationBinding(),
-        title: "Not Found",
+        title: "Notification",
       ),
-    GetPage(
-      name: Routes.bedsList,  
-      page: () => const BedsListPage(),
-      binding: BedsListBinding(),
-    ),
     ...HomePages.routes,
     ...ProfilePages.routes
   ];
