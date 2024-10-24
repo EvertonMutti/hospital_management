@@ -5,10 +5,11 @@ class SignupModel{
   String? phone;
   String? taxNumber;
   String? hospitalUniqueCode;
+  String? position;
   String? detail;
   bool? status;
 
-  SignupModel({name, password, email, phone, taxNumber, hospitalUniqueCode});
+  SignupModel({this.name, this.password, this.email, this.phone, this.taxNumber, this.hospitalUniqueCode, this.position});
 
   SignupModel.fromJson(Map<String, dynamic> json) {
     name = json['name'];
@@ -17,6 +18,7 @@ class SignupModel{
     phone = json['phone'];
     taxNumber = json['tax_number'];
     hospitalUniqueCode = json['hospital_unique_code'];
+    position = json['position'];
     status = true;
   }
 
@@ -28,6 +30,7 @@ class SignupModel{
     data['phone'] = phone;
     data['tax_number'] = taxNumber;
     data['hospital_unique_code'] = hospitalUniqueCode;
+    data['position'] = position;
     return data;
   }
 }
