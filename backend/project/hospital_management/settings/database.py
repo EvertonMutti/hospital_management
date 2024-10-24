@@ -4,8 +4,10 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 from project.hospital_management.settings.settings import get_settings
 
 settings = get_settings().database_settings
-
-engine = create_engine(settings.database_url, future=True)
+if 'memory' in settings.database_url:
+    engine = create_engine(settings.database_url, future=True, connect_args={"check_same_thread": False})
+else:
+    engine = create_engine(settings.database_url, future=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
