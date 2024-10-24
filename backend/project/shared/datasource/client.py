@@ -20,7 +20,8 @@ class ClientDataSource():
                            email=client.email,
                            password=client.password,
                            phone=client.phone,
-                           tax_number=client.tax_number)
+                           tax_number=client.tax_number,
+                           position=client.position)
 
         self.db.add(db_Client)
         self.db.commit()
