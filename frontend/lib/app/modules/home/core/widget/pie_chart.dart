@@ -60,7 +60,7 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
                   ),
                 ),
               ),
-              const SizedBox(width: 20),
+              const SizedBox(width: 15),
               const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,17 +79,17 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
                   SizedBox(height: 4),
                   Indicator(
                     color: Colors.yellow,
-                    text: 'Leitos em Manutenção',
+                    text: 'Leitos em\nManutenção',
                     isSquare: true,
                   ),
                   Indicator(
                     color: Colors.blue,
-                    text: 'Leitos em Limpeza',
+                    text: 'Leitos em\nLimpeza',
                     isSquare: true,
                   ),
                   Indicator(
                     color: Color.fromARGB(255, 26, 110, 150),
-                    text: 'Leitos necessitando de limpeza',
+                    text: 'Leitos\nnecessitando\nde limpeza',
                     isSquare: true,
                   ),
                 ],

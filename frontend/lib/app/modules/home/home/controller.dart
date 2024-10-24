@@ -159,7 +159,10 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   final RxInt selectedSection = (-1).obs;
 
-  double get chartSize => isChartExpanded.value ? 220 : 200; // container
+  double get chartSize {
+    double screenHeight = Get.context!.height;
+    return isChartExpanded.value ? screenHeight * 0.36 : screenHeight * 0.33;
+  }
 
-  double get centerSpaceRadius => isChartExpanded.value ? 50 : 30; // circulo do meio
+  double get centerSpaceRadius => isChartExpanded.value ? 40 : 30;
 }

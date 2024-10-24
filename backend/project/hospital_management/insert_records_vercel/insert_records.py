@@ -1,16 +1,8 @@
-from datetime import datetime
-import sys
-import os
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
-
-
 from project.shared.enum.enums import BedStatus, PositionEnum, ScopesStatus
 
 from project.shared.security.hash_provider import get_password_hash
-
 from project.hospital_management.settings.database import create_database, get_session
-from project.shared.entities.entities import Admission, Bed, Client, Hospital, Patient, Sector, client_hospital
+from project.shared.entities.entities import Bed, Client, Hospital, Patient, Sector, client_hospital
 from sqlalchemy import insert
 
 
@@ -78,7 +70,8 @@ clients = [
     Client(name="Fernando Lima", email="fernando.cleaner@example.com", password=get_password_hash("cleaner123"), phone="11912345678", tax_number="56789012345", position=PositionEnum.CLEANER, permission=ScopesStatus.USER),
 ]
 
-if __name__ == '__main__':
+    
+def insert_records():
     create_database()
 
     with next(get_session()) as session:
