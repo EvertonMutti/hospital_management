@@ -1,4 +1,3 @@
-from functools import lru_cache
 
 from fastapi import Depends
 from pytest import Session
@@ -8,7 +7,7 @@ from project.application.service.client import ClientService
 from project.application.service.hospital import HospitalService
 from project.application.service.patient import PatientService
 from project.application.service.sector import SectorService
-from project.hospital_management.settings.database import get_session, list_tables
+from project.hospital_management.settings.database import (get_session)
 from project.shared.datasource.admission import AdmissionDataSource
 from project.shared.datasource.bed import BedDataSource
 from project.shared.datasource.client import ClientDataSource
@@ -60,13 +59,15 @@ def get_bed_service(
                       sector_data_source)
 
 
-def get_sector_service(db: Session = Depends(get_session),
-                       sector_data_source: SectorDataSource = Depends(
-                           get_sector_datasource),
-                       hospital_data_source: HospitalDataSource = Depends(
-                           get_hospital_datasource),
-                       bed_datasource: BedDataSource = Depends(get_bed_datasource)) -> SectorService:
-    return SectorService(db, sector_data_source, hospital_data_source, bed_datasource)
+def get_sector_service(
+        db: Session = Depends(get_session),
+        sector_data_source: SectorDataSource = Depends(get_sector_datasource),
+        hospital_data_source: HospitalDataSource = Depends(
+            get_hospital_datasource),
+        bed_datasource: BedDataSource = Depends(get_bed_datasource)
+) -> SectorService:
+    return SectorService(db, sector_data_source, hospital_data_source,
+                         bed_datasource)
 
 
 def get_hospital_service(db: Session = Depends(get_session),
@@ -76,7 +77,6 @@ def get_hospital_service(db: Session = Depends(get_session),
 
 
 def get_patient_service(db: Session = Depends(get_session),
-                         patient_data_source: PatientDataSource = Depends(
-                             get_patient_datasource)) -> PatientService:
+                        patient_data_source: PatientDataSource = Depends(
+                            get_patient_datasource)) -> PatientService:
     return PatientService(db, patient_data_source)
-

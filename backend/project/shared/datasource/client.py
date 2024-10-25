@@ -1,7 +1,7 @@
 import logging
 from typing import Optional
 
-from sqlalchemy import insert, select
+from sqlalchemy import insert
 from sqlalchemy.orm import Session
 
 from project.shared.entities.entities import Client, client_hospital

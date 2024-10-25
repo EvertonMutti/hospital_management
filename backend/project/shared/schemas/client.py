@@ -24,9 +24,10 @@ class ClientInput(BaseModel):
     hospital_unique_code: str = Field(...,
                                       description="Código único do hospital",
                                       example="abcd1234")
-    position: Optional[str] = Field(PositionEnum.NURSE.value,
-                          description="Posição do cliente no hospital",
-                          examples=["NURSE", "CLEANER"])
+    position: Optional[str] = Field(
+        PositionEnum.NURSE.value,
+        description="Posição do cliente no hospital",
+        examples=["NURSE", "CLEANER"])
 
     @field_validator('tax_number')
     def validate_tax_number(cls, value):
@@ -65,8 +66,8 @@ class VerifyClientResponse(BaseModel):
                               description="O identificador único do cliente.",
                               example="1")
     username: str = Field(...,
-                      description="O nome do cliente.",
-                      example="João da Silva")
+                          description="O nome do cliente.",
+                          example="João da Silva")
     email: str = Field(...,
                        description="O endereço de e-mail do cliente.",
                        example="joaodasilva@example.com")

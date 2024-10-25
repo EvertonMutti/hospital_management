@@ -27,9 +27,11 @@ TAX_NUMBER_DESCRIPTION = 'Número de identificação único'
 
 @router.get('/{tax_number}',
             status_code=HTTP_200_OK,
-            dependencies=[Depends(check_cnpj),
-                          Depends(verify_api_key),
-                          Depends(verify_token)],
+            dependencies=[
+                Depends(check_cnpj),
+                Depends(verify_api_key),
+                Depends(verify_token)
+            ],
             response_model=list[SectorResponse],
             responses={
                 HTTP_401_UNAUTHORIZED: {
@@ -55,9 +57,11 @@ async def get_beds_grouped_by_sector(
 
 @router.post('/{tax_number}',
              status_code=HTTP_201_CREATED,
-             dependencies=[Depends(check_cnpj),
-                           Depends(verify_api_key),
-                           Depends(verify_token)],
+             dependencies=[
+                 Depends(check_cnpj),
+                 Depends(verify_api_key),
+                 Depends(verify_token)
+             ],
              response_model=Bed,
              responses={
                  HTTP_401_UNAUTHORIZED: {
@@ -83,9 +87,11 @@ async def create_bed(bed_create: BedCreate,
 
 @router.get('/status/count/{tax_number}',
             status_code=HTTP_200_OK,
-            dependencies=[Depends(check_cnpj),
-                          Depends(verify_api_key),
-                Depends(verify_token)],
+            dependencies=[
+                Depends(check_cnpj),
+                Depends(verify_api_key),
+                Depends(verify_token)
+            ],
             response_model=BedStatusModel,
             responses={
                 HTTP_401_UNAUTHORIZED: {
@@ -110,9 +116,11 @@ async def count_beds_by_status(
 
 @router.get('/{tax_number}/{bed_id}',
             status_code=HTTP_200_OK,
-            dependencies=[Depends(check_cnpj),
-                          Depends(verify_api_key),
-                            Depends(verify_token)],
+            dependencies=[
+                Depends(check_cnpj),
+                Depends(verify_api_key),
+                Depends(verify_token)
+            ],
             response_model=Bed,
             responses={
                 HTTP_401_UNAUTHORIZED: {

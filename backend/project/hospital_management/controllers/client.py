@@ -18,9 +18,9 @@ from project.shared.schemas.client import (ClientInput, ClientResponse, Login,
                                            VerifyClientResponse,
                                            login_openapi_examples)
 from project.shared.schemas.exceptions import (
-    BadRequestExceptionResponse, NotFoundExceptionResponse, ServiceUnavailableExceptionResponse,
-    UnauthorizedExceptionResponse, UserAlreadyExistsResponse,
-    UserNotFoundResponse)
+    BadRequestExceptionResponse, NotFoundExceptionResponse,
+    ServiceUnavailableExceptionResponse, UnauthorizedExceptionResponse,
+    UserAlreadyExistsResponse, UserNotFoundResponse)
 
 router = APIRouter()
 logger = logging.getLogger(__name__)

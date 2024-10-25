@@ -17,6 +17,7 @@ pydantic-settings = "^2.4.0"
 pydantic = "^2.8.2"
 uvicorn = "^0.31.1"
 pycpfcnpj = "^1.8"
+psycopg2 = "^2.9.10"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^3.0.0"

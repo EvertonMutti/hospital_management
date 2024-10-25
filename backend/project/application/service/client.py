@@ -103,7 +103,7 @@ class ClientService():
                 f"Login failed due to invalid credentials for email: {login.email}"
             )
             raise
-        except Exception as error:
+        except Exception:
             raise ServiceUnavailableException()
 
     def update_client(self, client_id: int,
@@ -116,7 +116,7 @@ class ClientService():
             client.password = get_password_hash(client_data.password)
             client.tax_number = client_data.tax_number
             client.phone = client_data.phone
-            
+
             self.db.add(client)
 
             self.db.commit()
