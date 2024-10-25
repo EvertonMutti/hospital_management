@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:hospital_management/app/core/routes/routes.dart';
+import 'package:hospital_management/app/core/services/sqflite.dart';
 import 'package:hospital_management/app/modules/global/core/model/signup_model.dart';
 
 import '../../../core/global_widgets/snackbar.dart';
@@ -14,6 +15,8 @@ class SignInController extends GetxController {
   SignInController({required this.signInRepository});
 
   final SignInRepository signInRepository;
+
+  late SignupService signupService = SignupService();
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -112,6 +115,7 @@ class SignInController extends GetxController {
   }
 
   void register() async {
+    
     loading.value = true;
     if (await signUpFormValidator()) {
       try {
@@ -130,6 +134,7 @@ class SignInController extends GetxController {
 
         if (response.status) {
           SnackBarApp.body("Sucesso", "Cadastro realizado com sucesso!");
+          await signupService.insertSignup(signupModel);
           toggleSignUpForm(); // Alterna para a tela de login
         } else {
           SnackBarApp.body("Ops!", "Falha ao realizar o cadastro.",

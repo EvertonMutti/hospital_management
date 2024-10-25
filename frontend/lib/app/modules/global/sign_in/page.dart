@@ -54,10 +54,10 @@ class SignInPage extends GetView<SignInController> {
                                     obscureText: true,
                                     decoration: InputDecoration(
                                       labelText: 'Senha',
-                                      errorText: controller
-                                              .passwordError.value.isNotEmpty
-                                          ? controller.passwordError.value
-                                          : null,
+                                      errorText:
+                                          controller.passwordError.value.isNotEmpty
+                                              ? controller.passwordError.value
+                                              : null,
                                     ),
                                   )),
                               const SizedBox(height: 34),
@@ -72,116 +72,17 @@ class SignInPage extends GetView<SignInController> {
                                             vertical: 12.0),
                                         backgroundColor: weakPrimaryColor,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30.0),
+                                          borderRadius: BorderRadius.circular(30.0),
                                         ),
                                       ),
                                       child: const Text(
-                                        'Login',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  )),
-                              const SizedBox(height: 20),
-                              // Botão para Alternar para o Cadastro
-                              SizedBox(
-                                width: double.infinity,
-                                child: OutlinedButton(
-                                  onPressed: () {
-                                    controller.toggleSignUpForm();
-                                  },
-                                  style: OutlinedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 12.0),
-                                    side: const BorderSide(
-                                        color: weakPrimaryColor, width: 2.0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                  ),
-                                  child: const Text(
-                                    'Cadastre-se',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: weakPrimaryColor,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              // Formulário de Cadastro
-                              Obx(() => Visibility(
-                                    visible:
-                                        controller.isSignUpFormVisible.value,
-                                    child: Column(
-                                      children: [
-                                        _buildTextField(
-                                          controller.fullNameController,
-                                          'Nome Completo',
-                                          icon: Icons.person_outline,
-                                        ),
-                                        const SizedBox(height: 20),
-                                        _buildTextField(
-                                          controller.signUpEmailController,
-                                          'E-mail',
-                                          icon: Icons.email_outlined,
-                                        ),
-                                        const SizedBox(height: 20),
-                                        _buildTextField(
-                                          controller.phoneController,
-                                          'Número de Telefone',
-                                          icon: Icons.phone_outlined,
-                                        ),
-                                        const SizedBox(height: 20),
-                                        _buildTextField(
-                                          controller.taxNumberController,
-                                          'CPF',
-                                          icon: Icons.badge_outlined,
-                                        ),
-                                        const SizedBox(height: 20),
-                                        _buildTextField(
-                                          controller.uniqueCodeController,
-                                          'Código único do hospital',
-                                          icon: Icons.code_outlined,
-                                        ),
-                                        const SizedBox(height: 20),
-                                        _buildTextField(
-                                          controller.signUpPasswordController,
-                                          'Senha',
-                                          isPassword: true,
-                                          icon: Icons.lock_outline,
-                                        ),
-                                        const SizedBox(height: 34),
-                                        SizedBox(
-                                          width: double.infinity,
-                                          child: ElevatedButton(
-                                            onPressed: controller.register,
-                                            style: ElevatedButton.styleFrom(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 14.0),
-                                              backgroundColor: weakPrimaryColor,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12.0),
-                                              ),
-                                            ),
-                                            child: const Text(
-                                              'Registrar',
+                                              'Login',
                                               style: TextStyle(
-                                                fontSize: 16,
+                                                fontSize: 20,
                                                 color: Colors.white,
-                                                fontWeight: FontWeight.w600,
+                                                fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                          ),
-                                        ),
-                                      ],
                                     ),
                                   )),
                             ],
@@ -207,34 +108,6 @@ class SignInPage extends GetView<SignInController> {
             }
           }),
         ],
-      ),
-    );
-  }
-
-  Widget _buildTextField(
-    TextEditingController controller,
-    String labelText, {
-    bool isPassword = false,
-    IconData? icon,
-    String? errorText,
-  }) {
-    return TextField(
-      controller: controller,
-      obscureText: isPassword,
-      decoration: InputDecoration(
-        labelText: labelText,
-        errorText: errorText,
-        prefixIcon: icon != null ? Icon(icon) : null,
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.0),
-          borderSide: BorderSide.none,
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.0),
-          borderSide: const BorderSide(color: Colors.redAccent),
-        ),
       ),
     );
   }

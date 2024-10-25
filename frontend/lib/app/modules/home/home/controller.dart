@@ -161,8 +161,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   double get chartSize {
     double screenHeight = Get.context!.height;
-    return isChartExpanded.value ? screenHeight * 0.36 : screenHeight * 0.33;
+    return isChartExpanded.value ? screenHeight * 0.37 : screenHeight * 0.34;
   }
 
-  double get centerSpaceRadius => isChartExpanded.value ? 40 : 30;
+  double get centerSpaceRadius => isChartExpanded.value ? 44 : 34;
 }
