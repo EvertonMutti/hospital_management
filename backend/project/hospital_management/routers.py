@@ -5,8 +5,6 @@ from project.hospital_management.controllers import (admission,
                                                      client, docs, hospital,
                                                      patient, sector)
 
-
-
 router = APIRouter()
 
 router.include_router(docs.router,

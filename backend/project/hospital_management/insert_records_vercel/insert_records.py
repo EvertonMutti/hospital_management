@@ -1,10 +1,9 @@
-from project.shared.enum.enums import BedStatus, PositionEnum, ScopesStatus
-
-from project.shared.security.hash_provider import get_password_hash
-from project.hospital_management.settings.database import create_database, get_session
-from project.shared.entities.entities import *
 from sqlalchemy import insert
 
+from project.hospital_management.settings.database import (get_session)
+from project.shared.entities.entities import *
+from project.shared.enum.enums import BedStatus, PositionEnum, ScopesStatus
+from project.shared.security.hash_provider import get_password_hash
 
 hospitals = [
     Hospital(
@@ -65,21 +64,43 @@ patients = [
 # ]
 
 clients = [
-    Client(name="Carlos Alberto", email="carlos.admin@example.com", password=get_password_hash("admin123"), phone="11987654321", tax_number="01234567890", position=PositionEnum.NURSE, permission=ScopesStatus.ADMIN),
-    Client(name="Juliana Mendes", email="juliana.nurse@example.com", password=get_password_hash("nurse123"), phone="11998765432", tax_number="09876543210", position=PositionEnum.NURSE, permission=ScopesStatus.USER),
-    Client(name="Fernando Lima", email="fernando.cleaner@example.com", password=get_password_hash("cleaner123"), phone="11912345678", tax_number="56789012345", position=PositionEnum.CLEANER, permission=ScopesStatus.USER),
+    Client(name="Carlos Alberto",
+           email="carlos.admin@example.com",
+           password=get_password_hash("admin123"),
+           phone="11987654321",
+           tax_number="01234567890",
+           position=PositionEnum.NURSE,
+           permission=ScopesStatus.ADMIN),
+    Client(name="Juliana Mendes",
+           email="juliana.nurse@example.com",
+           password=get_password_hash("nurse123"),
+           phone="11998765432",
+           tax_number="09876543210",
+           position=PositionEnum.NURSE,
+           permission=ScopesStatus.USER),
+    Client(name="Fernando Lima",
+           email="fernando.cleaner@example.com",
+           password=get_password_hash("cleaner123"),
+           phone="11912345678",
+           tax_number="56789012345",
+           position=PositionEnum.CLEANER,
+           permission=ScopesStatus.USER),
 ]
 
-    
+
 def insert_records():
     with next(get_session()) as session:
-        hospital = Hospital(name="Hospital Central",tax_number="27171473000108",address="Rua Principal, 123, Centro",)
+        hospital = Hospital(
+            name="Hospital Central",
+            tax_number="27171473000108",
+            address="Rua Principal, 123, Centro",
+        )
         session.add_all(clients)
         session.add(hospital)
         session.flush()
         for client in clients:
-            link_hospital_with_client = insert(client_hospital).values(client_id=client.id,
-                                                hospital_id=hospital.id)
+            link_hospital_with_client = insert(client_hospital).values(
+                client_id=client.id, hospital_id=hospital.id)
             session.execute(link_hospital_with_client)
         session.commit()
         session.add_all(hospitals)

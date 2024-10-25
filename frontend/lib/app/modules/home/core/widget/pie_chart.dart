@@ -47,24 +47,27 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
                       sections: showingSections(),
                       pieTouchData: PieTouchData(
                         touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                          if (event is FlTapUpEvent &&
-                              pieTouchResponse != null &&
-                              pieTouchResponse.touchedSection != null) {
-                            final tappedIndex = pieTouchResponse
+                          if (!event.isInterestedForInteractions ||
+                          pieTouchResponse == null ||
+                          pieTouchResponse.touchedSection == null) {
+                            final tappedIndex = pieTouchResponse!
                                 .touchedSection!.touchedSectionIndex;
                             controller.handlePieTouch(tappedIndex);
                           }
                         },
+                        
                       ),
+                      borderData: FlBorderData(
+                    show: false,
+                  ),
                     ),
                   ),
                 ),
               ),
-              SizedBox(width: Get.context!.width * 0.08),
               const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   Indicator(
                     color: Colors.green,
                     text: 'Leitos Livres',
@@ -104,7 +107,7 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
   List<PieChartSectionData> showingSections() {
     return List.generate(5, (i) {
       final isTouched = i == controller.selectedSection.value;
-      final fontSize = isTouched ? 20.0 : 12.0;
+      final fontSize = isTouched ? 18.0 : 10.0;
       final radius = isTouched ? 50.0 : 40.0;
       const shadows = [Shadow(color: Colors.black, blurRadius: 2)];
 

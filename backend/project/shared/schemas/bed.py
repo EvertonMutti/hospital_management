@@ -51,4 +51,5 @@ class BedStatusModel(BaseModel):
     OCCUPIED: int = Field(0, description="Número de leitos ocupados")
     MAINTENANCE: int = Field(0, description="Número de leitos em manutenção")
     CLEANING: int = Field(0, description="Número de leitos em limpeza")
-    CLEANING_REQUIRED: int = Field(0, description="Número de leitos que necessitam de limpeza")
+    CLEANING_REQUIRED: int = Field(
+        0, description="Número de leitos que necessitam de limpeza")

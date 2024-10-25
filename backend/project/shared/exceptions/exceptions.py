@@ -6,25 +6,25 @@ from starlette.status import (HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED,
 
 class UnauthorizedException(HTTPException):
 
-    def __init__(self, detail: str = "Client is not enabled"):
+    def __init__(self, detail: str = "O cliente não está habilitado"):
         super().__init__(status_code=HTTP_401_UNAUTHORIZED, detail=detail)
 
 
 class MissingScopeException(HTTPException):
 
-    def __init__(self, detail: str = "Token missing required scope"):
+    def __init__(self, detail: str = "Token sem escopo necessário"):
         super().__init__(status_code=HTTP_401_UNAUTHORIZED, detail=detail)
 
 
 class TokenExpiredException(HTTPException):
 
-    def __init__(self, detail: str = "Token expired!"):
+    def __init__(self, detail: str = "O token expirou!"):
         super().__init__(status_code=HTTP_403_FORBIDDEN, detail=detail)
 
 
 class InvalidApiKeyException(HTTPException):
 
-    def __init__(self, detail: str = "Invalid API key"):
+    def __init__(self, detail: str = "Chave de API inválida"):
         super().__init__(status_code=HTTP_401_UNAUTHORIZED, detail=detail)
 
 
@@ -51,7 +51,8 @@ class ServiceUnavailableException(HTTPException):
     def __init__(
         self,
         detail:
-        str = "Service is currently unavailable. Please try again later."):
+        str = "O serviço está indisponível no momento. Por favor, tente novamente mais tarde."
+    ):
         super().__init__(status_code=HTTP_503_SERVICE_UNAVAILABLE,
                          detail=detail)
 
@@ -66,7 +67,7 @@ class ServiceUnavailableException(HTTPException):
 
 class BedNotFoundException(HTTPException):
 
-    def __init__(self, detail: str = "Bed not found"):
+    def __init__(self, detail: str = "Leito não encontrada"):
         super().__init__(status_code=HTTP_404_NOT_FOUND, detail=detail)
 
 
@@ -84,13 +85,16 @@ class HospitalNotFoundException(HTTPException):
 
 class SectorNotFoundException(HTTPException):
 
-    def __init__(self, detail: str = "Sector not found"):
+    def __init__(self, detail: str = "Setor não encontrado"):
         super().__init__(status_code=HTTP_404_NOT_FOUND, detail=detail)
 
 
 class BadRequestException(HTTPException):
 
-    def __init__(self, detail: str):
+    def __init__(
+            self,
+            detail: str = 'Requisição inválida. Verifique os dados fornecidos.'
+    ):
         super().__init__(status_code=HTTP_400_BAD_REQUEST, detail=detail)
 
 

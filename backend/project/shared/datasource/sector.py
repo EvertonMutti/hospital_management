@@ -19,8 +19,7 @@ class SectorDataSource:
         SectorAlias = aliased(Sector)
         return (self.db.query(SectorAlias).join(
             Hospital, Hospital.id == SectorAlias.hospital_id).filter(
-                Hospital.tax_number == tax_number)
-            .filter(
+                Hospital.tax_number == tax_number).filter(
                     SectorAlias.status != SectorStatus.DELETED).all())
 
     def create_sector(self, sector_create: SectorCreate, hospital: Hospital):
@@ -40,9 +39,8 @@ class SectorDataSource:
         return (self.db.query(SectorAlias).join(
             Hospital, Hospital.id == SectorAlias.hospital_id).filter(
                 Hospital.tax_number == tax_number).filter(
-                    SectorAlias.id == sector_id)
-                .filter(
-                    SectorAlias.status != SectorStatus.DELETED).first())
+                    SectorAlias.id == sector_id).filter(
+                        SectorAlias.status != SectorStatus.DELETED).first())
 
     def update_sector(self, sector: Sector, sector_update: SectorUpdate):
         for field, value in sector_update.dict().items():

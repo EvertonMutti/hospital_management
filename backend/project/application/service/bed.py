@@ -53,7 +53,7 @@ class BedService:
             if not self.sector_data_source.get_sector_by_id_and_tax_number(
                     bed_create.sector_id, tax_number):
                 raise SectorNotFoundException(
-                    f"Sector with id {bed_create.sector_id} not found")
+                    f"Setor com id {bed_create.sector_id} não encontrado")
             bed = self.bed_data_source.create_bed(bed_create)
             logger.info(f"Created bed: {bed}")
             return bed
@@ -68,7 +68,8 @@ class BedService:
             bed = self.bed_data_source.get_bed_by_id_and_tax_number(
                 bed_id, tax_number)
             if not bed:
-                raise BedNotFoundException(f"Bed with id {bed_id} not found")
+                raise BedNotFoundException(
+                    f"Leito com ID {bed_id} não encontrada")
             logger.info(f"Fetched bed: {bed}")
             return bed
         except BedNotFoundException:
@@ -104,7 +105,8 @@ class BedService:
         try:
             bed = self.get_bed_by_id_and_tax_number(bed_id, tax_number)
             if bed.status == BedStatus.OCCUPIED:
-                raise ConflictException(f"Bed {bed_id} is already occupied")
+                raise ConflictException(
+                    f"Leito {bed.bed_number} já está ocupado")
 
             admission = Admission(patient_id=patient_id, bed_id=bed_id)
             self.db.add(admission)
@@ -127,7 +129,7 @@ class BedService:
                 bed_id, tax_number)
             if not admission or admission.discharge_date:
                 raise BedNotFoundException(
-                    "Admission not found or already discharged")
+                    "Admissão não encontrada ou já foi dada alta")
 
             admission.discharge_date = datetime.now()
 

@@ -6,7 +6,8 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from project.hospital_management.settings.database import Base
-from project.shared.enum.enums import BedStatus, PositionEnum, ScopesStatus, SectorStatus
+from project.shared.enum.enums import (BedStatus, PositionEnum, ScopesStatus,
+                                       SectorStatus)
 
 client_hospital = Table(
     'client_hospital', Base.metadata,

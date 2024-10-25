@@ -9,7 +9,8 @@ from project.hospital_management.controllers.dependencies.api_check import \
     verify_api_key
 from project.hospital_management.controllers.dependencies.checks import \
     check_cnpj
-from project.hospital_management.controllers.dependencies.verify_token import verify_token
+from project.hospital_management.controllers.dependencies.verify_token import \
+    verify_token
 from project.hospital_management.settings.database import get_session
 from project.shared.entities.entities import Admission, Bed, Hospital, Sector
 from project.shared.schemas.bed import AverageFreeTimeResponse
@@ -21,9 +22,11 @@ router = APIRouter()
 
 
 @router.get("/{tax_number}/average-free-time",
-            dependencies=[Depends(check_cnpj),
-                          Depends(verify_api_key),
-                          Depends(verify_token)],
+            dependencies=[
+                Depends(check_cnpj),
+                Depends(verify_api_key),
+                Depends(verify_token)
+            ],
             response_model=AverageFreeTimeResponse,
             responses={
                 HTTP_401_UNAUTHORIZED: {
