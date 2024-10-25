@@ -24,7 +24,7 @@ class ClientInput(BaseModel):
     hospital_unique_code: str = Field(...,
                                       description="Código único do hospital",
                                       example="abcd1234")
-    position: str = Field(PositionEnum.NURSE.value,
+    position: Optional[str] = Field(PositionEnum.NURSE.value,
                           description="Posição do cliente no hospital",
                           examples=["NURSE", "CLEANER"])
 

@@ -10,7 +10,7 @@ import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ReportsController extends GetxController {
-  late SignupService signupService = SignupService();
+  final SignupService signupService = SignupService();
 
   var signups = <SignupModel>[].obs;
   
