@@ -2,7 +2,7 @@ from project.shared.enum.enums import BedStatus, PositionEnum, ScopesStatus
 
 from project.shared.security.hash_provider import get_password_hash
 from project.hospital_management.settings.database import create_database, get_session
-from project.shared.entities.entities import Bed, Client, Hospital, Patient, Sector, client_hospital
+from project.shared.entities.entities import *
 from sqlalchemy import insert
 
 
@@ -72,8 +72,6 @@ clients = [
 
     
 def insert_records():
-    create_database()
-
     with next(get_session()) as session:
         hospital = Hospital(name="Hospital Central",tax_number="27171473000108",address="Rua Principal, 123, Centro",)
         session.add_all(clients)

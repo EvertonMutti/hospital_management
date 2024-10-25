@@ -10,13 +10,8 @@ from project.hospital_management.controllers.dependencies.api_check import \
 from project.hospital_management.controllers.dependencies.checks import \
     check_cnpj
 from project.hospital_management.controllers.dependencies.dependencies import \
-    get_bed_service, get_client_service
+    get_bed_service
 from project.hospital_management.controllers.dependencies.verify_permissions import verify_nurse_or_admin
-from project.hospital_management.controllers.dependencies.verify_token import \
-    verify_token
-from project.shared.enum.enums import PositionEnum, ScopesStatus
-from project.shared.exceptions.exceptions import UnauthorizedException
-from project.shared.schemas.client import VerifyClientResponse
 from project.shared.schemas.exceptions import (
     ConflictExceptionResponse, NotFoundExceptionResponse,
     ServiceUnavailableExceptionResponse, UnauthorizedExceptionResponse)

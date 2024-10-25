@@ -3,6 +3,8 @@ from typing import Optional
 from pycpfcnpj import cpf
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
+from project.shared.enum.enums import PositionEnum
+
 
 class ClientInput(BaseModel):
     name: str = Field(..., description="O nome do cliente.", example="João")
@@ -22,6 +24,9 @@ class ClientInput(BaseModel):
     hospital_unique_code: str = Field(...,
                                       description="Código único do hospital",
                                       example="abcd1234")
+    position: Optional[str] = Field(PositionEnum.NURSE.value,
+                          description="Posição do cliente no hospital",
+                          examples=["NURSE", "CLEANER"])
 
     @field_validator('tax_number')
     def validate_tax_number(cls, value):

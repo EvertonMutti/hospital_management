@@ -26,6 +26,11 @@ dependencies:
   async: any
   fl_chart: ^0.68.0
   sqflite: ^2.3.3+1
+  path: ^1.9.0
+  syncfusion_flutter_pdf: ^25.2.7
+  permission_handler: ^11.3.1
+  path_provider: ^2.1.4
+  sqflite_common_ffi: ^2.3.3
   
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,6 @@
 {
     "ENV": "DEV",
-    "API_URL": "http://localhost:8000",
+    "API_URL": "https://hospital-management-cyfq.vercel.app",
     "MARKETPLACEAPIKEY": "AntedegueMutti",
     "VERSION": "1.0.0"
 }

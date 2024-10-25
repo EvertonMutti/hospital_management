@@ -26,6 +26,7 @@ app.add_middleware(
 
 
 def main() -> None:
+    create_database()
     insert_records()
     custom_openapi(
         app,

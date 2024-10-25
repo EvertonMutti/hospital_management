@@ -60,7 +60,7 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
                   ),
                 ),
               ),
-              const SizedBox(width: 15),
+              SizedBox(width: Get.context!.width * 0.08),
               const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,

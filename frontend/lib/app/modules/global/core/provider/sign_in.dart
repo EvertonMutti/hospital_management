@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:hospital_management/app/modules/global/core/model/hospital_model.dart';
+import 'package:hospital_management/app/modules/global/core/model/signup_model.dart';
+import 'package:hospital_management/app/modules/global/core/model/signup_responseModel.dart';
 import 'package:hospital_management/app/modules/global/core/network/endpoints.dart';
 import 'package:hospital_management/app/modules/global/core/network/http_client.dart';
 
@@ -24,6 +26,16 @@ class SignInProvider implements SignInRepository {
         }
       }
       return LoginModel(status: false);
+    }
+  }
+
+  @override
+  Future<SignupResponseModel> registerUser(SignupModel body) async {
+    try {
+      final response = await _http.post(Endpoints.signup, data:body);
+      return SignupResponseModel.fromJson(response.data);
+    } catch (error) {
+      return SignupResponseModel(status: false, detail: error.toString());
     }
   }
 

@@ -7,6 +7,8 @@ import 'package:hospital_management/app/modules/home/home/binding.dart';
 import 'package:hospital_management/app/modules/home/home/page.dart';
 import 'package:hospital_management/app/modules/home/patient_selection/binding.dart';
 import 'package:hospital_management/app/modules/home/patient_selection/page.dart';
+import 'package:hospital_management/app/modules/home/reports/binding.dart';
+import 'package:hospital_management/app/modules/home/reports/page.dart';
 import '../../../../core/routes/routes.dart';
 
 class HomePages {
@@ -31,9 +33,18 @@ class HomePages {
     ),
     GetPage(
       name: Routes.patientSelection,  
-      page: () => PatientSelectionPage(),
+      page: () => const PatientSelectionPage(),
       binding: PatientSelectionBinding(),
       title: "Listagem de pacientes",
+      middlewares: [
+        AuthMiddleware(),
+      ],
+    ),
+    GetPage(
+      name: Routes.report,  
+      page: () => const ReportsPage(),
+      binding: ReportsBinding(),
+      title: "Reports",
       middlewares: [
         AuthMiddleware(),
       ],
