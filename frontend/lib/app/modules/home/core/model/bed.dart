@@ -129,4 +129,9 @@ class CountBed {
     data['CLEANING_REQUIRED'] = cleaningRequired;
     return data;
   }
+
+  bool areAttributesEmpty() {
+    return (free == null && occupied == null && maintenance == null &&
+            cleaning == null && cleaningRequired == null);
+  }
 }

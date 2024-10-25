@@ -14,7 +14,7 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
         onTap: controller.toggleChartExpand,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          padding: EdgeInsets.all(controller.isChartExpanded.value ? 8.0 : 4.0),
+          padding: EdgeInsets.all(controller.isChartExpanded.value ? 4.0 : 0.0),
           constraints: BoxConstraints(
             maxWidth: double.infinity,
             maxHeight: controller.chartSize,
@@ -31,7 +31,7 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
               ),
             ],
           ),
-          child: controller.getLoading
+          child: controller.getLoading || controller.countBed.value.areAttributesEmpty()
               ? const Center(child: CircularProgressIndicator()) 
               : Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -47,10 +47,10 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
                       sections: showingSections(),
                       pieTouchData: PieTouchData(
                         touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                          if (!event.isInterestedForInteractions ||
-                          pieTouchResponse == null ||
-                          pieTouchResponse.touchedSection == null) {
-                            final tappedIndex = pieTouchResponse!
+                          if (event is FlTapUpEvent &&
+                              pieTouchResponse != null &&
+                              pieTouchResponse.touchedSection != null) {
+                            final tappedIndex = pieTouchResponse
                                 .touchedSection!.touchedSectionIndex;
                             controller.handlePieTouch(tappedIndex);
                           }
@@ -65,34 +65,36 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
                 ),
               ),
               const Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Indicator(
                     color: Colors.green,
-                    text: 'Leitos Livres',
+                    text: 'Leitos Livres ',
                     isSquare: true,
                   ),
-                  SizedBox(height: 4),
+                  SizedBox(height: 5),
                   Indicator(
                     color: Colors.red,
-                    text: 'Leitos em Uso',
+                    text: 'Leitos em Uso ',
                     isSquare: true,
                   ),
-                  SizedBox(height: 4),
+                  SizedBox(height: 5),
                   Indicator(
                     color: Colors.yellow,
                     text: 'Leitos em\nManutenção',
                     isSquare: true,
                   ),
+                  SizedBox(height: 5),
                   Indicator(
                     color: Colors.blue,
                     text: 'Leitos em\nLimpeza',
                     isSquare: true,
                   ),
+                  SizedBox(height: 5),
                   Indicator(
                     color: Color.fromARGB(255, 26, 110, 150),
-                    text: 'Leitos\nnecessitando\nde limpeza',
+                    text: 'Leitos\nnecessitando \nde limpeza',
                     isSquare: true,
                   ),
                 ],
@@ -103,6 +105,7 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
       );
     });
   }
+  
 
   List<PieChartSectionData> showingSections() {
     return List.generate(5, (i) {
@@ -111,12 +114,16 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
       final radius = isTouched ? 50.0 : 40.0;
       const shadows = [Shadow(color: Colors.black, blurRadius: 2)];
 
+      double getValueOrDefault(int? value) {
+        return value?.toDouble() ?? 0.0;
+      }
+
       switch (i) {
         case 0:
           return PieChartSectionData(
             color: Colors.red,
-            value: controller.calculatePercentage(controller.countBed.value.occupied!.toDouble()),
-            title: '${controller.calculatePercentage(controller.countBed.value.occupied!.toDouble()).toStringAsFixed(1)}%',
+            value: controller.calculatePercentage(getValueOrDefault(controller.countBed.value.occupied)),
+            title: '${controller.calculatePercentage(getValueOrDefault(controller.countBed.value.occupied)).toStringAsFixed(1)}%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -128,8 +135,8 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
         case 1:
           return PieChartSectionData(
             color: Colors.green,
-            value: controller.calculatePercentage(controller.countBed.value.free!.toDouble()),
-            title: '${controller.calculatePercentage(controller.countBed.value.free!.toDouble()).toStringAsFixed(1)}%',
+            value: controller.calculatePercentage(getValueOrDefault(controller.countBed.value.free)),
+            title: '${controller.calculatePercentage(getValueOrDefault(controller.countBed.value.free)).toStringAsFixed(1)}%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -141,8 +148,8 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
         case 2:
           return PieChartSectionData(
             color: Colors.yellow,
-            value: controller.calculatePercentage(controller.countBed.value.maintenance!.toDouble()),
-            title: '${controller.calculatePercentage(controller.countBed.value.maintenance!.toDouble()).toStringAsFixed(1)}%',
+            value: controller.calculatePercentage(getValueOrDefault(controller.countBed.value.maintenance)),
+            title: '${controller.calculatePercentage(getValueOrDefault(controller.countBed.value.maintenance)).toStringAsFixed(1)}%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -154,8 +161,8 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
         case 3:
           return PieChartSectionData(
             color: const Color.fromARGB(255, 26, 110, 150),
-            value: controller.calculatePercentage(controller.countBed.value.cleaningRequired!.toDouble()),
-            title: '${controller.calculatePercentage(controller.countBed.value.cleaningRequired!.toDouble()).toStringAsFixed(1)}%',
+            value: controller.calculatePercentage(getValueOrDefault(controller.countBed.value.cleaningRequired)),
+            title: '${controller.calculatePercentage(getValueOrDefault(controller.countBed.value.cleaningRequired)).toStringAsFixed(1)}%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -167,8 +174,8 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
         case 4:
           return PieChartSectionData(
             color: Colors.blue,
-            value: controller.calculatePercentage(controller.countBed.value.cleaning!.toDouble()),
-            title: '${controller.calculatePercentage(controller.countBed.value.cleaning!.toDouble()).toStringAsFixed(1)}%',
+            value: controller.calculatePercentage(getValueOrDefault(controller.countBed.value.cleaning)),
+            title: '${controller.calculatePercentage(getValueOrDefault(controller.countBed.value.cleaning)).toStringAsFixed(1)}%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,

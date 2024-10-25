@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:hospital_management/app/core/routes/routes.dart';
 import 'package:hospital_management/app/core/services/sqflite.dart';
+import 'package:hospital_management/app/core/utils/system.dart';
 import 'package:hospital_management/app/modules/global/core/model/signup_model.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/global_widgets/snackbar.dart';
 import '../../../core/services/auth.dart';
@@ -51,6 +54,16 @@ class SignInController extends GetxController {
     super.onInit();
     emailController.text = 'carlos.admin@example.com';
     passwordController.text = 'admin123';
+  }
+
+  @override
+  Future<void> onReady() async {
+    super.onReady();
+    if (Platform.isAndroid && (await SystemInfo.isAndroid11OrHigher())) {
+      await Permission.manageExternalStorage.request();
+    } else {
+      await Permission.storage.request();
+    }
   }
 
   Future<bool> formValidator() async {
@@ -121,7 +134,6 @@ class SignInController extends GetxController {
   }
 
   void register() async {
-    
     loading.value = true;
     if (await signUpFormValidator()) {
       try {
@@ -139,8 +151,8 @@ class SignInController extends GetxController {
         final response = await signInRepository.registerUser(signupModel);
 
         if (response.status) {
-          SnackBarApp.body("Sucesso", "Cadastro realizado com sucesso!");
           await signupService.insertSignup(signupModel);
+          SnackBarApp.body("Sucesso", "Cadastro realizado com sucesso!");
           toggleSignUpForm(); // Alterna para a tela de login
         } else {
           SnackBarApp.body("Ops!", "Falha ao realizar o cadastro.",

@@ -4,16 +4,18 @@ import 'dart:ui';
 import 'package:get/get.dart';
 import 'package:hospital_management/app/core/global_widgets/snackbar.dart';
 import 'package:hospital_management/app/core/services/sqflite.dart';
+import 'package:hospital_management/app/core/utils/system.dart';
 import 'package:hospital_management/app/modules/global/core/model/signup_model.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:file_picker/file_picker.dart';
 
 class ReportsController extends GetxController {
   final SignupService signupService = SignupService();
 
   var signups = <SignupModel>[].obs;
-  
+
   final RxBool _loading = false.obs;
   bool get getLoading => _loading.value;
   set setLoading(bool status) => _loading.value = status;
@@ -39,9 +41,9 @@ class ReportsController extends GetxController {
   Future<Uint8List> generatePdf() async {
     final PdfDocument document = PdfDocument();
     final PdfPage page = document.pages.add();
-    
+
     final PdfGrid grid = PdfGrid();
-    grid.columns.add(count: 7);
+    grid.columns.add(count: 6);
 
     grid.headers.add(1);
     final PdfGridRow header = grid.headers[0];
@@ -54,12 +56,12 @@ class ReportsController extends GetxController {
 
     for (var signup in signups) {
       final PdfGridRow row = grid.rows.add();
-      row.cells[0].value = signup.name;
-      row.cells[1].value = signup.email;
-      row.cells[2].value = signup.phone;
-      row.cells[3].value = signup.taxNumber;
-      row.cells[4].value = signup.hospitalUniqueCode;
-      row.cells[5].value = signup.position;
+      row.cells[0].value = signup.name ?? ' ';
+      row.cells[1].value = signup.email ?? ' ';
+      row.cells[2].value = signup.phone ?? ' ';
+      row.cells[3].value = signup.taxNumber ?? ' ';
+      row.cells[4].value = signup.hospitalUniqueCode ?? ' ';
+      row.cells[5].value = signup.position ?? ' ';
     }
 
     grid.draw(
@@ -75,23 +77,32 @@ class ReportsController extends GetxController {
 
   Future<void> savePdf() async {
     try {
-      PermissionStatus status = await Permission.storage.request();
+      PermissionStatus status;
+      if (Platform.isAndroid && (await SystemInfo.isAndroid11OrHigher())) {
+        status = await Permission.manageExternalStorage.request();
+      } else {
+        status = await Permission.storage.request();
+      }
       if (status.isGranted) {
         Uint8List pdfData = await generatePdf();
-        
-        final directory = await getExternalStorageDirectory();
-        String filePath = '${directory!.path}/relatorio_cadastros.pdf';
 
-        File file = File(filePath);
-        await file.writeAsBytes(pdfData);
+        String? directoryPath = await FilePicker.platform.getDirectoryPath();
 
-        SnackBarApp.body('Sucesso', 'PDF salvo em: $filePath');
+        if (directoryPath != null) {
+          String filePath = '$directoryPath/relatorio_cadastros.pdf';
+
+          File file = File(filePath);
+          await file.writeAsBytes(pdfData);
+          SnackBarApp.body('Sucesso', 'PDF salvo em: $filePath');
+        } else {
+          SnackBarApp.body('Erro', 'A operação de salvar foi cancelada.');
+        }
       } else {
-        SnackBarApp.body('Permissão Negada', 'Por favor, permita acesso ao armazenamento.');
+        SnackBarApp.body(
+            'Permissão Negada', 'Por favor, permita acesso ao armazenamento.');
       }
     } catch (e) {
       SnackBarApp.body('Erro', 'Falha ao salvar PDF: $e');
     }
   }
-
 }
