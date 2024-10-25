@@ -18,24 +18,25 @@ class BedDataSource:
         self.db = db
 
     def count_beds_by_status(self, tax_number):
-        try:
-            counts = {status: 0 for status in BedStatus}
+        counts = {status: 0 for status in BedStatus}
+        retries = 3  # the bd is a potato
+        for attempt in range(retries):
+            try:
+                query = (self.db.query(Bed.status, func.count(
+                    Bed.id)).join(Sector).join(Hospital).group_by(
+                        Bed.status).filter(
+                            Hospital.tax_number == tax_number).filter(
+                                Bed.status != BedStatus.DELETED).filter(
+                                    Sector.status != SectorStatus.DELETED).all())
 
-            query = (self.db.query(Bed.status, func.count(
-                Bed.id)).join(Sector).join(Hospital).group_by(
-                    Bed.status).filter(
-                        Hospital.tax_number == tax_number).filter(
-                            Bed.status != BedStatus.DELETED).filter(
-                                Sector.status != SectorStatus.DELETED).all())
+                for status, count in query:
+                    if status in counts:
+                        counts[status.value] = count
 
-            for status, count in query:
-                if status in counts:
-                    counts[status.value] = count
-
-            return counts
-        except Exception as e:
-            logger.error(f"Error counting beds by status: {e}")
-            raise
+                return counts
+            except Exception as e:
+                logger.error(f"Error counting beds by status: {e}")
+                raise
 
     def get_beds_grouped_by_sector(self, tax_number: str):
         BedAlias = aliased(Bed)
@@ -87,15 +88,11 @@ class BedDataSource:
 
     def get_bed_by_id_and_tax_number(self, bed_id: int,
                                      tax_number: str) -> Optional[Bed]:
-        BedAlias = aliased(Bed)
-        SectorAlias = aliased(Sector)
-        return (self.db.query(BedAlias).join(
-            Hospital, SectorAlias.hospital_id == Hospital.id).join(
-                SectorAlias, BedAlias.sector_id == SectorAlias.id
-            ).filter(Hospital.tax_number == tax_number).filter(
-                BedAlias.id == bed_id).filter(
-                    BedAlias.status != BedStatus.DELETED).filter(
-                        SectorAlias.status != SectorStatus.DELETED).first())
+        return (self.db.query(Bed)
+                .join(Sector).join(Hospital).filter(Hospital.tax_number == tax_number)
+                .filter(Bed.id == bed_id).filter(
+                    Bed.status != BedStatus.DELETED).filter(
+                        Sector.status != SectorStatus.DELETED).first())
 
     def update_bed(self, bed: Bed, bed_update: BedUpdate):
         for field, value in bed_update.model_dump().items():

@@ -18,13 +18,14 @@ class SignupService {
 
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'app_database.db');
+    
     return await openDatabase(
       path,
       version: 1,
       onCreate: (db, version) {
         return db.execute(
           '''
-          CREATE TABLE signup(
+          CREATE TABLE IF NOT EXISTS signup(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
             password TEXT,

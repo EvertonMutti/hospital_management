@@ -3,11 +3,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hospital_management/app/core/global_widgets/snackbar.dart';
-import 'package:hospital_management/app/modules/global/core/model/notification.dart' as app_notification;
+import 'package:hospital_management/app/modules/global/core/model/notification.dart'
+    as app_notification;
 import 'package:hospital_management/app/modules/home/core/model/bed.dart';
 import 'package:hospital_management/app/modules/home/repository.dart';
 // ignore: depend_on_referenced_packages
-import 'package:intl/intl.dart'; 
+import 'package:intl/intl.dart';
 
 class HomeController extends GetxController with WidgetsBindingObserver {
   HomeRepository repository;
@@ -32,7 +33,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed) {
       setLoading = true;
-      _fetchData(); 
+      _fetchData();
       setLoading = false;
     }
   }
@@ -53,22 +54,37 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   Future<void> _fetchData() async {
-    try {
-      final response = await repository.getCountBeds();
+    setLoading = true;
+    const int maxRetries = 3;
+    int retryCount = 0;
+    while (retryCount < maxRetries) {
+      try {
+        final response = await repository.getCountBeds();
 
-      if (response.status!) {
-        setCountBed = response;
+        if (response.status!) {
+          setCountBed = response;
+          setLoading = false;
+          return;
+        } else {
+          throw Exception('Resposta do servidor inválida');
+        }
+      } catch (e) {
+        retryCount++;
+        if (retryCount >= maxRetries) {
+          setLoading = false;
+          SnackBarApp.body('Ops', 'Não foi possível carregar os leitos.');
+        } else {
+          await Future.delayed(const Duration(seconds: 1));
+        }
       }
-    } catch (e) {
-      SnackBarApp.body('Ops', 'Não foi possível carregar os leitos');
     }
+
   }
 
   double calculatePercentage(double value) {
     if (totalBeds == 0) return 0;
     return (value / totalBeds) * 100;
   }
-
 
   //Notifications
   final RxInt notificationCount = 0.obs;
@@ -90,38 +106,39 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   Future<void> fetchDataNotification() async {
-    await Future.delayed(const Duration(seconds: 1)); 
+    await Future.delayed(const Duration(seconds: 1));
 
     var fetchedNotifications = [
       app_notification.Notification(
-        id:1,
+        id: 1,
         title: 'Atualização de Status',
         body: 'O leito 101 agora está livre.',
         date: DateTime.now().subtract(const Duration(days: 0)), // Hoje
       ),
       app_notification.Notification(
-        id:2,
+        id: 2,
         title: 'Novo Paciente',
         body: 'Um novo paciente foi admitido no leito 102.',
         date: DateTime.now().subtract(const Duration(days: 1)), // Ontem
       ),
       app_notification.Notification(
-        id:3,
+        id: 3,
         title: 'Manutenção Programada',
         body: 'Manutenção programada para o leito 103.',
         date: DateTime.now().subtract(const Duration(days: 3)), // 3 dias atrás
       ),
       app_notification.Notification(
-        id:4,
+        id: 4,
         title: 'Alta Médica',
         body: 'O paciente do leito 104 teve alta.',
         date: DateTime.now().subtract(const Duration(days: 7)), // 7 dias atrás
       ),
       app_notification.Notification(
-        id:5,
+        id: 5,
         title: 'Aviso de Segurança',
         body: 'Verificação de rotina de segurança no hospital.',
-        date: DateTime.now().subtract(const Duration(days: 10)), // 10 dias atrás
+        date:
+            DateTime.now().subtract(const Duration(days: 10)), // 10 dias atrás
       ),
     ];
 
@@ -132,7 +149,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   String formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date).inDays;
-    
+
     if (difference < 1) {
       return 'Hoje | ${DateFormat('HH:mm').format(date)}';
     } else if (difference == 1) {
@@ -143,6 +160,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       return '${DateFormat('MMM d, yyyy', 'pt_BR').format(date)} | ${DateFormat('HH:mm').format(date)}';
     }
   }
+
   final RxBool isChartExpanded = false.obs;
 
   void toggleChartExpand() {
