@@ -29,7 +29,7 @@ class SystemInfo{
   static Future<bool> requestStoragePermission() async {
     PermissionStatus status;
 
-    if (await isAndroid13OrHigher()) {
+    if (await isAndroid11OrHigher()) {
       status = await Permission.manageExternalStorage.status;
       if (!status.isGranted) {
         status = await Permission.manageExternalStorage.request();

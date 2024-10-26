@@ -36,6 +36,16 @@ class ReportsController extends GetxController {
     }
   }
 
+  String wrapText(String? text, [int maxLength = 19]) {
+    if (text == null) return ' ';
+    final buffer = StringBuffer();
+    for (int i = 0; i < text.length; i += maxLength) {
+      buffer.write(text.substring(i, i + maxLength > text.length ? text.length : i + maxLength));
+      if (i + maxLength < text.length) buffer.write('\n');
+    }
+    return buffer.toString();
+  }
+
   Future<Uint8List> generatePdf() async {
     final PdfDocument document = PdfDocument();
     final PdfPage page = document.pages.add();
@@ -54,13 +64,18 @@ class ReportsController extends GetxController {
 
     for (var signup in signups) {
       final PdfGridRow row = grid.rows.add();
-      row.cells[0].value = signup.name ?? ' ';
-      row.cells[1].value = signup.email ?? ' ';
-      row.cells[2].value = signup.phone ?? ' ';
-      row.cells[3].value = signup.taxNumber ?? ' ';
-      row.cells[4].value = signup.hospitalUniqueCode ?? ' ';
-      row.cells[5].value = signup.position ?? ' ';
+      row.cells[0].value = wrapText(signup.name);
+      row.cells[1].value = wrapText(signup.email);
+      row.cells[2].value = wrapText(signup.phone);
+      row.cells[3].value = wrapText(signup.taxNumber);
+      row.cells[4].value = wrapText(signup.hospitalUniqueCode);
+      row.cells[5].value = wrapText(signup.position);
     }
+
+    grid.style = PdfGridStyle(
+      cellPadding: PdfPaddings(left: 4, right: 4, top: 2, bottom: 2),
+      font: PdfStandardFont(PdfFontFamily.helvetica, 10),
+    );
 
     grid.draw(
       page: page,
