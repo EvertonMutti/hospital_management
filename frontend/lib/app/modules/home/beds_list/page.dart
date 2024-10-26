@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hospital_management/app/core/global_widgets/progress_indicator.dart';
-import 'package:hospital_management/app/core/routes/routes.dart';
 import 'package:hospital_management/app/modules/home/core/widget/status_dialog.dart';
 import 'package:hospital_management/app/modules/home/beds_list/controller.dart';
 
@@ -14,12 +13,12 @@ class BedsListPage extends GetView<BedsController> {
       appBar: AppBar(
         title: const Text('Lista de Leitos'),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back), // Ícone do menu
-          onPressed: () {
-            Get.offNamed(Routes.home); 
-          },
-        ),
+        // leading: IconButton(
+        //   icon: const Icon(Icons.arrow_back), // Ícone do menu
+        //   onPressed: () {
+        //     Get.offAllNamed(Routes.home); 
+        //   },
+        // ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -65,7 +64,9 @@ class BedsListPage extends GetView<BedsController> {
                           controller.getStatusIcon(bed.status!),
                           color: controller.getStatusColor(bed.status!),
                         ),
-                        onTap: () => showStatusDialog(context, bed, controller),
+                        onTap: ()  {
+                          showStatusDialog(context, bed, controller);
+                        },
                       ),
                     );
                   }).toList() ?? [],

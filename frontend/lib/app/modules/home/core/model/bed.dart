@@ -101,6 +101,7 @@ class CountBed {
   int? cleaning;
   int? cleaningRequired;
   bool? status;
+  String? detail;
 
   CountBed(
       {this.free,
@@ -109,6 +110,7 @@ class CountBed {
       this.cleaning,
       this.cleaningRequired,
       this.status,
+      this.detail
       });
 
   CountBed.fromJson(Map<String, dynamic> json) {

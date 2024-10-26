@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hospital_management/app/core/global_widgets/snackbar.dart';
 import 'package:hospital_management/app/modules/home/core/model/bed.dart';
+import 'package:hospital_management/app/modules/home/home/controller.dart';
 import 'package:hospital_management/app/modules/home/repository.dart';
 
-class BedsController extends GetxController with WidgetsBindingObserver{
+class BedsController extends GetxController{
   HomeRepository repository;
 
   BedsController({required this.repository});
@@ -31,12 +32,15 @@ class BedsController extends GetxController with WidgetsBindingObserver{
   }
 
   @override
-  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.resumed) {
-      setLoading = true;
-      _loadBedsBySector(); 
-      setLoading = false;
-    }
+  Future<void> onClose() async {
+    super.onClose();
+    Get.find<HomeController>().refreshScreen();
+  }
+
+  Future<void> refreshScreen() async {
+    setLoading = true;
+    await _loadBedsBySector();
+    setLoading = false;
   }
 
   Future<void> _loadBedsBySector() async {
@@ -45,6 +49,8 @@ class BedsController extends GetxController with WidgetsBindingObserver{
 
       if (response.status!) {
         sector.value = response.data ?? [];
+      } else{
+        SnackBarApp.body('Ops', response.detail ?? 'Não foi possível carregar os leitos');
       }
     } catch (e) {
       SnackBarApp.body('Ops', 'Não foi possível carregar os leitos');

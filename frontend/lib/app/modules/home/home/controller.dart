@@ -10,7 +10,7 @@ import 'package:hospital_management/app/modules/home/repository.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
-class HomeController extends GetxController with WidgetsBindingObserver {
+class HomeController extends GetxController{
   HomeRepository repository;
 
   HomeController({required this.repository});
@@ -30,15 +30,6 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       (countBed.value.cleaningRequired ?? 0);
 
   @override
-  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.resumed) {
-      setLoading = true;
-      _fetchData();
-      setLoading = false;
-    }
-  }
-
-  @override
   Future<void> onInit() async {
     setLoading = true;
     super.onInit();
@@ -49,6 +40,12 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     setLoading = true;
     super.onReady();
     await fetchDataNotification();
+    await _fetchData();
+    setLoading = false;
+  }
+
+  Future<void> refreshScreen() async {
+    setLoading = true;
     await _fetchData();
     setLoading = false;
   }

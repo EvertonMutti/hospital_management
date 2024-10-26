@@ -8,7 +8,6 @@ import 'package:hospital_management/app/core/routes/routes.dart';
 import 'package:hospital_management/app/core/services/sqflite.dart';
 import 'package:hospital_management/app/core/utils/system.dart';
 import 'package:hospital_management/app/modules/global/core/model/signup_model.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/global_widgets/snackbar.dart';
 import '../../../core/services/auth.dart';
@@ -59,11 +58,7 @@ class SignInController extends GetxController {
   @override
   Future<void> onReady() async {
     super.onReady();
-    if (Platform.isAndroid && (await SystemInfo.isAndroid11OrHigher())) {
-      await Permission.manageExternalStorage.request();
-    } else {
-      await Permission.storage.request();
-    }
+    await SystemInfo.requestStoragePermission();
   }
 
   Future<bool> formValidator() async {
@@ -101,7 +96,7 @@ class SignInController extends GetxController {
             Get.offAllNamed(Routes.home);
           }
         } else {
-          SnackBarApp.body("Ops!", response.detail!,
+          SnackBarApp.body("Ops!", response.detail ?? "Não foi possível realizar o login.",
               icon: FontAwesomeIcons.xmark);
         }
       } catch (e) {
@@ -155,7 +150,7 @@ class SignInController extends GetxController {
           SnackBarApp.body("Sucesso", "Cadastro realizado com sucesso!");
           toggleSignUpForm(); // Alterna para a tela de login
         } else {
-          SnackBarApp.body("Ops!", "Falha ao realizar o cadastro.",
+          SnackBarApp.body("Ops!", response.detail ?? "Erro ao realizar cadastro",
               icon: FontAwesomeIcons.xmark);
         }
       } catch (e) {
@@ -180,7 +175,7 @@ class SignInController extends GetxController {
         return true;
       }
     } else {
-      SnackBarApp.body("Ops!", hospitalResponse.detail!,
+      SnackBarApp.body("Ops!", hospitalResponse.detail ?? "Erro ao buscar hospital",
           icon: FontAwesomeIcons.xmark);
     }
     return false;
