@@ -15,7 +15,7 @@ class EnvironmentInfo extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              Enviroment.env,
+              Enviroment.env != 'PROD' ? Enviroment.env : '',
               style: TextStyle(
                 color: Color.fromARGB(150, 158, 158, 158), 
                 fontWeight: FontWeight.bold,  
@@ -24,7 +24,7 @@ class EnvironmentInfo extends StatelessWidget {
               ),
             ),
             Text(
-              'version ${Enviroment.version}',
+              Enviroment.env != 'PROD' ? 'version ${Enviroment.version}' : '',
               style: TextStyle(
                 color: Color.fromARGB(150, 158, 158, 158),   
                 fontWeight: FontWeight.bold, 

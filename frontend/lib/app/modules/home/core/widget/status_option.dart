@@ -23,8 +23,8 @@ Widget buildStatusOption(
                   Navigator.of(context).pop();
                   controller.dischargePatient(bed.id!);
                 } else {
-                  controller.updateBedStatus(bed, newStatus);
                   Navigator.of(context).pop();
+                  controller.updateBedStatus(bed, newStatus);
                 }
               }
             : null,

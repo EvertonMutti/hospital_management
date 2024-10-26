@@ -10,7 +10,7 @@ class PatientSelectionPage extends GetView<PatientController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      if (controller.getLoading && controller.getBed.id == null) {
+      if (controller.getLoading || controller.getBed.id == null) {
         return Container(
           color: Colors.black54,
           child: const Center(
@@ -100,6 +100,7 @@ class PatientSelectionPage extends GetView<PatientController> {
                           controller.admitPatientToBed(
                               patient.id!, controller.getBed.id!);
                           Navigator.of(context).pop();
+                          Get.back();
                         },
                         child: const Text('Confirmar'),
                       ),

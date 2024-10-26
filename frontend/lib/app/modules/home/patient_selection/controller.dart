@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:hospital_management/app/core/global_widgets/snackbar.dart';
 import 'package:hospital_management/app/core/routes/routes.dart';
+import 'package:hospital_management/app/modules/home/beds_list/controller.dart';
 import 'package:hospital_management/app/modules/home/core/model/bed.dart';
 import 'package:hospital_management/app/modules/home/core/model/patient_selection.dart';
 import 'package:hospital_management/app/modules/home/repository.dart';
@@ -13,9 +14,9 @@ class PatientController extends GetxController {
   RxList<PatientSelection> patients = <PatientSelection>[].obs;
   final RxBool _loading = false.obs;
 
-  late BedModel _bed;
-  BedModel get getBed => _bed;
-  set bed(BedModel? value) => _bed = value!;
+  final Rx<BedModel> _bed =  BedModel().obs;
+  BedModel get getBed => _bed.value;
+  set bed(BedModel? value) => _bed.value = value!;
   
   bool get getLoading => _loading.value;
   set setLoading(bool status) => _loading.value = status;
@@ -37,6 +38,12 @@ class PatientController extends GetxController {
     setLoading = false;
   }
 
+  // @override
+  // Future<void> onClose() async {
+  //   super.onClose();
+  //   Get.find<BedsController>().refreshScreen();
+  // }
+
   Future<void> _loadAvailablePatients() async {
     try {
       final response = await repository.getAvailablePatients();
@@ -53,7 +60,7 @@ class PatientController extends GetxController {
       final response = await repository.admitPatient(patientId, bedId);
       if (response.status!) {
         SnackBarApp.body('Sucesso', 'Paciente admitido com sucesso!');
-        Get.offAllNamed(Routes.bedsList);
+        Get.find<BedsController>().refreshScreen();
       } else {
         SnackBarApp.body('Erro', 'Não foi possível admitir o paciente');
       }

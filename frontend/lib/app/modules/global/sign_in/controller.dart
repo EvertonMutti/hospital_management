@@ -59,11 +59,7 @@ class SignInController extends GetxController {
   @override
   Future<void> onReady() async {
     super.onReady();
-    if (Platform.isAndroid && (await SystemInfo.isAndroid11OrHigher())) {
-      await Permission.manageExternalStorage.request();
-    } else {
-      await Permission.storage.request();
-    }
+    await SystemInfo.requestStoragePermission();
   }
 
   Future<bool> formValidator() async {

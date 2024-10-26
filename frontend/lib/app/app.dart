@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:hospital_management/app/core/config/config.dart';
 import 'package:hospital_management/app/core/global_widgets/enviroment_info.dart';
 import 'package:hospital_management/app/core/routes/routes.dart';
 import 'package:hospital_management/app/core/services/auth.dart';

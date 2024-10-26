@@ -77,13 +77,7 @@ class ReportsController extends GetxController {
 
   Future<void> savePdf() async {
     try {
-      PermissionStatus status;
-      if (Platform.isAndroid && (await SystemInfo.isAndroid11OrHigher())) {
-        status = await Permission.manageExternalStorage.request();
-      } else {
-        status = await Permission.storage.request();
-      }
-      if (status.isGranted) {
+      if (await SystemInfo.requestStoragePermission()) {
         Uint8List pdfData = await generatePdf();
 
         String? directoryPath = await FilePicker.platform.getDirectoryPath();

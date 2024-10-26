@@ -104,7 +104,7 @@ class HomePage extends GetView<HomeController> {
                 const SizedBox(height: 30),
                 InkWell(
                   onTap: () {
-                    Get.offNamed(Routes.bedsList);
+                    Get.toNamed(Routes.bedsList);
                   },
                   child: Container(
                     padding: const EdgeInsets.all(16.0),
