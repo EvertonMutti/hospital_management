@@ -49,6 +49,8 @@ class BedsController extends GetxController{
 
       if (response.status!) {
         sector.value = response.data ?? [];
+      } else{
+        SnackBarApp.body('Ops', response.detail ?? 'Não foi possível carregar os leitos');
       }
     } catch (e) {
       SnackBarApp.body('Ops', 'Não foi possível carregar os leitos');

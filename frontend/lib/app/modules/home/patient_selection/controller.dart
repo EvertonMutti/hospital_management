@@ -49,6 +49,8 @@ class PatientController extends GetxController {
       final response = await repository.getAvailablePatients();
       if (response.status!) {
         patients.value = response.data ?? [];
+      } else{
+        SnackBarApp.body('Ops', response.detail ?? 'Não foi possível carregar os pacientes');
       }
     } catch (e) {
       SnackBarApp.body('Erro', 'Não foi possível carregar os pacientes');
@@ -62,7 +64,7 @@ class PatientController extends GetxController {
         SnackBarApp.body('Sucesso', 'Paciente admitido com sucesso!');
         Get.find<BedsController>().refreshScreen();
       } else {
-        SnackBarApp.body('Erro', 'Não foi possível admitir o paciente');
+        SnackBarApp.body('Ops', response.detail ?? 'Não foi possível admitir o paciente');
       }
     } catch (e) {
       SnackBarApp.body('Erro', 'Ocorreu um erro ao admitir o paciente');

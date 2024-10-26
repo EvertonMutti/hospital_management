@@ -35,6 +35,13 @@ class SignInProvider implements SignInRepository {
       final response = await _http.post(Endpoints.signup, data:body);
       return SignupResponseModel.fromJson(response.data);
     } catch (error) {
+      if (error is DioException) {
+        final statusCode = error.response?.statusCode;
+        if ([404, 400, 409, 503].contains(statusCode)) {
+          final message = error.response?.data['detail'] ?? error.message;
+          return SignupResponseModel(status: false, detail: message);
+        }
+      }
       return SignupResponseModel(status: false, detail: error.toString());
     }
   }
@@ -47,12 +54,12 @@ class SignInProvider implements SignInRepository {
     } catch (e) {
       if (e is DioException) {
         final statusCode = e.response?.statusCode;
-        if ([403, 503].contains(statusCode)) {
+        if ([503].contains(statusCode)) {
           final message = e.response?.data['detail'] ?? e.message;
           return HospitalList(status: false, detail: message);
         }
       }
-      return HospitalList(status: false);
+      return HospitalList(status: false, detail: e.toString());
     }
   }
 }

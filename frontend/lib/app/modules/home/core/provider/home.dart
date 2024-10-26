@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:hospital_management/app/core/services/auth.dart';
 import 'package:hospital_management/app/modules/global/core/network/endpoints.dart';
 import 'package:hospital_management/app/modules/home/core/model/admission.dart';
@@ -16,8 +17,15 @@ class HomeProvider implements HomeRepository {
         '${Endpoints.listBeds}/${AuthService.to.getUser.hospital!.taxNumber}',
       );
       return ListSectorModel.fromJson(response.data);
-    } catch (e) {
-      return ListSectorModel(status: false, detail: e.toString());
+    } catch (error) {
+      if (error is DioException) {
+        final statusCode = error.response?.statusCode;
+        if ([404, 400, 409, 503].contains(statusCode)) {
+          final message = error.response?.data['detail'] ?? error.message;
+          return ListSectorModel(status: false, detail: message);
+        }
+      }
+      return ListSectorModel(status: false, detail: error.toString());
     }
   }
 
@@ -46,8 +54,15 @@ class HomeProvider implements HomeRepository {
         '${Endpoints.countBeds}/${AuthService.to.getUser.hospital!.taxNumber}',
       );
       return CountBed.fromJson(response.data);
-    } catch (e) {
-      return CountBed(status: false);
+    } catch (error) {
+      if (error is DioException) {
+        final statusCode = error.response?.statusCode;
+        if ([404, 400, 409, 503].contains(statusCode)) {
+          final message = error.response?.data['detail'] ?? error.message;
+          return CountBed(status: false, detail: message);
+        }
+      }
+      return CountBed(status: false, detail: error.toString());
     }
   }
 
@@ -58,7 +73,14 @@ class HomeProvider implements HomeRepository {
         Endpoints.availablePatients(AuthService.to.getUser.hospital!.taxNumber!),
       );
       return PatientSelectionList.fromJson(response.data);
-    } catch (e) {
+    } catch (error) {
+      if (error is DioException) {
+        final statusCode = error.response?.statusCode;
+        if ([404, 400, 409, 503].contains(statusCode)) {
+          final message = error.response?.data['detail'] ?? error.message;
+          return PatientSelectionList(status: false, detail: message);
+        }
+      }
       return PatientSelectionList(status: false);
     }
   }
@@ -70,8 +92,15 @@ class HomeProvider implements HomeRepository {
         '${Endpoints.admission}/${AuthService.to.getUser.hospital!.taxNumber}/$bedId/$patientId',
       );
       return Admission.fromJson(response.data);
-    } catch (e) {
-      return Admission(status: false);
+    } catch (error) {
+      if (error is DioException) {
+        final statusCode = error.response?.statusCode;
+        if ([404, 400, 409, 503].contains(statusCode)) {
+          final message = error.response?.data['detail'] ?? error.message;
+          return Admission(status: false, detail: message);
+        }
+      }
+      return Admission(status: false, detail: error.toString());
     }
   }
 

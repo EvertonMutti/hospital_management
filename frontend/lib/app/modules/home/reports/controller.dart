@@ -6,9 +6,7 @@ import 'package:hospital_management/app/core/global_widgets/snackbar.dart';
 import 'package:hospital_management/app/core/services/sqflite.dart';
 import 'package:hospital_management/app/core/utils/system.dart';
 import 'package:hospital_management/app/modules/global/core/model/signup_model.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:file_picker/file_picker.dart';
 
 class ReportsController extends GetxController {
