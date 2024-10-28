@@ -5,11 +5,12 @@ from sqlalchemy.orm import Session
 
 from project.shared.entities.entities import Client, Hospital
 from project.shared.schemas.hospital import HospitalCreate
+from project.shared.utils.retry import RetryBase
 
 logger = logging.getLogger(__name__)
 
 
-class HospitalDataSource:
+class HospitalDataSource(RetryBase):
 
     def __init__(self, db: Session):
         self.db: Session = db

@@ -4,11 +4,12 @@ from typing import Optional
 from sqlalchemy.orm import Session
 
 from project.shared.entities.entities import Admission, Bed, Hospital, Sector
+from project.shared.utils.retry import RetryBase
 
 logger = logging.getLogger(__name__)
 
 
-class AdmissionDataSource:
+class AdmissionDataSource(RetryBase):
 
     def __init__(self, db: Session):
         self.db = db

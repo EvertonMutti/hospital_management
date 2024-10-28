@@ -62,15 +62,15 @@ patients = [
     Patient(name="Sofia Souza", tax_number="56789012345", hospital_id=1),
 ]
 
-# admissions = [
-#     Admission(patient_id=1, bed_id=2, admission_date=datetime(2024, 9, 1)),
-#     Admission(patient_id=2, bed_id=4, admission_date=datetime(2024, 9, 5), discharge_date=datetime(2024, 9, 10)),
-#     Admission(patient_id=3, bed_id=6, admission_date=datetime(2024, 9, 10)),
-#     Admission(patient_id=4, bed_id=1, admission_date=datetime(2024, 9, 12)),
-#     Admission(patient_id=5, bed_id=2, admission_date=datetime(2024, 9, 15)),
-#     Admission(patient_id=6, bed_id=3, admission_date=datetime(2024, 9, 18)),
-#     Admission(patient_id=7, bed_id=4, admission_date=datetime(2024, 9, 20)),
-# ]
+admissions = [
+    Admission(patient_id=1, bed_id=2, admission_date=datetime(2024, 9, 1)),
+    Admission(patient_id=2, bed_id=4, admission_date=datetime(2024, 9, 5), discharge_date=datetime(2024, 9, 10)),
+    Admission(patient_id=3, bed_id=6, admission_date=datetime(2024, 9, 10)),
+    Admission(patient_id=4, bed_id=1, admission_date=datetime(2024, 9, 12)),
+    Admission(patient_id=5, bed_id=2, admission_date=datetime(2024, 9, 15)),
+    Admission(patient_id=6, bed_id=3, admission_date=datetime(2024, 9, 18)),
+    Admission(patient_id=7, bed_id=4, admission_date=datetime(2024, 9, 20)),
+]
 
 clients = [
     Client(name="Carlos Alberto", email="carlos.admin@example.com", password=get_password_hash("admin123"), phone="11987654321", tax_number="01234567890", position=PositionEnum.NURSE, permission=ScopesStatus.ADMIN),

@@ -8,35 +8,34 @@ from sqlalchemy.orm import Session, aliased
 from project.shared.entities.entities import Bed, Hospital, Sector
 from project.shared.enum.enums import BedStatus, SectorStatus  # type: ignore
 from project.shared.schemas.bed import BedCreate, BedUpdate
+from project.shared.utils.retry import RetryBase
 
 logger = logging.getLogger(__name__)
 
 
-class BedDataSource:
+class BedDataSource(RetryBase):
 
     def __init__(self, db: Session):
         self.db = db
 
     def count_beds_by_status(self, tax_number):
         counts = {status: 0 for status in BedStatus}
-        retries = 3  # the bd is a potato
-        for attempt in range(retries):
-            try:
-                query = (self.db.query(Bed.status, func.count(
-                    Bed.id)).join(Sector).join(Hospital).group_by(
-                        Bed.status).filter(
-                            Hospital.tax_number == tax_number).filter(
-                                Bed.status != BedStatus.DELETED).filter(
-                                    Sector.status != SectorStatus.DELETED).all())
+        try:
+            query = (self.db.query(Bed.status, func.count(
+                Bed.id)).join(Sector).join(Hospital).group_by(
+                    Bed.status).filter(
+                        Hospital.tax_number == tax_number).filter(
+                            Bed.status != BedStatus.DELETED).filter(
+                                Sector.status != SectorStatus.DELETED).all())
 
-                for status, count in query:
-                    if status in counts:
-                        counts[status.value] = count
+            for status, count in query:
+                if status in counts:
+                    counts[status.value] = count
 
-                return counts
-            except Exception as e:
-                logger.error(f"Error counting beds by status: {e}")
-                raise
+            return counts
+        except Exception as e:
+            logger.error(f"Error counting beds by status: {e}")
+            raise
 
     def get_beds_grouped_by_sector(self, tax_number: str):
         BedAlias = aliased(Bed)

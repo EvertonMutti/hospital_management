@@ -94,7 +94,7 @@ class ExpandablePieChartWidget extends GetView<HomeController> {
                   SizedBox(height: 5),
                   Indicator(
                     color: Color.fromARGB(255, 26, 110, 150),
-                    text: 'Leitos\nnecessitando \nde limpeza',
+                    text: 'Necessitando \nde limpeza',
                     isSquare: true,
                   ),
                 ],
