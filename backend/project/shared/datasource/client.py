@@ -6,11 +6,12 @@ from sqlalchemy.orm import Session
 
 from project.shared.entities.entities import Client, client_hospital
 from project.shared.schemas.client import ClientInput
+from project.shared.utils.retry import RetryBase
 
 logger = logging.getLogger(__name__)
 
 
-class ClientDataSource():
+class ClientDataSource(RetryBase):
 
     def __init__(self, db: Session):
         self.db: Session = db

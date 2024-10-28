@@ -6,11 +6,12 @@ from sqlalchemy.orm import Session, aliased
 from project.shared.entities.entities import Hospital, Sector
 from project.shared.enum.enums import SectorStatus
 from project.shared.schemas.sector import SectorCreate, SectorUpdate
+from project.shared.utils.retry import RetryBase
 
 logger = logging.getLogger(__name__)
 
 
-class SectorDataSource:
+class SectorDataSource(RetryBase):
 
     def __init__(self, db: Session):
         self.db = db
