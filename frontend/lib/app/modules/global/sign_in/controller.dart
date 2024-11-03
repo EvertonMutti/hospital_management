@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:hospital_management/app/core/config/config.dart';
 import 'package:hospital_management/app/core/routes/routes.dart';
 import 'package:hospital_management/app/core/services/sqflite.dart';
 import 'package:hospital_management/app/core/utils/system.dart';
@@ -51,8 +52,8 @@ class SignInController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    emailController.text = 'carlos.admin@example.com';
-    passwordController.text = 'admin123';
+    emailController.text = Enviroment.env != 'PROD' ? 'carlos.admin@example.com' : '';
+    passwordController.text = Enviroment.env != 'PROD' ? 'admin123' : '';
   }
 
   @override
@@ -132,7 +133,6 @@ class SignInController extends GetxController {
     loading.value = true;
     if (await signUpFormValidator()) {
       try {
-        // Cria o modelo com os dados preenchidos
         final signupModel = SignupModel(
           name: fullNameController.text,
           email: signUpEmailController.text,
@@ -142,13 +142,12 @@ class SignInController extends GetxController {
           password: signUpPasswordController.text,
         );
 
-        // Chama o repositório com o modelo criado
         final response = await signInRepository.registerUser(signupModel);
 
         if (response.status) {
           await signupService.insertSignup(signupModel);
           SnackBarApp.body("Sucesso", "Cadastro realizado com sucesso!");
-          toggleSignUpForm(); // Alterna para a tela de login
+          toggleSignUpForm();
         } else {
           SnackBarApp.body("Ops!", response.detail ?? "Erro ao realizar cadastro",
               icon: FontAwesomeIcons.xmark);

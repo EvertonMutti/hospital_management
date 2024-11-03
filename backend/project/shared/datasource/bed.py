@@ -36,6 +36,11 @@ class BedDataSource(RetryBase):
         except Exception as e:
             logger.error(f"Error counting beds by status: {e}")
             raise
+    
+    def get_beds_by_tax_number(self, tax_number: str):
+        return (self.db.query(Bed)
+                .join(Sector).join(Hospital)
+                .filter(Hospital.tax_number == tax_number).all())
 
     def get_beds_grouped_by_sector(self, tax_number: str):
         BedAlias = aliased(Bed)

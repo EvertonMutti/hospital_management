@@ -26,3 +26,6 @@ class AdmissionDataSource(RetryBase):
             Hospital).filter(Bed.id == bed_id).filter(
                 Admission.discharge_date.is_(None)).filter(
                     Hospital.tax_number == tax_number).first())
+        
+    def get_admissions_by_bed_id(self, bed_id: int):
+        return self.db.query(Admission).filter(Admission.bed_id == bed_id).all()

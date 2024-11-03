@@ -42,7 +42,7 @@ class SignInProvider implements SignInRepository {
           return SignupResponseModel(status: false, detail: message);
         }
       }
-      return SignupResponseModel(status: false, detail: error.toString());
+      return SignupResponseModel(status: false);
     }
   }
 
@@ -59,7 +59,7 @@ class SignInProvider implements SignInRepository {
           return HospitalList(status: false, detail: message);
         }
       }
-      return HospitalList(status: false, detail: e.toString());
+      return HospitalList(status: false);
     }
   }
 }
