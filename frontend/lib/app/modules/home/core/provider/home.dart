@@ -25,7 +25,7 @@ class HomeProvider implements HomeRepository {
           return ListSectorModel(status: false, detail: message);
         }
       }
-      return ListSectorModel(status: false, detail: error.toString());
+      return ListSectorModel(status: false);
     }
   }
 
@@ -100,7 +100,7 @@ class HomeProvider implements HomeRepository {
           return Admission(status: false, detail: message);
         }
       }
-      return Admission(status: false, detail: error.toString());
+      return Admission(status: false);
     }
   }
 
