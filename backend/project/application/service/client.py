@@ -42,11 +42,9 @@ class ClientService():
                 self.client_data_source.link_hospital_to_client(
                     client_response.id, hospital.id)
                 return client_response
-            raise HospitalNotFoundException
+            raise HospitalNotFoundException()
 
-        except HospitalNotFoundException:
-            raise
-        except UserAlreadyExistsException:
+        except (HospitalNotFoundException, UserAlreadyExistsException) as error:
             raise
         except Exception as error:
             logger.error(f"Failed to create client: {error}")
