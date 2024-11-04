@@ -70,7 +70,6 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
 
-  //Notifications
   final RxInt notificationCount = 0.obs;
   var notifications = <app_notification.Notification>[].obs;
 

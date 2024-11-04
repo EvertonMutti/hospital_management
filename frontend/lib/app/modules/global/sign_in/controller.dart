@@ -1,11 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:hospital_management/app/core/routes/routes.dart';
 import 'package:hospital_management/app/modules/global/core/model/signup_model.dart';
-
 import '../../../core/global_widgets/snackbar.dart';
 import '../../../core/services/auth.dart';
 import 'repository.dart';
@@ -15,27 +13,33 @@ class SignInController extends GetxController {
 
   final SignInRepository signInRepository;
 
+  // Controladores de texto
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final phoneController = TextEditingController();
+  final taxNumberController = TextEditingController();
+  final uniqueCodeController = TextEditingController();
+  final signUpPasswordController = TextEditingController();
+  final fullNameController = TextEditingController();
+  final signUpEmailController = TextEditingController();
+  final positionController = TextEditingController();
+
+  // Variáveis observáveis para erros
   var emailError = ''.obs;
   var passwordError = ''.obs;
-
-  final phoneController = TextEditingController();
   var phoneError = ''.obs;
-  final taxNumberController = TextEditingController();
   var taxNumberError = ''.obs;
-  final uniqueCodeController = TextEditingController();
   var uniqueCodeError = ''.obs;
-  final signUpPasswordController = TextEditingController();
-  var signUpEmailError = ''.obs;
-  final fullNameController = TextEditingController();
   var fullNameError = ''.obs;
-  final signUpEmailController = TextEditingController();
+  var signUpEmailError = ''.obs;
   var signUpPasswordError = ''.obs;
+  var positionError = ''.obs;
 
-  final isSignUpFormVisible = false.obs;
+  // Outras variáveis observáveis
+  var position = 'Enfermeira'.obs;
+  var isSignUpFormVisible = false.obs;
+  var loading = false.obs;
 
-  final RxBool loading = false.obs;
   bool get getLoading => loading.value;
 
   double getLogoOffset(BuildContext context) {
@@ -46,21 +50,79 @@ class SignInController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    emailController.text = 'carlos.admin@example.com';
-    passwordController.text = 'admin123';
+    emailController.text = '';
+    passwordController.text = '';
+  }
+
+  void clearFields() {
+    emailController.clear();
+    passwordController.clear();
+    phoneController.clear();
+    taxNumberController.clear();
+    uniqueCodeController.clear();
+    fullNameController.clear();
+    signUpEmailController.clear();
+    signUpPasswordController.clear();
+
+    emailError.value = '';
+    passwordError.value = '';
+    phoneError.value = '';
+    taxNumberError.value = '';
+    uniqueCodeError.value = '';
+    fullNameError.value = '';
+    signUpEmailError.value = '';
+    signUpPasswordError.value = '';
+    positionError.value = '';
+  }
+
+  void hideCredentials() {
+    emailController.clear();
+    passwordController.clear();
+    emailError.value = '';
+    passwordError.value = '';
   }
 
   Future<bool> formValidator() async {
     bool isValid = true;
+    emailError.value = '';
+    passwordError.value = '';
+
     if (emailController.text.isEmpty ||
         !GetUtils.isEmail(emailController.text)) {
-      emailError('Por favor, insira um email válido');
-      loading.value = false;
+      emailError.value = 'Por favor, insira um email válido';
       isValid = false;
     }
     if (passwordController.text.isEmpty) {
-      passwordError('Por favor, insira sua senha');
-      loading.value = false;
+      passwordError.value = 'Por favor, insira sua senha';
+      isValid = false;
+    }
+    if (signUpEmailController.text.isEmpty ||
+        !GetUtils.isEmail(signUpEmailController.text)) {
+      signUpEmailError.value = 'Por favor, insira um email válido';
+      isValid = false;
+    }
+    if (phoneController.text.isEmpty || phoneController.text.length < 11) {
+      phoneError.value = 'Insira um número de celular válido';
+      isValid = false;
+    }
+    if (signUpPasswordController.text.isEmpty) {
+      signUpPasswordError.value = 'Por favor, insira uma senha';
+      isValid = false;
+    }
+    if (passwordController.text.isEmpty || passwordController.text.length < 8) {
+      passwordError.value = 'A senha deve ter pelo menos 8 caracteres';
+      isValid = false;
+    }
+    if (taxNumberController.text.isEmpty ||
+        taxNumberController.text.length != 11 ||
+        !GetUtils.isNumericOnly(taxNumberController.text)) {
+      taxNumberError.value = 'Insira um CPF válido com 11 dígitos';
+      isValid = false;
+    }
+    if (uniqueCodeController.text.isEmpty ||
+        uniqueCodeController.text.length < 4) {
+      uniqueCodeError.value =
+          'O código do hospital deve ter pelo menos 4 caracteres';
       isValid = false;
     }
     return isValid;
@@ -77,13 +139,11 @@ class SignInController extends GetxController {
 
         if (response.status!) {
           AuthService.to.loggedIn(response.token!);
-          SnackBarApp.body(
-            "Sucesso",
-            "Login realizado com sucesso!",
-          );
+          SnackBarApp.body("Sucesso", "Login realizado com sucesso!");
           if (await getHospital()) {
             Get.offAllNamed(Routes.home);
           }
+          clearFields();
         } else {
           SnackBarApp.body("Ops!", response.detail!,
               icon: FontAwesomeIcons.xmark);
@@ -91,37 +151,18 @@ class SignInController extends GetxController {
       } catch (e) {
         SnackBarApp.body("Ops!", "Não foi possível realizar o login.",
             icon: FontAwesomeIcons.xmark);
-        throw Exception(e.runtimeType);
       } finally {
         loading.value = false;
       }
+    } else {
+      loading.value = false;
     }
-  }
-
-  Future<bool> signUpFormValidator() async {
-    bool isValid = true;
-    emailError.value = '';
-    passwordError.value = '';
-
-    if (signUpEmailController.text.isEmpty ||
-        !GetUtils.isEmail(signUpEmailController.text)) {
-      emailError.value = 'Por favor, insira um email válido';
-      isValid = false;
-    }
-    if (signUpPasswordController.text.isEmpty) {
-      passwordError.value = 'Por favor, insira uma senha';
-      isValid = false;
-    }
-
-    loading.value = false;
-    return isValid;
   }
 
   void register() async {
     loading.value = true;
-    if (await signUpFormValidator()) {
+    if (await formValidator()) {
       try {
-        // Cria o modelo com os dados preenchidos
         final signupModel = SignupModel(
           name: fullNameController.text,
           email: signUpEmailController.text,
@@ -131,12 +172,11 @@ class SignInController extends GetxController {
           password: signUpPasswordController.text,
         );
 
-        // Chama o repositório com o modelo criado
         final response = await signInRepository.registerUser(signupModel);
-
         if (response.status) {
           SnackBarApp.body("Sucesso", "Cadastro realizado com sucesso!");
-          toggleSignUpForm(); // Alterna para a tela de login
+          toggleSignUpForm();
+          clearFields();
         } else {
           SnackBarApp.body("Ops!", "Falha ao realizar o cadastro.",
               icon: FontAwesomeIcons.xmark);
@@ -147,11 +187,16 @@ class SignInController extends GetxController {
       } finally {
         loading.value = false;
       }
+    } else {
+      loading.value = false;
     }
   }
 
   void toggleSignUpForm() {
     isSignUpFormVisible.value = !isSignUpFormVisible.value;
+    if (isSignUpFormVisible.value) {
+      hideCredentials();
+    }
   }
 
   Future<bool> getHospital() async {
@@ -171,5 +216,6 @@ class SignInController extends GetxController {
 
   Future<void> logout() async {
     AuthService.to.logoutUser();
+    hideCredentials();
   }
 }

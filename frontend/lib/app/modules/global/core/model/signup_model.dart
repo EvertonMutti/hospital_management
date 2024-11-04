@@ -9,7 +9,6 @@ class SignupModel {
   String? detail;
   bool? status;
 
-  // Construtor corrigido
   SignupModel({
     this.name,
     this.password,
@@ -17,6 +16,7 @@ class SignupModel {
     this.phone,
     this.taxNumber,
     this.hospitalUniqueCode,
+    this.position
   });
 
   SignupModel.fromJson(Map<String, dynamic> json) {
