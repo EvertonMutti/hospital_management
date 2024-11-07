@@ -13,7 +13,6 @@ class SignInProvider implements SignInRepository {
 
   @override
   Future<LoginModel> getUser(body) async {
-    //if (Enviroment.env != 'DEV') {
     try {
       final response = await _http.post(Endpoints.login, data: body);
       return LoginModel.fromJson(response.data);

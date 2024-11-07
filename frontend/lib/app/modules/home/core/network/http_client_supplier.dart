@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hospital_management/app/core/config/config.dart';
+import 'package:hospital_management/app/core/global_widgets/snackbar.dart';
 import 'package:hospital_management/app/core/services/auth.dart';
 
 class HttpClientHome {
@@ -33,6 +35,11 @@ class HttpClientHome {
         },
         onError: (DioException e, handler) {
           if (e.response?.statusCode == 401 || e.response?.statusCode == 403) {
+            SnackBarApp.body(
+              "Ops!", 
+              "Sua sessão expirou. Faça login novamente.",
+              icon: FontAwesomeIcons.xmark,
+            );
             AuthService.to.logoutUser();
           }
 

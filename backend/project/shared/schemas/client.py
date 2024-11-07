@@ -4,6 +4,7 @@ from pycpfcnpj import cpf
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
 from project.shared.enum.enums import PositionEnum
+from project.shared.exceptions.exceptions import InvalidTaxNumberException
 
 
 class ClientInput(BaseModel):
@@ -32,8 +33,8 @@ class ClientInput(BaseModel):
     @field_validator('tax_number')
     def validate_tax_number(cls, value):
         if not cpf.validate(value):
-            raise ValueError(
-                'O número de identificação deve ter 11 dígitos (CPF) ou 14 dígitos (CNPJ).'
+            raise InvalidTaxNumberException(
+                'CPF inválido. Por favor, insira um CPF válido.'
             )
         return value
 

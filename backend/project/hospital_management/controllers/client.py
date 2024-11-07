@@ -20,7 +20,7 @@ from project.shared.schemas.client import (ClientInput, ClientResponse, Login,
 from project.shared.schemas.exceptions import (
     BadRequestExceptionResponse, NotFoundExceptionResponse,
     ServiceUnavailableExceptionResponse, UnauthorizedExceptionResponse,
-    UserAlreadyExistsResponse, UserNotFoundResponse)
+    UserNotFoundResponse)
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
                      'model': ServiceUnavailableExceptionResponse,
                  },
                  HTTP_400_BAD_REQUEST: {
-                     'model': UserAlreadyExistsResponse
+                     'model': BadRequestExceptionResponse
                  },
                  HTTP_404_NOT_FOUND: {
                      'model': NotFoundExceptionResponse

@@ -63,7 +63,7 @@ class BedsController extends GetxController{
       bed.status = newStatus;
       
       if (await repository.updateBed(bed)) {
-        SnackBarApp.body('Sucesso', 'Status do leito atualizado com sucesso!', position: SnackPosition.TOP);
+        SnackBarApp.body('Sucesso', 'Status do leito atualizado com sucesso!', position: SnackPosition.BOTTOM);
         await _loadBedsBySector();
       } else {
         SnackBarApp.body('Erro', 'Não foi possível atualizar o status do leito');

@@ -17,6 +17,7 @@ class SignupModel {
     this.phone,
     this.taxNumber,
     this.hospitalUniqueCode,
+    this.position,
   });
 
   SignupModel.fromJson(Map<String, dynamic> json) {
