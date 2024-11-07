@@ -8,6 +8,7 @@ import 'package:hospital_management/app/core/config/config.dart';
 import 'package:hospital_management/app/core/routes/routes.dart';
 import 'package:hospital_management/app/core/services/sqflite.dart';
 import 'package:hospital_management/app/core/utils/system.dart';
+import 'package:hospital_management/app/modules/global/core/Enum/scopes.dart';
 import 'package:hospital_management/app/modules/global/core/model/signup_model.dart';
 
 import '../../../core/global_widgets/snackbar.dart';
@@ -38,6 +39,9 @@ class SignInController extends GetxController {
   var fullNameError = ''.obs;
   final signUpEmailController = TextEditingController();
   var signUpPasswordError = ''.obs;
+  final Rx<PositionEnum> selectedPosition = PositionEnum.NURSE.obs;
+  get getSelectedPosition => selectedPosition.value;
+  set setSelectedPosition(PositionEnum value) => selectedPosition.value = value;
 
   final isSignUpFormVisible = false.obs;
 
@@ -50,16 +54,49 @@ class SignInController extends GetxController {
   }
 
   @override
-  void onInit() {
-    super.onInit();
-    emailController.text = Enviroment.env != 'PROD' ? 'carlos.admin@example.com' : '';
-    passwordController.text = Enviroment.env != 'PROD' ? 'admin123' : '';
-  }
-
-  @override
   Future<void> onReady() async {
     super.onReady();
     await SystemInfo.requestStoragePermission();
+    emailController.text =
+        Enviroment.env != 'PROD' ? 'carlos.admin@example.com' : '';
+    passwordController.text = Enviroment.env != 'PROD' ? 'admin123' : '';
+  }
+
+  void clearFields() {
+    clearLoginFields();
+    clearSignupFields();
+  }
+
+  void clearLoginErrorMessages() {
+    emailError.value = '';
+    passwordError.value = '';
+  }
+
+  void clearLoginFields() {
+    emailController.clear();
+    passwordController.clear();
+
+    clearLoginErrorMessages();
+  }
+
+  void clearSignupErrorMessages() {
+    phoneError.value = '';
+    taxNumberError.value = '';
+    uniqueCodeError.value = '';
+    fullNameError.value = '';
+    signUpEmailError.value = '';
+    signUpPasswordError.value = '';
+  }
+
+  void clearSignupFields() {
+    phoneController.clear();
+    taxNumberController.clear();
+    uniqueCodeController.clear();
+    fullNameController.clear();
+    signUpEmailController.clear();
+    signUpPasswordController.clear();
+
+    clearSignupErrorMessages();
   }
 
   Future<bool> formValidator() async {
@@ -67,19 +104,19 @@ class SignInController extends GetxController {
     if (emailController.text.isEmpty ||
         !GetUtils.isEmail(emailController.text)) {
       emailError('Por favor, insira um email válido');
-      loading.value = false;
       isValid = false;
     }
     if (passwordController.text.isEmpty) {
       passwordError('Por favor, insira sua senha');
-      loading.value = false;
       isValid = false;
     }
+    loading.value = isValid;
     return isValid;
   }
 
   void login() async {
     loading.value = true;
+    clearLoginErrorMessages();
     if (await formValidator()) {
       try {
         var response = await signInRepository.getUser({
@@ -97,7 +134,8 @@ class SignInController extends GetxController {
             Get.offAllNamed(Routes.home);
           }
         } else {
-          SnackBarApp.body("Ops!", response.detail ?? "Não foi possível realizar o login.",
+          SnackBarApp.body(
+              "Ops!", response.detail ?? "Não foi possível realizar o login.",
               icon: FontAwesomeIcons.xmark);
         }
       } catch (e) {
@@ -112,25 +150,44 @@ class SignInController extends GetxController {
 
   Future<bool> signUpFormValidator() async {
     bool isValid = true;
-    emailError.value = '';
-    passwordError.value = '';
 
     if (signUpEmailController.text.isEmpty ||
         !GetUtils.isEmail(signUpEmailController.text)) {
-      emailError.value = 'Por favor, insira um email válido';
+      signUpEmailError.value = 'Por favor, insira um email válido';
       isValid = false;
     }
     if (signUpPasswordController.text.isEmpty) {
-      passwordError.value = 'Por favor, insira uma senha';
+      signUpPasswordError.value = 'Por favor, insira uma senha';
+      isValid = false;
+    }
+    if (phoneController.text.isEmpty || phoneController.text.length < 11) {
+      phoneError.value = 'Insira um número de celular válido';
+      isValid = false;
+    }
+    if (taxNumberController.text.isEmpty ||
+        taxNumberController.text.length != 11 ||
+        !GetUtils.isNumericOnly(taxNumberController.text)) {
+      taxNumberError.value = 'Insira um CPF válido com 11 dígitos';
+      isValid = false;
+    }
+    if (uniqueCodeController.text.isEmpty ||
+        uniqueCodeController.text.length < 6) {
+      uniqueCodeError.value =
+          'O código do hospital deve ter pelo menos 6 caracteres';
+      isValid = false;
+    }
+    if (fullNameController.text.isEmpty) {
+      fullNameError.value = 'Por favor, insira um nome';
       isValid = false;
     }
 
-    loading.value = false;
+    loading.value = isValid;
     return isValid;
   }
 
   void register() async {
     loading.value = true;
+    clearSignupErrorMessages();
     if (await signUpFormValidator()) {
       try {
         final signupModel = SignupModel(
@@ -140,6 +197,7 @@ class SignInController extends GetxController {
           taxNumber: taxNumberController.text,
           hospitalUniqueCode: uniqueCodeController.text,
           password: signUpPasswordController.text,
+          position: _convertPosition(getSelectedPosition),
         );
 
         final response = await signInRepository.registerUser(signupModel);
@@ -149,7 +207,8 @@ class SignInController extends GetxController {
           SnackBarApp.body("Sucesso", "Cadastro realizado com sucesso!");
           toggleSignUpForm();
         } else {
-          SnackBarApp.body("Ops!", response.detail ?? "Erro ao realizar cadastro",
+          SnackBarApp.body(
+              "Ops!", response.detail ?? "Erro ao realizar cadastro",
               icon: FontAwesomeIcons.xmark);
         }
       } catch (e) {
@@ -163,6 +222,7 @@ class SignInController extends GetxController {
 
   void toggleSignUpForm() {
     isSignUpFormVisible.value = !isSignUpFormVisible.value;
+    clearFields();
   }
 
   Future<bool> getHospital() async {
@@ -174,13 +234,26 @@ class SignInController extends GetxController {
         return true;
       }
     } else {
-      SnackBarApp.body("Ops!", hospitalResponse.detail ?? "Erro ao buscar hospital",
+      SnackBarApp.body(
+          "Ops!", hospitalResponse.detail ?? "Erro ao buscar hospital",
           icon: FontAwesomeIcons.xmark);
+      await logout();
     }
     return false;
   }
 
   Future<void> logout() async {
     AuthService.to.logoutUser();
+  }
+
+  String _convertPosition(PositionEnum position) {
+    switch (position) {
+      case PositionEnum.NURSE:
+        return 'NURSE';
+      case PositionEnum.CLEANER:
+        return 'CLEANER';
+      default:
+        return '';
+    }
   }
 }
