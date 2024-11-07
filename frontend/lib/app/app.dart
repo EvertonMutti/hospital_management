@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: Routes.home,
-      title: 'Hospital Management',
+      title: 'Gerenciador hospitalar',
       theme: themeData,
       initialBinding: BindingsBuilder(
         () {
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return Stack(children: [
           FutureBuilder<void>(
-            key: const Key("Hospital Management"),
+            key: const Key("Gerenciador hospitalar"),
             future: Get.find<SplashService>().init(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
