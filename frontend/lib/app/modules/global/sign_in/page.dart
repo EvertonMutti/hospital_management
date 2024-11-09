@@ -312,7 +312,7 @@ class SignInPage extends GetView<SignInController> {
                                               style: const TextStyle(
                                                 color: Colors.black87,
                                                 fontSize: 16,
-                                                fontWeight: FontWeight.bold,
+                                                fontWeight: FontWeight.normal,
                                               ),
                                             ),
                                           );
@@ -343,7 +343,7 @@ class SignInPage extends GetView<SignInController> {
                                           ),
                                         ),
                                         dropdownColor: Colors.grey
-                                            .shade50, // Cor do fundo do menu dropdown
+                                            .shade50, 
                                       ),
                                       const SizedBox(height: 40),
                                       SizedBox(
