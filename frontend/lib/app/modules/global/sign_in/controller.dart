@@ -56,7 +56,7 @@ class SignInController extends GetxController {
   @override
   Future<void> onReady() async {
     super.onReady();
-    await SystemInfo.requestStoragePermission();
+    // await SystemInfo.requestStoragePermission();
     emailController.text =
         Enviroment.env != 'PROD' ? 'carlos.admin@example.com' : '';
     passwordController.text = Enviroment.env != 'PROD' ? 'admin123' : '';
