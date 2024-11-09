@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:hospital_management/app/core/config/config.dart';
 import 'package:hospital_management/app/core/global_widgets/enviroment_info.dart';
 import 'package:hospital_management/app/core/routes/routes.dart';
 import 'package:hospital_management/app/core/services/auth.dart';
@@ -23,7 +22,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: Routes.home,
-      title: 'Gerenciador hospitalar',
+      title: 'Hospital Management',
       theme: themeData,
       initialBinding: BindingsBuilder(
         () {
@@ -34,7 +33,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return Stack(children: [
           FutureBuilder<void>(
-            key: const Key("Gerenciador hospitalar"),
+            key: const Key("Hospital Management"),
             future: Get.find<SplashService>().init(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
