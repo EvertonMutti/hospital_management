@@ -34,8 +34,7 @@ class ClientInput(BaseModel):
     def validate_tax_number(cls, value):
         if not cpf.validate(value):
             raise InvalidTaxNumberException(
-                'CPF inválido. Por favor, insira um CPF válido.'
-            )
+                'CPF inválido. Por favor, insira um CPF válido.')
         return value
 
 
@@ -52,7 +51,7 @@ class ClientResponse(BaseModel):
 
 
 class Login(BaseModel):
-    email: str
+    email: EmailStr
     password: str
 
 
@@ -76,19 +75,23 @@ class VerifyClientResponse(BaseModel):
 
 class UpdateClient(BaseModel):
     name: str = Field(..., description="O nome do cliente.", example="João")
-    password: str = Field(...,
-                          description="A senha do cliente.",
-                          example="s3cr3tP@ssw0rd")
-    email: str = Field(...,
-                       description="O endereço de e-mail do cliente.",
-                       example="joaodasilva@example.com")
+    email: EmailStr = Field(...,
+                            description="O endereço de e-mail do cliente.",
+                            example="joaodasilva@example.com")
     phone: str = Field(...,
                        description="O número de telefone.",
                        example="71984659415")
     tax_number: str = Field(
         ...,
         description="O número de identificação único do cliente.",
-        examples=["53071916000", '12745866000100'])
+        examples=["53071916000", '11418167843'])
+
+    @field_validator('tax_number')
+    def validate_tax_number(cls, value):
+        if not cpf.validate(value):
+            raise InvalidTaxNumberException(
+                'CPF inválido. Por favor, insira um CPF válido.')
+        return value
 
 
 login_openapi_examples = {

@@ -11,7 +11,7 @@ from project.shared.exceptions.exceptions import (HospitalNotFoundException,
                                                   UserAlreadyExistsException,
                                                   UserNotFoundException)
 from project.shared.schemas.client import (ClientInput, ClientResponse, Login,
-                                           TokenResponse)
+                                           TokenResponse, UpdateClient)
 from project.shared.security.hash_provider import (get_password_hash,
                                                    verify_password)
 from project.shared.security.token_provider import create_acess_token
@@ -44,7 +44,8 @@ class ClientService():
                 return client_response
             raise HospitalNotFoundException()
 
-        except (HospitalNotFoundException, UserAlreadyExistsException) as error:
+        except (HospitalNotFoundException,
+                UserAlreadyExistsException):
             raise
         except Exception as error:
             logger.error(f"Failed to create client: {error}")
@@ -105,13 +106,12 @@ class ClientService():
             raise ServiceUnavailableException()
 
     def update_client(self, client_id: int,
-                      client_data: ClientInput) -> ClientResponse:
+                      client_data: UpdateClient) -> ClientResponse:
         try:
             client = self.get_client_by_id(client_id)
 
             client.name = client_data.name
             client.email = client_data.email
-            client.password = get_password_hash(client_data.password)
             client.tax_number = client_data.tax_number
             client.phone = client_data.phone
 

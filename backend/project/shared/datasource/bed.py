@@ -36,11 +36,10 @@ class BedDataSource(RetryBase):
         except Exception as e:
             logger.error(f"Error counting beds by status: {e}")
             raise
-    
+
     def get_beds_by_tax_number(self, tax_number: str):
-        return (self.db.query(Bed)
-                .join(Sector).join(Hospital)
-                .filter(Hospital.tax_number == tax_number).all())
+        return (self.db.query(Bed).join(Sector).join(Hospital).filter(
+            Hospital.tax_number == tax_number).all())
 
     def get_beds_grouped_by_sector(self, tax_number: str):
         BedAlias = aliased(Bed)
@@ -92,11 +91,10 @@ class BedDataSource(RetryBase):
 
     def get_bed_by_id_and_tax_number(self, bed_id: int,
                                      tax_number: str) -> Optional[Bed]:
-        return (self.db.query(Bed)
-                .join(Sector).join(Hospital).filter(Hospital.tax_number == tax_number)
-                .filter(Bed.id == bed_id).filter(
-                    Bed.status != BedStatus.DELETED).filter(
-                        Sector.status != SectorStatus.DELETED).first())
+        return (self.db.query(Bed).join(Sector).join(Hospital).filter(
+            Hospital.tax_number == tax_number).filter(Bed.id == bed_id).filter(
+                Bed.status != BedStatus.DELETED).filter(
+                    Sector.status != SectorStatus.DELETED).first())
 
     def update_bed(self, bed: Bed, bed_update: BedUpdate):
         for field, value in bed_update.model_dump().items():
