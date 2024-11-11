@@ -1,6 +1,6 @@
 from sqlalchemy import insert
 
-from project.hospital_management.settings.database import (get_session)
+from project.hospital_management.settings.database import get_session
 from project.shared.entities.entities import *
 from project.shared.enum.enums import BedStatus, PositionEnum, ScopesStatus
 from project.shared.security.hash_provider import get_password_hash

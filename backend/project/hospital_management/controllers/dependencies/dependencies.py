@@ -1,4 +1,3 @@
-
 from fastapi import Depends
 from pytest import Session
 
@@ -7,7 +6,7 @@ from project.application.service.client import ClientService
 from project.application.service.hospital import HospitalService
 from project.application.service.patient import PatientService
 from project.application.service.sector import SectorService
-from project.hospital_management.settings.database import (get_session)
+from project.hospital_management.settings.database import get_session
 from project.shared.datasource.admission import AdmissionDataSource
 from project.shared.datasource.bed import BedDataSource
 from project.shared.datasource.client import ClientDataSource

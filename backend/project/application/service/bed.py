@@ -28,26 +28,29 @@ class BedService:
         self.admission_data_source: AdmissionDataSource = admission_data_source(
             session)
         self.sector_data_source: SectorDataSource = sector_data_source(session)
-        
+
     def calculate_average_free_time(self, tax_number: str):
         beds = self.bed_data_source.get_beds_by_tax_number(tax_number)
         total_free_time = 0
         total_beds = 0
 
         for bed in beds:
-            admissions = self.admission_data_source.get_admissions_by_bed_id(bed.id)
+            admissions = self.admission_data_source.get_admissions_by_bed_id(
+                bed.id)
             last_discharge_date = None
 
             for admission in admissions:
                 if last_discharge_date:
-                    free_time = (admission.admission_date - last_discharge_date).total_seconds() / 3600
+                    free_time = (admission.admission_date -
+                                 last_discharge_date).total_seconds() / 3600
                     total_free_time += free_time
                     total_beds += 1
 
                 last_discharge_date = admission.discharge_date
 
             if last_discharge_date:
-                free_time = (datetime.now() - last_discharge_date).total_seconds() / 3600
+                free_time = (datetime.now() -
+                             last_discharge_date).total_seconds() / 3600
                 total_free_time += free_time
                 total_beds += 1
 
@@ -57,8 +60,7 @@ class BedService:
         average_hours = int(average_free_time % 24)
 
         return {"days": average_days, "hours": average_hours}
-    
-        
+
     def count_beds_by_status(self, tax_number: str):
         try:
             counts = self.bed_data_source.count_beds_by_status(tax_number)

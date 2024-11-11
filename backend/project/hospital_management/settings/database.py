@@ -1,7 +1,8 @@
 from sqlalchemy import create_engine, inspect
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.pool import StaticPool
-from sqlalchemy.exc import SQLAlchemyError
+
 from project.hospital_management.settings.settings import get_settings
 
 settings = get_settings().database_settings

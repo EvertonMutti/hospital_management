@@ -2,8 +2,7 @@ import logging
 
 from sqlalchemy.orm import Session
 
-from project.shared.entities.entities import (Admission, Hospital,
-                                              Patient)
+from project.shared.entities.entities import Admission, Hospital, Patient
 from project.shared.utils.retry import RetryBase
 
 logger = logging.getLogger(__name__)
